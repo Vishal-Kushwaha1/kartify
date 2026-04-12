@@ -1,13 +1,22 @@
-import { Link } from "react-router-dom";
+import { authClient } from "@/lib/authClient";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
+    const navigate = useNavigate()
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+            navigate("/login")
+        },
+      },
+    });
+  };
+
   return (
     <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
-      
       {/* Logo */}
-      <div className="text-2xl font-bold text-blue-600">
-        Kartify
-      </div>
+      <div className="text-2xl font-bold text-blue-600">Kartify</div>
 
       {/* Links */}
       <ul className="flex gap-6 text-gray-700 font-medium">
@@ -35,6 +44,14 @@ export const Navbar = () => {
           <Link className="hover:text-blue-600 transition" to="/user">
             User
           </Link>
+        </li>
+        <li>
+          <button
+            className="hover:text-blue-600 transition"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </li>
       </ul>
     </nav>

@@ -35,7 +35,6 @@ export const Signup = () => {
         console.log("error", error)
         return
       }
-      console.log("data", data)
       navigate("/dashboard")
     } catch (error) {
       console.log("Something went wrong", error)

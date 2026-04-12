@@ -33,7 +33,6 @@ export default function Login() {
         console.log("Error while login. ", error);
         return;
       }
-      console.log("user data ", data);
       navigate("/dashboard");
     } catch (error) {
       console.log("Something went wrong ", error);
