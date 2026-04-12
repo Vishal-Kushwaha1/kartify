@@ -30,13 +30,14 @@ export default function Login() {
       });
 
       if (error) {
-        console.log("Error while login. ", error);
+        // TODO: Show user-friendly error message via toast or error state
         return;
       }
-      console.log("user data ", data);
-      navigate("/dashboard");
+      if (data) {
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.log("Something went wrong ", error);
+      // TODO: Show user-friendly error message via toast or error state
     } finally {
       setLoading(false);
     }
