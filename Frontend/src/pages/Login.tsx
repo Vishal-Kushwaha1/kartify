@@ -6,7 +6,8 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { loginSchema, type LoginProps } from "../Type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loading } from "@/components/loading";
+import { LoadingPage } from "@/components/LoadingPage";
+import { authClient } from "@/lib/authClient";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -14,21 +15,35 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginProps>({ 
-    resolver: zodResolver(loginSchema)
-   });
+  } = useForm<LoginProps>({
+    resolver: zodResolver(loginSchema),
+  });
 
   const navigate = useNavigate();
-  const handleLogin = (data: LoginProps) => {
-    setLoading(true);
-    // login will implemented
-    console.log("data:",data)
-    navigate("/home");
-    setLoading(false);
+  const handleLogin = async (formData: LoginProps) => {
+    try {
+      setLoading(true);
+      const { email, password } = formData;
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.log("Error while login. ", error);
+        return;
+      }
+      console.log("user data ", data);
+      navigate("/dashboard");
+    } catch (error) {
+      console.log("Something went wrong ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
-    return <Loading />
+    return <LoadingPage />;
   }
 
   return (

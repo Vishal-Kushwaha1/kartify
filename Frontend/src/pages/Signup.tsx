@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { registerSchema, type RegisterProps } from "../Type";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loading } from "@/components/loading";
+import {  LoadingPage } from "@/components/LoadingPage";
 import { authClient } from "@/lib/authClient";
 
 export const Signup = () => {
@@ -30,7 +30,6 @@ export const Signup = () => {
         email,
         password,
         name: fullName,
-        callbackURL: "/dashboard",
       });
       if(error){
         console.log("error", error)
@@ -46,7 +45,7 @@ export const Signup = () => {
   };
 
   if (loading) {
-    return <Loading />;
+    return <LoadingPage />;
   }
 
   return (
