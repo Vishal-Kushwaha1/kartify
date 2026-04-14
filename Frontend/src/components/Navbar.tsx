@@ -1,0 +1,59 @@
+import { authClient } from "@/lib/authClient";
+import { Link, useNavigate } from "react-router-dom";
+
+export const Navbar = () => {
+    const navigate = useNavigate()
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+            navigate("/login")
+        },
+      },
+    });
+  };
+
+  return (
+    <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
+      {/* Logo */}
+      <div className="text-2xl font-bold text-blue-600">Kartify</div>
+
+      {/* Links */}
+      <ul className="flex gap-6 text-gray-700 font-medium">
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/">
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/dashboard">
+            Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/login">
+            Login
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/signup">
+            Signup
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/user">
+            User
+          </Link>
+        </li>
+        <li>
+          <button
+            className="hover:text-blue-600 transition"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </li>
+      </ul>
+    </nav>
+  );
+};

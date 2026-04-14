@@ -32,13 +32,12 @@ export const Signup = () => {
         name: fullName,
       });
       if(error){
-        console.log("error", error)
+        // TODO: Show user-friendly error message via toast or error state
         return
       }
-      console.log("data", data)
       navigate("/dashboard")
     } catch (error) {
-      console.log("Something went wrong", error)
+      // TODO: Show user-friendly error message via toast or error state
     }finally{
       setLoading(false)
     }
@@ -58,7 +57,8 @@ export const Signup = () => {
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit(handleRegister)} className="space-y-4">
             <Input
-              type="fullName"
+              type="text"
+              autoComplete="name"
               placeholder="Full Name"
               {...register("fullName", { required: true })}
             />
