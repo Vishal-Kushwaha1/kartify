@@ -4,10 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { loginSchema, type LoginProps } from "../Type";
+import { loginSchema, type LoginProps } from "../types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingPage } from "@/components/LoadingPage";
 import { authClient } from "@/lib/authClient";
+import { toast } from "sonner";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -30,12 +31,16 @@ export default function Login() {
       });
 
       if (error) {
-        // TODO: Show user-friendly error message via toast or error state
+        toast.error("Error while logging", {
+          description: error.message,
+        });
         return;
       }
+      toast.success("Login successfully")
+      console.log("data, ",data)
       navigate("/dashboard");
     } catch (error) {
-      // TODO: Show user-friendly error message via toast or error state
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }

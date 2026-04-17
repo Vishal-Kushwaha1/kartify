@@ -1,5 +1,6 @@
 import { authClient } from "@/lib/authClient";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export const Navbar = () => {
     const navigate = useNavigate()
@@ -7,6 +8,7 @@ export const Navbar = () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          toast.success("logout successfully")
             navigate("/login")
         },
       },
