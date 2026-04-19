@@ -12,7 +12,7 @@ export const discount = pgTable("discount", {
   description: t.text("description"),
   discountType: discountTypeEnum("discount_type").notNull(),
   value: t.integer("value").notNull(),
-  minOrderAmount: t.numeric("min_order_amount", { precision: 10, scale: 2 }),
+  minOrderAmount: t.numeric("min_order_amount", { precision: 10, scale: 2 }).notNull(),
   startDate: t.timestamp("start_date", { precision: 6, withTimezone: true }),
   endDate: t.timestamp("end_date", { precision: 6, withTimezone: true }),
   usageLimit: t.integer("usage_limit"),

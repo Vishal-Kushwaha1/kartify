@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { authClient } from "@/lib/authClient";
-import type { User } from "@/types/user";
+import type { User } from "@/types/type";
 
 export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
   try {
