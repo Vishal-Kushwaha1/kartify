@@ -1,37 +1,19 @@
-import { LoadingPage } from "@/components/LoadingPage";
-import { authClient } from "@/lib/authClient";
+import {  useAppSelector } from "@/redux/hook";
 
 export const User = () => {
-  const { data: session, isPending, error } = authClient.useSession();
 
-  if (error) {
-    return (
-      <div className="p-4 text-red-500">
-        Something went wrong!
-      </div>
-    );
+  const user = useAppSelector((state) => state.user.user);
+  const loading = useAppSelector((state) => state.user.loading);
+
+  if (loading) return <p>Loading...</p>;
+
+  if (!user) {
+    return <div>"Not logged in"</div>;
   }
-
-  if (isPending) {
-    return <LoadingPage />;
-  }
-
-  if (!session) {
-    return (
-      <div className="p-4 text-gray-500">
-        No user logged in
-      </div>
-    );
-  }
-
-  const user = session.user;
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-xl space-y-4">
-      
-      <h1 className="text-2xl font-bold text-blue-600">
-        User Profile
-      </h1>
+      <h1 className="text-2xl font-bold text-blue-600">User Profile</h1>
 
       <div>
         <p className="text-gray-500 text-sm">Name</p>

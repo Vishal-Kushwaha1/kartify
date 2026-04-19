@@ -1,5 +1,6 @@
 import { authClient } from "@/lib/authClient";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export const Navbar = () => {
     const navigate = useNavigate()
@@ -7,6 +8,7 @@ export const Navbar = () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          toast.success("logout successfully")
             navigate("/login")
         },
       },
@@ -26,8 +28,23 @@ export const Navbar = () => {
           </Link>
         </li>
         <li>
-          <Link className="hover:text-blue-600 transition" to="/dashboard">
-            Dashboard
+          <Link className="hover:text-blue-600 transition" to="/products">
+            Products
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/wishlist">
+            wishlist
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/notification">
+            notification
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/cart">
+            cart
           </Link>
         </li>
         <li>

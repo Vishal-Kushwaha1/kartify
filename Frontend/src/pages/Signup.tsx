@@ -4,10 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { registerSchema, type RegisterProps } from "../Type";
+import { registerSchema, type RegisterProps } from "../types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  LoadingPage } from "@/components/LoadingPage";
+import { LoadingPage } from "@/components/LoadingPage";
 import { authClient } from "@/lib/authClient";
+import { toast } from "sonner";
 
 export const Signup = () => {
   const [loading, setLoading] = useState(false);
@@ -26,20 +27,23 @@ export const Signup = () => {
     const { email, password, fullName } = formData;
 
     try {
-      const {data, error } = await authClient.signUp.email({
+      const { data, error } = await authClient.signUp.email({
         email,
         password,
         name: fullName,
       });
-      if(error){
-        // TODO: Show user-friendly error message via toast or error state
-        return
+      if (error) {
+        toast.error("Error while registering", {
+          description: error.message,
+        });
+        return;
       }
-      navigate("/dashboard")
+      toast.success("User created successfully");
+      navigate("/user");
     } catch (error) {
-      // TODO: Show user-friendly error message via toast or error state
-    }finally{
-      setLoading(false)
+      toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
