@@ -37,8 +37,7 @@ export default function Login() {
         return;
       }
       toast.success("Login successfully")
-      console.log("data, ",data)
-      navigate("/dashboard");
+      navigate("/user");
     } catch (error) {
       toast.error("Something went wrong");
     } finally {

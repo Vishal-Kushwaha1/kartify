@@ -1,17 +1,9 @@
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { fetchUser } from "@/redux/user/userThunk";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {  useAppSelector } from "@/redux/hook";
 
 export const User = () => {
-  const dispatch = useAppDispatch();
 
   const user = useAppSelector((state) => state.user.user);
   const loading = useAppSelector((state) => state.user.loading);
-
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
 
   if (loading) return <p>Loading...</p>;
 

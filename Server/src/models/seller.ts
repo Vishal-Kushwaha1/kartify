@@ -8,6 +8,7 @@ export const seller = pgTable("seller", {
   storeDescription: t.text("store_description"),
   storeLocation: t.text("store_location"),
   isActive: t.boolean("is_active").notNull().default(true),
+  isVerified: t.boolean("is_verified").notNull().default(false),
   userId: t
     .text("user_id")
     .notNull()

@@ -28,8 +28,23 @@ export const Navbar = () => {
           </Link>
         </li>
         <li>
-          <Link className="hover:text-blue-600 transition" to="/dashboard">
-            Dashboard
+          <Link className="hover:text-blue-600 transition" to="/products">
+            Products
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/wishlist">
+            wishlist
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/notification">
+            notification
+          </Link>
+        </li>
+        <li>
+          <Link className="hover:text-blue-600 transition" to="/cart">
+            cart
           </Link>
         </li>
         <li>

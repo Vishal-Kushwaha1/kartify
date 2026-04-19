@@ -39,7 +39,7 @@ export const Signup = () => {
         return;
       }
       toast.success("User created successfully");
-      navigate("/dashboard");
+      navigate("/user");
     } catch (error) {
       toast.error("Something went wrong");
     } finally {

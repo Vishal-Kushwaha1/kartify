@@ -18,6 +18,7 @@ export interface Seller {
   storeDescription?: string | null;
   storeLocation?: string | null;
   isActive: boolean;
+  isVerified: boolean;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
