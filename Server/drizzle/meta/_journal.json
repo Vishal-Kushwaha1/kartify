@@ -8,6 +8,13 @@
       "when": 1776000908764,
       "tag": "0000_minor_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776580563736,
+      "tag": "0001_easy_expediter",
+      "breakpoints": true
     }
   ]
 }

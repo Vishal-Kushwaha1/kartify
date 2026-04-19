@@ -9,12 +9,12 @@ import { Provider } from "react-redux";
 import { Toaster } from "@/components/ui/sonner";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  // <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <App />
         <Toaster position={"bottom-right"} />
       </BrowserRouter>
     </Provider>
-  </StrictMode>,
+  // </StrictMode>,
 );

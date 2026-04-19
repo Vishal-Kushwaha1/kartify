@@ -1,12 +1,10 @@
-import { authClient } from "@/lib/authClient";
 import type { User } from "@/types/user";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { toast } from "sonner";
 import { fetchUser } from "./userThunk";
 
 export interface UserState {
-  user: User | null ;
+  user: User | null;
   loading: boolean;
   error: string | null;
 }
@@ -17,32 +15,37 @@ const initialState: UserState = {
   error: null,
 };
 
-  const userSlice = createSlice({
-    name: "user",
-    initialState,
-    reducers: {
-      setUser:(state, action: PayloadAction<User>) =>{
-        state.user = action.payload
-      },
-      clearUser:(state)=>{
-        state.user = null
-      }
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    setUser: (state, action: PayloadAction<User | null>) => {
+      state.loading = false;
+      state.user = action.payload;
     },
-    extraReducers:(builder)=>{
-      builder.addCase(fetchUser.pending, (state)=>{
-        state.loading = true
+    clearUser: (state) => {
+      state.loading = false;
+      state.user = null;
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUser.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUser.fulfilled, (state, action)=>{
+      .addCase(fetchUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload
+        state.user = action.payload as User;
+        state.error = null;
       })
-      .addCase(fetchUser.rejected, (state, action)=>{
+      .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
-        state.error  =action.payload as string ?? "Error"
-      })
-    }
-  });
+        state.error = (action.payload as string) ?? "Error";
+      });
+  },
+});
 
 export const { setUser, clearUser } = userSlice.actions;
 export default userSlice.reducer;

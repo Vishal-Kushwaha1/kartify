@@ -2,16 +2,15 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { authClient } from "@/lib/authClient";
 import type { User } from "@/types/user";
 
-export const fetchUser = createAsyncThunk<User |null, void, {rejectValue: string}>
-("user/fetchUser", async (_, {rejectWithValue}) => {
+export const fetchUser = createAsyncThunk("user/fetchUser", async () => {
   try {
     const { data: session, error } = await authClient.getSession();
-  
+
     if (error) {
-      return rejectWithValue(error.message ?? "Auth error")
+      return error.message ?? "Auth error";
     }
-    return session?.user ?? null
+    return session?.user as User ?? null;
   } catch (error: unknown) {
-    return rejectWithValue("something went wrong")
+    return "something went wrong";
   }
 });
