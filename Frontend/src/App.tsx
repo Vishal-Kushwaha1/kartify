@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "@/pages/Home";
-import Login from "@/pages/Login";
+import { Home } from "@/pages/Home";
+import { Login } from "@/pages/Login";
 import { Signup } from "@/pages/Signup";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -11,16 +11,19 @@ import { Wishlist } from "@/pages/Wishlist";
 import { Orders } from "@/pages/Orders";
 import { Notification } from "@/pages/Notification";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { useAppDispatch } from "./redux/hook";
+import { useAppDispatch, useAppSelector } from "./redux/hook";
 import { useEffect } from "react";
 import { fetchUser } from "./redux/user/userThunk";
 import { PublicOnlyRoutes } from "./components/PublicOnlyRoutes";
+import { OtpVerification } from "./pages/OtpVerification";
+import { ForgotPassword } from "./pages/ForgotPassword";
 
 export const App = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
+  const user = useAppSelector((state) => state.user.user);
   return (
     <>
       <Navbar />
@@ -29,6 +32,7 @@ export const App = () => {
         <Route element={<PublicOnlyRoutes />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
         </Route>
         <Route path="/products" element={<Products />} />
         <Route element={<ProtectedRoute />}>

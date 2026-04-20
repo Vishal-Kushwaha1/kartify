@@ -1,15 +1,19 @@
 import { authClient } from "@/lib/authClient";
+import { useAppDispatch } from "@/redux/hook";
+import { clearUser } from "@/redux/user/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export const Navbar = () => {
-    const navigate = useNavigate()
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const handleLogout = async () => {
+    dispatch(clearUser());
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          toast.success("logout successfully")
-            navigate("/login")
+          toast.success("logout successfully");
+          navigate("/login");
         },
       },
     });
