@@ -24,7 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.send("Server is running fine on website");
+  res.status(200).json({
+    success: true,
+    message: "Server is running fine 🚀",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 const PORT = process.env.PORT;

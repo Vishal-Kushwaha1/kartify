@@ -11,11 +11,10 @@ import { Wishlist } from "@/pages/Wishlist";
 import { Orders } from "@/pages/Orders";
 import { Notification } from "@/pages/Notification";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { useAppDispatch, useAppSelector } from "./redux/hook";
+import { useAppDispatch } from "./redux/hook";
 import { useEffect } from "react";
 import { fetchUser } from "./redux/user/userThunk";
 import { PublicOnlyRoutes } from "./components/PublicOnlyRoutes";
-import { OtpVerification } from "./pages/OtpVerification";
 import { ForgotPassword } from "./pages/ForgotPassword";
 
 export const App = () => {
@@ -23,25 +22,24 @@ export const App = () => {
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
-  const user = useAppSelector((state) => state.user.user);
   return (
     <>
       <Navbar />
       <Routes>
         <Route index element={<Home />} />
-        <Route element={<PublicOnlyRoutes />}>
+        {/* <Route element={<PublicOnlyRoutes />}> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-        </Route>
+        {/* </Route> */}
         <Route path="/products" element={<Products />} />
-        <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}> */}
           <Route path="/user" element={<User />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/notification" element={<Notification />} />
-        </Route>
+        {/* </Route> */}
       </Routes>
       <Footer />
     </>

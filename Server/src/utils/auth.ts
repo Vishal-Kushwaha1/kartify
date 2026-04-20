@@ -29,13 +29,56 @@ export const auth = betterAuth({
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         await sendEmail({
-          from: process.env.EMAIL_FROM as string || "onboarding@resend.dev", // TODO: hardcoded value
-          to: "vishalkrk4@gmail.com", //email
-          subject: subjects[type] || "Your OTP for BetterAuth",
-          text: otp,
-          html: `<h3>Email: ${email}</h3><br/><p>OTP: ${otp}</p>`,
+          from: process.env.EMAIL_FROM || "onboarding@resend.dev",
+          to: email,
+          subject: subjects[type] || "Your OTP for Kartify",
+          text: `Your OTP is ${otp}`,
+          html: `
+    <div style="font-family: sans-serif; max-width: 400px; margin: auto; padding: 20px;">
+      
+      <h2 style="color: #D85A30; margin-bottom: 10px;">
+        Kartify Verification
+      </h2>
+
+      <p style="font-size: 14px; color: #555;">
+        Hello,
+      </p>
+
+      <p style="font-size: 14px; color: #555;">
+        Use the OTP below to continue:
+      </p>
+
+      <div style="
+        font-size: 24px;
+        font-weight: bold;
+        letter-spacing: 4px;
+        background: #f4f4f5;
+        padding: 12px;
+        text-align: center;
+        border-radius: 8px;
+        margin: 16px 0;
+      ">
+        ${otp}
+      </div>
+
+      <p style="font-size: 12px; color: #888;">
+        This OTP is valid for 5 minutes. Do not share it with anyone.
+      </p>
+
+    </div>
+  `,
         });
       },
     }),
   ],
+  advanced:{
+    ipAddress:{
+      ipv6Subnet: 64,
+    }
+  },
+  rateLimit:{
+    enabled: true,
+    window: 60,
+    max: 5,
+  }
 });
