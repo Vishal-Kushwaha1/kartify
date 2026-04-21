@@ -1,0 +1,27 @@
+import type { Request, Response, NextFunction } from "express";
+
+type AsyncHandler = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<any>;
+
+export const asyncHandler =
+  (func: AsyncHandler) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await func(req, res, next);
+    } catch (error: any) {
+      res.status(error.statusCode || 500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  };
+
+// asyncHandler using promise
+// export const asyncHandler = (requestHandler: AsyncHandler) => {
+//   return (req: Request, res: Response, next: NextFunction) => {
+//     Promise.resolve(requestHandler(req, res, next)).catch((err) => next(err));
+//   };
+// };

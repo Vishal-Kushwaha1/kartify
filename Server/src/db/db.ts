@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
-dotenv.config()
+dotenv.config();
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
+import { ApiError } from "../utils/ApiError.js";
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
-  throw new Error("Missing DATABASE_URL environment variable");
+  throw new ApiError(500, "Missing DATABASE_URL environment variable");
 }
 
 export const sql = neon(DATABASE_URL);
