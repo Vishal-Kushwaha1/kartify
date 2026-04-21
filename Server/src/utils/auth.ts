@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../config/db.js";
+import { db } from "../db/db.js";
 import * as userSchema from "../models/index.js";
 import { sendEmail } from "./resend.js";
 import { emailOTP } from "better-auth/plugins";
