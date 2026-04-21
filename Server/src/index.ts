@@ -8,6 +8,9 @@ import { auth } from "./utils/auth.js";
 import { db } from "./db/db.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import { ApiError } from "./utils/ApiError.js";
+// import { upload } from "./utils/multer.js";
+// import { uploadOnCloudinary } from "./utils/cloudinary.js";
+// import { asyncHandler } from "./utils/asyncHandler.js";
 
 const app = express();
 app.use(
@@ -36,7 +39,20 @@ app.get("/api/me", async (req, res) => {
 	return res.json(session);
 });
 
-const PORT = process.env.PORT;
+// for checking cloudinary is working or not
+// app.post("/cloudinary" ,upload.single("image"), asyncHandler(async(req,res)=>{
+//   if(!req.file) {
+//     throw new ApiError(400, "Image is required")
+//   }
+//   const result:any  =await uploadOnCloudinary(
+//     req.file?.path
+//   ) 
+//   console.log("result", result)
+//   const imageUrl = result.secure_url as string
+//   res.status(201).json(new ApiResponse(201, {imageUrl, result}, "Product uploaded"))
+// }))
+
+const PORT = process.env.PORT as string
 const startServer = async () => {
   try {
     await db.execute("SELECT 1"); // test query
