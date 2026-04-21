@@ -1,76 +1,29 @@
-import { authClient } from "@/lib/authClient";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { Link } from "react-router-dom"
+import { Button } from "@/components/ui/button"
 
 export const Navbar = () => {
-    const navigate = useNavigate()
-  const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          toast.success("logout successfully")
-            navigate("/login")
-        },
-      },
-    });
-  };
-
   return (
-    <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
-      {/* Logo */}
-      <div className="text-2xl font-bold text-blue-600">Kartify</div>
+    <header className="flex items-center justify-between px-6 py-3.5 border-b bg-background">
+      
+      <span className="text-lg font-medium tracking-tight">
+        Karti<span className="text-orange-600">fy</span>
+      </span>
 
-      {/* Links */}
-      <ul className="flex gap-6 text-gray-700 font-medium">
-        <li>
-          <Link className="hover:text-blue-600 transition" to="/">
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link className="hover:text-blue-600 transition" to="/products">
-            Products
-          </Link>
-        </li>
-        <li>
-          <Link className="hover:text-blue-600 transition" to="/wishlist">
-            wishlist
-          </Link>
-        </li>
-        <li>
-          <Link className="hover:text-blue-600 transition" to="/notification">
-            notification
-          </Link>
-        </li>
-        <li>
-          <Link className="hover:text-blue-600 transition" to="/cart">
-            cart
-          </Link>
-        </li>
-        <li>
-          <Link className="hover:text-blue-600 transition" to="/login">
-            Login
-          </Link>
-        </li>
-        <li>
-          <Link className="hover:text-blue-600 transition" to="/signup">
-            Signup
-          </Link>
-        </li>
-        <li>
-          <Link className="hover:text-blue-600 transition" to="/user">
-            User
-          </Link>
-        </li>
-        <li>
-          <button
-            className="hover:text-blue-600 transition"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
-        </li>
-      </ul>
-    </nav>
-  );
-};
+      <nav className="hidden md:flex gap-6 text-sm text-muted-foreground">
+        <Link to="/shop">Shop</Link>
+        <Link to="/categories">Categories</Link>
+        <Link to="/deals">Deals</Link>
+      </nav>
+
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" asChild>
+          <Link to="/login">Log in</Link>
+        </Button>
+
+        <Button size="sm" className="bg-orange-600 hover:bg-orange-700" asChild>
+          <Link to="/signup">Sign up</Link>
+        </Button>
+      </div>
+    </header>
+  )
+}

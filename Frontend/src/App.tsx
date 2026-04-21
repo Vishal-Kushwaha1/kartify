@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "@/pages/Home";
-import Login from "@/pages/Login";
+import { Home } from "@/pages/Home";
+import { Login } from "@/pages/Login";
 import { Signup } from "@/pages/Signup";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -15,6 +15,7 @@ import { useAppDispatch } from "./redux/hook";
 import { useEffect } from "react";
 import { fetchUser } from "./redux/user/userThunk";
 import { PublicOnlyRoutes } from "./components/PublicOnlyRoutes";
+import { ForgotPassword } from "./pages/ForgotPassword";
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -26,18 +27,19 @@ export const App = () => {
       <Navbar />
       <Routes>
         <Route index element={<Home />} />
-        <Route element={<PublicOnlyRoutes />}>
+        {/* <Route element={<PublicOnlyRoutes />}> */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-        </Route>
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        {/* </Route> */}
         <Route path="/products" element={<Products />} />
-        <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}> */}
           <Route path="/user" element={<User />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/notification" element={<Notification />} />
-        </Route>
+        {/* </Route> */}
       </Routes>
       <Footer />
     </>
