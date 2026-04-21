@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/db.js";
 import * as userSchema from "../models/index.js";
 import { sendEmail } from "./resend.js";
-import { emailOTP } from "better-auth/plugins";
+import { emailOTP, phoneNumber } from "better-auth/plugins";
 
 const subjects: Record<string, string> = {
   "sign-in": "Your sign-in OTP for BetterAuth",
@@ -71,14 +71,30 @@ export const auth = betterAuth({
       },
     }),
   ],
-  advanced:{
-    ipAddress:{
+  advanced: {
+    ipAddress: {
       ipv6Subnet: 64,
-    }
+    },
   },
-  rateLimit:{
+  rateLimit: {
     enabled: true,
     window: 60,
     max: 5,
-  }
+  },
+  user: {
+    additionalFields: {
+      phone: {
+        type: "string",
+      },
+      role: {
+        type: "string",
+      },
+      isActive: {
+        type: "boolean",
+      },
+    },
+  },
 });
+
+export type UserSession = typeof auth.$Infer.Session.session
+export type User = typeof auth.$Infer.Session.user
