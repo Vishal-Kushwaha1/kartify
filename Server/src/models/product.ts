@@ -12,7 +12,7 @@ export const product = pgTable("product", {
   stock: t.integer("stock").notNull().default(0),
   category: t.text("category").array(),
   image: t.text("image").array(),
-  isActive: t.boolean("is_active").default(true).notNull(),
+  isActive: t.boolean("is_active").default(false).notNull(),
   sellerId: t
   .uuid("seller_id")
   .notNull()

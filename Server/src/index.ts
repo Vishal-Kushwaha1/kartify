@@ -8,6 +8,7 @@ import { auth } from "./utils/auth.js";
 import { db } from "./db/db.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import { ApiError } from "./utils/ApiError.js";
+import productRouter from "./routes/product.js"
 // import { upload } from "./utils/multer.js";
 // import { uploadOnCloudinary } from "./utils/cloudinary.js";
 // import { asyncHandler } from "./utils/asyncHandler.js";
@@ -51,6 +52,10 @@ app.get("/api/me", async (req, res) => {
 //   const imageUrl = result.secure_url as string
 //   res.status(201).json(new ApiResponse(201, {imageUrl, result}, "Product uploaded"))
 // }))
+
+
+app.use("/api/v1/products", productRouter)
+
 
 const PORT = process.env.PORT as string
 const startServer = async () => {
