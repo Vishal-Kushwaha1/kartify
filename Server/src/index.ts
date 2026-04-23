@@ -9,6 +9,7 @@ import { db } from "./db/db.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import { ApiError } from "./utils/ApiError.js";
 import productRouter from "./routes/product.js"
+import cartRouter from "./routes/cart.js"
 // import { upload } from "./utils/multer.js";
 // import { uploadOnCloudinary } from "./utils/cloudinary.js";
 // import { asyncHandler } from "./utils/asyncHandler.js";
@@ -55,6 +56,7 @@ app.get("/api/me", async (req, res) => {
 
 
 app.use("/api/v1/products", productRouter)
+app.use("/api/v1/cart", cartRouter)
 
 
 const PORT = process.env.PORT as string

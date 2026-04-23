@@ -4,11 +4,14 @@ import { product } from "../models/product.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import type { User } from "../utils/auth.js";
 
 export const createProduct = asyncHandler(async (req, res) => {
+  const user = req.user as User
+  
   const { name, description, price, stock, category, image } = req.body;
   if (!name || !price) {
-    return res.json(new ApiError(400, "Name and price are required"));
+    throw new ApiError(400, "Name and price are required");
   }
   const newProduct = await db
     .insert(product)
@@ -21,16 +24,16 @@ export const createProduct = asyncHandler(async (req, res) => {
         category: Array.isArray(category) ? category : [category],
       }),
       ...(image && { image: Array.isArray(image) ? image : [image] }),
+      sellerId: user.id
     })
     .returning();
   return res.json(
-    new ApiResponse(201, newProduct[0], "Product added successfully"),
+    new ApiResponse(201, newProduct[0], "Product created"),
   );
 });
 
 export const updateProduct = asyncHandler(async (req, res) => {
   const {
-    id,
     name,
     description,
     price,
@@ -39,11 +42,14 @@ export const updateProduct = asyncHandler(async (req, res) => {
     image,
     isActive = false,
   } = req.body;
+
+  const {id} = req.params as {id:string}
+
   if (!id) {
-    return res.json(new ApiError(400, "Product id is required"));
+   throw new ApiError(400, "Product id is required")
   }
   if (!name || !price) {
-    return res.json(new ApiError(400, "Name and price are required"));
+    throw new ApiError(400, "Name and price are required");
   }
   const updatedProduct = await db
     .update(product)
@@ -67,11 +73,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
 export const getAllProducts = asyncHandler(async (req, res) => {
   const allProducts = await db.select().from(product);
-  if (!allProducts.length) {
+  if (!allProducts[0]) {
     return res.json(new ApiResponse(201, [], "No product found"));
   }
   return res.json(
-    new ApiResponse(200, allProducts, "Product fetched successfully"),
+    new ApiResponse(200, allProducts, "Product fetched"),
   );
 });
 
@@ -90,14 +96,14 @@ export const getProductById = asyncHandler(async (req, res) => {
 export const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params as { id: string };
   if (!id) {
-    return res.json(new ApiError(400, "Product id is required"));
+    throw new ApiError(400, "Product id is required");
   }
   const deletedProduct = await db
     .delete(product)
     .where(eq(product.id, id))
     .returning();
   return res.json(
-    new ApiResponse(200, deletedProduct, "Product deleted successfully"),
+    new ApiResponse(200, deletedProduct[0], "Product deleted successfully"),
   );
 });
 
@@ -105,10 +111,10 @@ export const updateProductStock = asyncHandler(async (req, res) => {
   const { id } = req.params as { id: string };
   const { stock } = req.body;
   if (!id) {
-    return res.json(new ApiError(400, "Product id is required"));
+    throw new ApiError(400, "Product id is required");
   }
-  if (stock === undefined || stock === null) {
-    return res.json(new ApiError(400, "Stock is required"));
+  if (stock === undefined || stock < 0) {
+    throw new ApiError(400, "Stock is required");
   }
   const updatedProduct = await db
     .update(product)
@@ -119,7 +125,7 @@ export const updateProductStock = asyncHandler(async (req, res) => {
     new ApiResponse(
       200,
       updatedProduct[0],
-      "Product stock updated successfully",
+      "Stock updated",
     ),
   );
 });
@@ -127,7 +133,7 @@ export const updateProductStock = asyncHandler(async (req, res) => {
 export const searchProducts = asyncHandler(async (req, res) => {
   const { productName } = req.query as { productName: string };
   if (!productName) {
-    return res.json(new ApiError(400, "Product name is required"));
+    throw new ApiError(400, "Product name is required")
   }
   const searchedProducts = await db
     .select()
@@ -138,7 +144,7 @@ export const searchProducts = asyncHandler(async (req, res) => {
         arrayContains(product.category, [productName]),
       ),
     );
-  if (!searchedProducts.length) {
+  if (!searchedProducts[0]) {
     return res.json(new ApiResponse(404, [], "Product not found"));
   }
   return res.json(
