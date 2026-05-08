@@ -163,6 +163,30 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   );
 });
 
+export const toggleProduct = asyncHandler(async (req, res) => {
+  const current = req.product;
+
+  if (!current) throw new ApiError(404, "Product not found");
+
+  const updated = await db
+    .update(product)
+    .set({ isActive: !current.isActive })
+    .where(eq(product.id, current.id))
+    .returning();
+    
+  if (!updated[0]) {
+    throw new ApiError(500, "Failed to update product");
+  }
+
+  return res.json(
+    new ApiResponse(
+      200,
+      updated[0],
+      `Product ${updated[0].isActive ? "activated" : "deactivated"}`,
+    ),
+  );
+});
+
 export const updateProductStock = asyncHandler(async (req, res) => {
   const { id } = req.params as { id: string };
   const { stock } = req.body;

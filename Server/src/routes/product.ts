@@ -12,6 +12,7 @@ import {
   getAllProducts,
   getProductById,
   searchProducts,
+  toggleProduct,
   updateProduct,
   updateProductStock,
 } from "../controllers/product.js";
@@ -32,7 +33,7 @@ router.post(
   createProduct,
 );
 router.patch("/:id",upload.fields([{ name: "image", maxCount: 5 }]), attachProduct, isProductOwner, updateProduct);
-router.patch("/:id/stock", attachProduct, isProductOwner, updateProductStock);
+router.patch("/:id/toggle", attachProduct, isProductOwner, toggleProduct);
 router.delete("/:id", attachProduct, isProductOwner, deleteProduct);
 
 export default router;

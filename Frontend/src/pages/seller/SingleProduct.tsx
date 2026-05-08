@@ -13,6 +13,7 @@ import {
   Boxes,
   CalendarDays,
   IndianRupee,
+  Loader2,
   Package,
 } from "lucide-react";
 
@@ -21,6 +22,7 @@ export const SingleProduct = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [activeImage, setActiveImage] = useState("");
 
@@ -67,6 +69,24 @@ export const SingleProduct = () => {
       toast.error(message);
     } finally {
       setLoading(false);
+    }
+  };
+  const handleToggle = async () => {
+    try {
+      setToggleLoading(true);
+      const result = await api.patch(`/products/${id}/toggle`);
+      const updated = result?.data?.data;
+      setProduct(updated);
+      toast.success(
+        updated.isActive ? "Product Activated" : "Product Deactivated",
+      );
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
+      toast.error(message);
+    } finally {
+      setToggleLoading(false);
     }
   };
 
@@ -219,6 +239,38 @@ export const SingleProduct = () => {
               </div>
             </Card>
 
+            <div className="flex items-center justify-between gap-4 rounded-xl border bg-muted/20 p-4">
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Product Status</p>
+
+                <Badge
+                  variant="outline"
+                  className={`rounded-md px-3 py-1 text-xs font-normal ${
+                    product.isActive
+                      ? "border-orange-200 text-orange-700 dark:border-orange-900 dark:text-orange-300"
+                      : ""
+                  }`}
+                >
+                  {product.isActive ? "Active" : "Inactive"}
+                </Badge>
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                disabled={toggleLoading}
+                onClick={handleToggle}
+                className="min-w-28"
+              >
+                {toggleLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : product.isActive ? (
+                  "Deactivate"
+                ) : (
+                  "Activate"
+                )}
+              </Button>
+            </div>
             <div className="flex gap-3">
               <Button
                 onClick={() => navigate(`/seller/product/${id}/edit`)}
