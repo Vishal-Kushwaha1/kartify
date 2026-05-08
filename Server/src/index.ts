@@ -8,6 +8,7 @@ import { auth } from "./utils/auth.js";
 import { db } from "./db/db.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import { ApiError } from "./utils/ApiError.js";
+import userRouter from "./routes/user.js"
 import productRouter from "./routes/product.js"
 import cartRouter from "./routes/cart.js"
 // import { upload } from "./utils/multer.js";
@@ -17,8 +18,7 @@ import cartRouter from "./routes/cart.js"
 const app = express();
 app.use(
   cors({
-    origin: "*", //TODO: change this to your frontend URL in production
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", //TODO: change this to your frontend URL in production
     credentials: true,
   }),
 );
@@ -55,6 +55,7 @@ app.get("/api/me", async (req, res) => {
 // }))
 
 
+app.use("/api/v1/user", userRouter)
 app.use("/api/v1/products", productRouter)
 app.use("/api/v1/cart", cartRouter)
 

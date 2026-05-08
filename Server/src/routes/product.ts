@@ -1,7 +1,6 @@
 import express from "express";
 import {
   attachProduct,
-  isProductActive,
   isProductOwner,
   validateProductInput,
 } from "../middleware/product.js";
@@ -16,19 +15,24 @@ import {
   updateProduct,
   updateProductStock,
 } from "../controllers/product.js";
-import { isPayloadMethod } from "better-auth/client";
+import { upload } from "../utils/multer.js";
 
 const router = express.Router();
 
+router.get("/", getAllProducts);
+router.get("/search", searchProducts);
+router.get("/:id", attachProduct, getProductById);
 
-router.get("/", getAllProducts)
-router.get("/search", searchProducts)
-router.get("/:id",attachProduct, isProductActive, getProductById)
+router.use(attachUserSession, isEmailVerified, isSeller);
 
+router.post(
+  "/",
+  upload.fields([{ name: "image", maxCount: 5 }]),
+  validateProductInput,
+  createProduct,
+);
+router.patch("/:id",upload.fields([{ name: "image", maxCount: 5 }]), attachProduct, isProductOwner, updateProduct);
+router.patch("/:id/stock", attachProduct, isProductOwner, updateProductStock);
+router.delete("/:id", attachProduct, isProductOwner, deleteProduct);
 
-router.use(attachUserSession, isEmailVerified,isSeller)
-
-router.post("/", validateProductInput, createProduct)
-router.put("/:id", attachProduct, isProductOwner, updateProduct)
-router.patch("/:id/stock", attachProduct, isPayloadMethod, updateProductStock)
-router.delete("/:id", attachProduct, isProductOwner, deleteProduct)
+export default router;

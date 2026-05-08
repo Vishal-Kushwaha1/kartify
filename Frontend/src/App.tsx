@@ -16,6 +16,8 @@ import { useEffect } from "react";
 import { fetchUser } from "./redux/user/userThunk";
 import { PublicOnlyRoutes } from "./components/PublicOnlyRoutes";
 import { ForgotPassword } from "./pages/ForgotPassword";
+import { SellerRoutes } from "./pages/seller/SellerRoutes";
+import { ApplyForSeller } from "./pages/ApplyForSeller";
 
 export const App = () => {
   const dispatch = useAppDispatch();
@@ -39,7 +41,10 @@ export const App = () => {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/notification" element={<Notification />} />
+          <Route path="/apply" element={<ApplyForSeller />} />
         {/* </Route> */}
+        <Route path="/seller/*" element={<SellerRoutes />} />
+        <Route path="*" element={<h2>Page Not Found</h2>} />
       </Routes>
       <Footer />
     </>

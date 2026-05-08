@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { loginSchema, type LoginProps } from "../types/auth";
+import { loginSchema, type LoginProps } from "../types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingPage } from "@/components/LoadingPage";
 import { authClient } from "@/lib/authClient";

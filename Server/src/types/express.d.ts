@@ -8,7 +8,6 @@ declare global {
       session?: UserSession;
       product?: ProductType;
       cart?: CartType;
-      cartItems?: CartItemsType[];
     }
   }
 }

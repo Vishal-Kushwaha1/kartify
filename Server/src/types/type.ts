@@ -11,13 +11,12 @@ export type ProductType =
       id: string;
       name: string;
       description?: string | null;
-      price: string;
+      price: number;
       stock: number;
       category?: string[] | null;
       image?: string[] | null;
       isActive: boolean;
       sellerId: string;
-      discountId?: string | null;
       createdAt: Date;
       updatedAt: Date;
     }
@@ -31,16 +30,3 @@ export type CartType =
       updatedAt: Date;
     }
   | undefined;
-
-export type CartItemsType = {
-  cart_item:
-    | {
-        id: string;
-        quantity: number;
-        price: string;
-        cartId: string;
-        productId: string;
-      }
-    | undefined;
-  product: ProductType | null;
-};

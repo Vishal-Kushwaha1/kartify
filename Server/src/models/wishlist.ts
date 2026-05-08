@@ -12,9 +12,5 @@ export const wishlist = pgTable("wishlist", {
   userId: t
     .text("user_id")
     .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  createdAt: t
-    .timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+    .references(() => user.id, { onDelete: "cascade" })
 });

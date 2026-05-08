@@ -39,5 +39,5 @@ export const order = pgTable("order", {
   updatedAt: t
     .timestamp("updated_at", { precision: 6, withTimezone: true })
     .notNull()
-    .defaultNow(),
+    .defaultNow().$onUpdate(()=> new Date()),
 });

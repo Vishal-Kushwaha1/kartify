@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import { ApiResponse } from "./ApiResponse.js";
 import { ApiError } from "./ApiError.js";
 
 cloudinary.config({
@@ -16,7 +15,7 @@ export const uploadOnCloudinary = async (localFilePath: string) => {
     const result = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "image",
     });
-    return new ApiResponse(200, result, "Image uploaded successfully");
+    return result
   } catch (error: any) {
     throw new ApiError(500, "Cloudinary upload failed", [error]);
   } finally {
