@@ -41,20 +41,6 @@ app.get("/api/me", async (req, res) => {
 	return res.json(session);
 });
 
-// for checking cloudinary is working or not
-// app.post("/cloudinary" ,upload.single("image"), asyncHandler(async(req,res)=>{
-//   if(!req.file) {
-//     throw new ApiError(400, "Image is required")
-//   }
-//   const result:any  =await uploadOnCloudinary(
-//     req.file?.path
-//   ) 
-//   console.log("result", result)
-//   const imageUrl = result.secure_url as string
-//   res.status(201).json(new ApiResponse(201, {imageUrl, result}, "Product uploaded"))
-// }))
-
-
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/products", productRouter)
 app.use("/api/v1/cart", cartRouter)

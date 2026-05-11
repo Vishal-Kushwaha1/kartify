@@ -22,6 +22,11 @@ export interface Seller {
     storeLocation?: string | null;
     isActive: boolean;
     isVerified: boolean;
+    panNumber: string;
+    aadharNumber: string;
+    gstNumber: string;
+    gstCertificate: string;
+    shopImage: string;
     userId: string;
     createdAt: Date;
     updatedAt: Date;
@@ -87,8 +92,6 @@ export interface OrderItem {
 export interface Cart {
     id: string;
     userId: string;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 export interface CartItem {
@@ -97,6 +100,11 @@ export interface CartItem {
     price: number;
     cartId: string;
     productId: string;
+}
+
+export interface CartData {
+    cart_item: CartItem;
+    product: Product;
 }
 
 export interface Address {
@@ -183,5 +191,4 @@ export interface Wishlist {
     id: string;
     productId: string;
     userId: string;
-    createdAt: Date;
 }

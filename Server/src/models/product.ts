@@ -2,8 +2,6 @@ import { pgTable } from "drizzle-orm/pg-core";
 
 import * as t from "drizzle-orm/pg-core";
 import { seller } from "./seller.js";
-import { discount } from "./discount.js";
-import {user} from "./user.js";
 
 export const product = pgTable("product", {
   id: t.uuid("id").primaryKey().defaultRandom(),
@@ -19,7 +17,7 @@ export const product = pgTable("product", {
   sellerId: t
     .text("seller_id")
     .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+    .references(() => seller.id, { onDelete: "cascade" }),
   createdAt: t
     .timestamp("created_at", { precision: 6, withTimezone: true })
     .notNull()

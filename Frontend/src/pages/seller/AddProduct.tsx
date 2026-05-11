@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { type NewProductProps, newProductSchema } from "@/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import { Upload, X } from "lucide-react";
 import { api } from "@/utils/Axios";

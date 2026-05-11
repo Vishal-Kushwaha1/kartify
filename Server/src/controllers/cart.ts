@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { db } from "../db/db.js";
+import {db, dbPool} from "../db/db.js";
 import { cartItem } from "../models/cartItem.js";
 import type { CartType } from "../types/type.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -29,7 +29,7 @@ export const addToCart = asyncHandler(async (req, res) => {
   if (!cart?.id) throw new ApiError(401, "Cart not found");
   if (!productId) throw new ApiError(400, "ProductId required");
 
-  const result = await db.transaction(async (tx) => {
+  const result = await dbPool.transaction(async (tx) => {
     const productData = await tx
       .select()
       .from(product)
