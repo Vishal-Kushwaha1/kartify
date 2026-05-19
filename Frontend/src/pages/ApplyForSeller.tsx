@@ -15,6 +15,7 @@ export const ApplyForSeller = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<SellerProps>({
     resolver: zodResolver(sellerSchema),
@@ -43,6 +44,7 @@ export const ApplyForSeller = () => {
       if (result.status !== 200) {
         return toast.error("Something went wrong");
       }
+      reset()
       toast.success("applied for seller. wait for response on your email");
     } catch (error: unknown) {
       return toast.error("Something went wrong");

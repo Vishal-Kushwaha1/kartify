@@ -29,14 +29,14 @@ export const addToCart = asyncHandler(async (req, res) => {
   if (!cart?.id) throw new ApiError(401, "Cart not found");
   if (!productId) throw new ApiError(400, "ProductId required");
 
-  const result = await dbPool.transaction(async (tx) => {
+  await dbPool.transaction(async (tx) => {
     const productData = await tx
       .select()
       .from(product)
       .where(eq(product.id, productId));
 
     if (!productData[0]) {
-      return res.json(new ApiError(404, "Product not found"));
+      throw new ApiError(404, "Product not found");
     }
 
     const cartItemData = await tx
@@ -47,7 +47,7 @@ export const addToCart = asyncHandler(async (req, res) => {
       );
 
     if (!cartItemData[0]) {
-      const addedCartItemData = await tx
+      await tx
         .insert(cartItem)
         .values({
           quantity: 1,
@@ -56,22 +56,26 @@ export const addToCart = asyncHandler(async (req, res) => {
           cartId: cart.id,
         })
         .returning();
-
-      return addedCartItemData[0];
+    } else {
+      const quantity = cartItemData[0].quantity + 1;
+      await tx
+        .update(cartItem)
+        .set({ quantity })
+        .where(
+          and(eq(cartItem.cartId, cart.id), eq(cartItem.productId, productId)),
+        )
+        .returning();
     }
-
-    const quantity = cartItemData[0].quantity + 1;
-    const updatedCartItemData = await tx
-      .update(cartItem)
-      .set({ quantity })
-      .where(
-        and(eq(cartItem.cartId, cart.id), eq(cartItem.productId, productId)),
-      )
-      .returning();
-
-    return updatedCartItemData[0];
   });
-  return res.json(new ApiResponse(200, result, "Item added to cart"));
+
+  // Return full updated cart
+  const updatedCart = await db
+    .select()
+    .from(cartItem)
+    .leftJoin(product, eq(product.id, cartItem.productId))
+    .where(eq(cartItem.cartId, cart.id));
+
+  return res.json(new ApiResponse(200, updatedCart, "Item added to cart"));
 });
 
 export const removeFromCart = asyncHandler(async (req, res) => {
@@ -89,33 +93,25 @@ export const removeFromCart = asyncHandler(async (req, res) => {
     );
 
   if (!cartItemData[0]) {
-    throw new ApiError(500, "Item not in cart");
+    throw new ApiError(404, "Item not in cart");
   }
 
-  const quantity = cartItemData[0].quantity;
-  if (quantity <= 1) {
-    const deletedCartItemData = await db
-      .delete(cartItem)
-      .where(
-        and(eq(cartItem.cartId, cart.id), eq(cartItem.productId, productId)),
-      )
-      .returning();
-    return res.json(
-      new ApiResponse(200, deletedCartItemData[0], "Item removed"),
+  await db
+    .delete(cartItem)
+    .where(
+      and(eq(cartItem.cartId, cart.id), eq(cartItem.productId, productId)),
     );
-  } else {
-    const newQuantity = quantity - 1;
-    const updatedCartItemData = await db
-      .update(cartItem)
-      .set({ quantity: newQuantity })
-      .where(
-        and(eq(cartItem.cartId, cart.id), eq(cartItem.productId, productId)),
-      )
-      .returning();
-    return res.json(
-      new ApiResponse(200, updatedCartItemData[0], "Item updated"),
-    );
-  }
+
+  // Return full updated cart
+  const updatedCart = await db
+    .select()
+    .from(cartItem)
+    .leftJoin(product, eq(product.id, cartItem.productId))
+    .where(eq(cartItem.cartId, cart.id));
+
+  return res.json(
+    new ApiResponse(200, updatedCart, "Item removed from cart"),
+  );
 });
 
 export const updateQuantity = asyncHandler(async (req, res) => {
@@ -137,14 +133,21 @@ export const updateQuantity = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Item not in cart");
   }
 
-  const updatedCartItemData = await db
+  await db
     .update(cartItem)
     .set({ quantity })
     .where(and(eq(cartItem.cartId, cart.id), eq(cartItem.productId, productId)))
     .returning();
 
+  // Return full updated cart
+  const updatedCart = await db
+    .select()
+    .from(cartItem)
+    .leftJoin(product, eq(product.id, cartItem.productId))
+    .where(eq(cartItem.cartId, cart.id));
+
   return res.json(
-    new ApiResponse(200, updatedCartItemData[0], "Quantity updated"),
+    new ApiResponse(200, updatedCart, "Quantity updated"),
   );
 });
 
@@ -154,5 +157,5 @@ export const clearCart = asyncHandler(async (req, res) => {
 
   await db.delete(cartItem).where(eq(cartItem.cartId, cart.id));
 
-  return res.json(new ApiResponse(200, {}, "Cart cleared"));
+  return res.json(new ApiResponse(200, [], "Cart cleared"));
 });

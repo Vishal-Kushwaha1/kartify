@@ -22,3 +22,20 @@ export const productSchema = z.object({
     }),
 });
 
+
+export const newAddressSchema = z.object({
+  name: z.string().trim().min(1),
+  recipientName: z.string().trim().min(2),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[6-9]\d{9}$/, "Enter valid mobile number"),
+  address: z.string().trim().min(5),
+  city: z.string().trim().min(2),
+  state: z.string().trim().min(2),
+  postalCode: z.string().trim().regex(/^\d{6}$/, "Enter valid postal code"),
+  country: z.string().trim().min(2),
+  latitude: z.coerce.number(),
+  longitude: z.coerce.number(),
+  isDefault: z.boolean(),
+});

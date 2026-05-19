@@ -15,6 +15,8 @@ export const orderStatusEnum = t.pgEnum("order_status", [
   "returned",
 ]);
 
+export const paymentMethodEnum = t.pgEnum("payment_method",["COD", "STRIPE","RAZORPAY"])
+
 export const order = pgTable("order", {
   id: t.uuid("id").primaryKey().defaultRandom(),
   status: orderStatusEnum("status").notNull().default("pending"),
@@ -30,6 +32,7 @@ export const order = pgTable("order", {
   discountId: t
     .uuid("discount_id")
     .references(() => discount.id, { onDelete: "set null" }),
+  paymentMethod: paymentMethodEnum("payment_method").notNull(),
   paymentId: t.text("payment_id"),
   shipmentId: t.text("shipment_id"),
   createdAt: t

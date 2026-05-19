@@ -19,6 +19,8 @@ import {SellerRoutes} from "./pages/seller/SellerRoutes";
 import {ApplyForSeller} from "./pages/ApplyForSeller";
 import {Cart} from "./pages/Cart";
 import {fetchCartItem} from "@/redux/cart/cartThunk.ts";
+import { AddAddressPage } from "./pages/AddAddressPage";
+import { Checkout } from "./pages/Checkout";
 
 export const App = () => {
     const dispatch = useAppDispatch();
@@ -43,6 +45,8 @@ export const App = () => {
                 <Route path="/wishlist" element={<Wishlist/>}/>
                 <Route path="/orders" element={<Orders/>}/>
                 <Route path="/notification" element={<Notification/>}/>
+                <Route path="/add-address" element={<AddAddressPage/>}/>
+                <Route path="/checkout" element={<Checkout/>}/>
                 <Route path="/apply" element={<ApplyForSeller/>}/>
                 {/* </Route> */}
                 <Route path="/seller/*" element={<SellerRoutes/>}/>

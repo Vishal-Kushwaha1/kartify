@@ -66,4 +66,27 @@ export const newProductSchema = z.object({
     .transform((list) => (list ? Array.from(list) : [])),
 });
 
+export type NewProductInputProps = z.input<typeof newProductSchema>;
 export type NewProductProps = z.infer<typeof newProductSchema>;
+
+export const newAddressSchema = z.object({
+  name: z.string().trim().min(1),
+  recipientName: z.string().trim().min(2),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^[6-9]\d{9}$/, "Enter valid mobile number"),
+  address: z.string().trim().min(5),
+  city: z.string().trim().min(2),
+  state: z.string().trim().min(2),
+  postalCode: z
+    .string()
+    .trim()
+    .regex(/^\d{6}$/, "Enter valid postal code"),
+  country: z.string().trim().min(2),
+  latitude: z.number(),
+  longitude: z.number(),
+  isDefault: z.boolean(),
+});
+
+export type NewAddressProps = z.infer<typeof newAddressSchema>;

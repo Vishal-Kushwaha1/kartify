@@ -3,6 +3,7 @@ import * as t from "drizzle-orm/pg-core";
 import { product } from "./product.js";
 import { user } from "./user.js";
 
+
 export const wishlist = pgTable("wishlist", {
   id: t.uuid().primaryKey().defaultRandom(),
   productId: t

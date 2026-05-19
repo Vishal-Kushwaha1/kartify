@@ -15,7 +15,7 @@ export const product = pgTable("product", {
   image: t.text("image").array(),
   isActive: t.boolean("is_active").default(true).notNull(),
   sellerId: t
-    .text("seller_id")
+    .uuid("seller_id")
     .notNull()
     .references(() => seller.id, { onDelete: "cascade" }),
   createdAt: t

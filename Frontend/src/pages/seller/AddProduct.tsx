@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { type NewProductProps, newProductSchema } from "@/types/schema";
+import { newProductSchema, type NewProductProps, type NewProductInputProps } from "@/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -25,7 +25,7 @@ export const AddProduct = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<NewProductProps>({
+  } = useForm<NewProductInputProps, any, NewProductProps>({
     resolver: zodResolver(newProductSchema),
   });
 
@@ -51,21 +51,23 @@ export const AddProduct = () => {
   const createProduct = async (data: NewProductProps) => {
     try {
       setLoading(true);
-      if (!data.image?.[0]) {
-        return toast.error("Please upload product image");
+      if (!data.image || data.image.length === 0) {
+        toast.error("Please upload product image");
+        setLoading(false);
+        return;
       }
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("description", data.description || "");
       formData.append("price", String(data.price));
       formData.append("stock", String(data.stock));
-      if (data.category?.[0]) {
-        data.category?.forEach((cat) => {
+      if (data.category && data.category.length > 0) {
+        data.category.forEach((cat: string) => {
           formData.append("category", cat);
         });
       }
-      if (data.image?.[0]) {
-        data.image?.forEach((file) => {
+      if (data.image && data.image.length > 0) {
+        data.image.forEach((file: File) => {
           formData.append("image", file);
         });
       }
@@ -78,7 +80,7 @@ export const AddProduct = () => {
       setCategoryInput("");
       toast.success("Product added successfully");
       reset();
-      navigate(`/seller/product/${result.data.id}`)
+      navigate(`/seller/product/${result.data.data.id}`);
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Something went wrong";
@@ -113,7 +115,7 @@ export const AddProduct = () => {
                 <Input {...register("name")} placeholder="Enter product name" />
                 {errors.name && (
                   <p className="text-sm text-destructive">
-                    {errors.name.message}
+                    {typeof errors.name.message === "string" ? errors.name.message : "Invalid name"}
                   </p>
                 )}
               </div>
@@ -130,7 +132,7 @@ export const AddProduct = () => {
                 />
                 {errors.description && (
                   <p className="text-sm text-destructive">
-                    {errors.description.message}
+                    {typeof errors.description.message === "string" ? errors.description.message : "Invalid description"}
                   </p>
                 )}
               </div>
@@ -150,7 +152,7 @@ export const AddProduct = () => {
                   />
                   {errors.price && (
                     <p className="text-sm text-destructive">
-                      {errors.price.message}
+                      {typeof errors.price.message === "string" ? errors.price.message : "Invalid price"}
                     </p>
                   )}
                 </div>
@@ -166,7 +168,7 @@ export const AddProduct = () => {
                   />
                   {errors.stock && (
                     <p className="text-sm text-destructive">
-                      {errors.stock.message}
+                      {typeof errors.stock.message === "string" ? errors.stock.message : "Invalid stock"}
                     </p>
                   )}
                 </div>

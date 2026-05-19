@@ -9,13 +9,13 @@ import {
 } from "./cartThunk";
 
 export interface CartState {
-  cart: CartData[];
+  cart: CartData[] | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: CartState = {
-  cart: [],
+  cart: null,
   loading: false,
   error: null,
 };
@@ -32,14 +32,9 @@ const handleRejected = (
   state.loading = false;
   state.error = action.payload  ?? action.error.message ?? "Something went wrong";
 };
-const handleCartUpdate = (state: CartState, action: PayloadAction<{ data:CartData[] }>) => {
+const handleCartUpdate = (state: CartState, action: PayloadAction<{ data: CartData[] }>) => {
   state.loading = false;
   state.cart = action.payload.data;
-  state.error = null;
-};
-
-const handleActionSuccess = (state: CartState) => {
-  state.loading = false;
   state.error = null;
 };
 
@@ -62,9 +57,9 @@ const cartSlice = createSlice({
       .addCase(clearCart.pending, handlePending);
     builder
       .addCase(fetchCartItem.fulfilled, handleCartUpdate)
-      .addCase(addToCart.fulfilled, handleActionSuccess)
-      .addCase(removeFromCart.fulfilled, handleActionSuccess)
-      .addCase(updateCartItem.fulfilled, handleActionSuccess)
+      .addCase(addToCart.fulfilled, handleCartUpdate)
+      .addCase(removeFromCart.fulfilled, handleCartUpdate)
+      .addCase(updateCartItem.fulfilled, handleCartUpdate)
       .addCase(clearCart.fulfilled, (state) => {
         state.loading = false;
         state.cart = [];

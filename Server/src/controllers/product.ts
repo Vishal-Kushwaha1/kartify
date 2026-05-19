@@ -9,6 +9,7 @@ import {
 } from "drizzle-orm";
 import { db } from "../db/db.js";
 import { product } from "../models/product.js";
+import { seller } from "../models/seller.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -26,6 +27,15 @@ export const createProduct = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Name and price are required");
   }
 
+  const sellerData = await db
+    .select()
+    .from(seller)
+    .where(eq(seller.userId, user.id));
+
+  if (!sellerData[0]) {
+    throw new ApiError(403, "Seller account not found");
+  }
+
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
   const images = files?.image || [];
   if (images.length > 5) {
@@ -34,8 +44,8 @@ export const createProduct = asyncHandler(async (req, res) => {
 
   const uploaded = await Promise.all(
     images.map(async (file) => {
-      const res = await uploadOnCloudinary(file.path);
-      return res?.secure_url;
+      const response = await uploadOnCloudinary(file.path);
+      return response?.secure_url;
     }),
   );
 
@@ -52,10 +62,10 @@ export const createProduct = asyncHandler(async (req, res) => {
       description: description || "",
       price: Number(price),
       stock: stock ? Number(stock) : 0,
-      category: category || [],
+      category: Array.isArray(category) ? category : [],
       image: imageUrls || [],
       isActive: true,
-      sellerId: user.id,
+      sellerId: sellerData[0].id,
     })
     .returning();
 
@@ -173,7 +183,7 @@ export const toggleProduct = asyncHandler(async (req, res) => {
     .set({ isActive: !current.isActive })
     .where(eq(product.id, current.id))
     .returning();
-    
+
   if (!updated[0]) {
     throw new ApiError(500, "Failed to update product");
   }
