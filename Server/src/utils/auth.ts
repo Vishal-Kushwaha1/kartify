@@ -71,16 +71,17 @@ export const auth = betterAuth({
       },
     }),
   ],
-  advanced: {
-    ipAddress: {
-      ipv6Subnet: 64,
-    },
-  },
-  rateLimit: {
-    enabled: true,
-    window: 60,
-    max: 5,
-  },
+  // advanced: {
+  //   ipAddress: {
+  //     ipAddressHeaders: ["cf-connecting-ip"],
+  //     ipv6Subnet: 64,
+  //   },
+  // },
+  // rateLimit: {
+  //   enabled: true,
+  //   window: 60,
+  //   max: 5,
+  // },
   user: {
     additionalFields: {
       phone: {

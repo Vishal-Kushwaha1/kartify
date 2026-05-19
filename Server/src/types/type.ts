@@ -6,17 +6,27 @@ export type EmailProps = {
   html: string;
 };
 
+export type ProductType =
+  | {
+      id: string;
+      name: string;
+      description?: string | null;
+      price: number;
+      stock: number;
+      category?: string[] | null;
+      image?: string[] | null;
+      isActive: boolean;
+      sellerId: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }
+  | undefined;
 
-export type UserRoleEnum = "user" | "seller" | "admin";
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  image?: string | null;
-  phone?: string | null;
-  role: string;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type CartType =
+  | {
+      id: string;
+      userId: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }
+  | undefined;

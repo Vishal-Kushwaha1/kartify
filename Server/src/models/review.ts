@@ -20,5 +20,5 @@ export const review = pgTable("review", {
     .defaultNow(),
   updatedAt: t
     .timestamp("updated_at", { precision: 6, withTimezone: true })
-    .notNull().defaultNow(),
+    .notNull().defaultNow().$onUpdate(()=> new Date()),
 });

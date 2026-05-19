@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema, type RegisterProps } from "../types/auth";
+import { registerSchema, type RegisterProps } from "../types/schema";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/user/userSlice";
 import type { User } from "@/types/type";

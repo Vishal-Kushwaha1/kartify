@@ -8,6 +8,12 @@ import { auth } from "./utils/auth.js";
 import { db } from "./db/db.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import { ApiError } from "./utils/ApiError.js";
+import userRouter from "./routes/user.js"
+import productRouter from "./routes/product.js"
+import cartRouter from "./routes/cart.js"
+import wishlistRouter from "./routes/wishlist.js"
+import addressRouter from "./routes/address.js"
+import { wishlist } from "./models/wishlist.js";
 // import { upload } from "./utils/multer.js";
 // import { uploadOnCloudinary } from "./utils/cloudinary.js";
 // import { asyncHandler } from "./utils/asyncHandler.js";
@@ -15,8 +21,7 @@ import { ApiError } from "./utils/ApiError.js";
 const app = express();
 app.use(
   cors({
-    origin: "*", //TODO: change this to your frontend URL in production
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", //TODO: change this to your frontend URL in production
     credentials: true,
   }),
 );
@@ -39,18 +44,12 @@ app.get("/api/me", async (req, res) => {
 	return res.json(session);
 });
 
-// for checking cloudinary is working or not
-// app.post("/cloudinary" ,upload.single("image"), asyncHandler(async(req,res)=>{
-//   if(!req.file) {
-//     throw new ApiError(400, "Image is required")
-//   }
-//   const result:any  =await uploadOnCloudinary(
-//     req.file?.path
-//   ) 
-//   console.log("result", result)
-//   const imageUrl = result.secure_url as string
-//   res.status(201).json(new ApiResponse(201, {imageUrl, result}, "Product uploaded"))
-// }))
+app.use("/api/v1/user", userRouter)
+app.use("/api/v1/products", productRouter)
+app.use("/api/v1/cart", cartRouter)
+app.use("/api/v1/wishlist", wishlistRouter)
+app.use("/api/v1/address", addressRouter)
+
 
 const PORT = process.env.PORT as string
 const startServer = async () => {

@@ -16,7 +16,7 @@ export const shipment = pgTable("shipment", {
   trackingNumber: t.text("tracking_number").notNull().unique(),
   status: shipmentStatusEnum("status").notNull().default("processing"),
   orderId: t
-    .text("order_id")
+    .uuid("order_id")
     .references(() => order.id, { onDelete: "cascade" }),
   createdAt: t
     .timestamp("created_at", { withTimezone: true })

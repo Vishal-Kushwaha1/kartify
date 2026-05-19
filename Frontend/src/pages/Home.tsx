@@ -55,7 +55,7 @@ export const Home = () => {
             <div className="w-8 h-8 rounded-md bg-orange-50 flex items-center justify-center text-orange-700 mb-3">
               {f.icon}
             </div>
-
+            
             <h3 className="text-sm font-medium mb-1">
               {f.title}
             </h3>

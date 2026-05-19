@@ -1,6 +1,5 @@
 import type { User } from "@/types/type";
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { fetchUser } from "./userThunk";
 
 export interface UserState {

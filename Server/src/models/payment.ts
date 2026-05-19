@@ -38,5 +38,5 @@ export const payment = pgTable("payment", {
   updatedAt: t
     .timestamp("updated_at", { precision: 6, withTimezone: true })
     .notNull()
-    .defaultNow(),
+    .defaultNow().$onUpdate(()=> new Date()),
 });

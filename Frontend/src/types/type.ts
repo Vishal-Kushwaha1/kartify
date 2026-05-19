@@ -1,4 +1,5 @@
 export type UserRoleEnum = "user" | "seller" | "admin";
+
 export interface User {
   id: string;
   name: string;
@@ -12,6 +13,12 @@ export interface User {
   updatedAt: Date;
 }
 
+export type businessTypeEnum =
+  | "Individual"
+  | "Sole_proprietor"
+  | "Pvt_ltd"
+  | "Partnership";
+
 export interface Seller {
   id: string;
   storeName: string;
@@ -19,9 +26,25 @@ export interface Seller {
   storeLocation?: string | null;
   isActive: boolean;
   isVerified: boolean;
+  panNumber: string;
+  aadharNumber: string;
+  gstNumber: string;
+  gstCertificate: string;
+  shopImage: string;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface SellerDocument {
+  id: string;
+  sellerId: string;
+  panNumber: string;
+  aadharNumber: string;
+  gstNumber: string;
+  gstCertificate: string;
+  shopImage: string;
+  createdAt: Date;
 }
 
 export interface Product {
@@ -34,7 +57,6 @@ export interface Product {
   image?: string[] | null;
   isActive: boolean;
   sellerId: string;
-  discountId: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -48,6 +70,7 @@ export type OrderEnum =
   | "delivered"
   | "cancelled"
   | "returned";
+
 export interface Order {
   id: string;
   status: OrderEnum;
@@ -72,8 +95,6 @@ export interface OrderItem {
 export interface Cart {
   id: string;
   userId: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface CartItem {
@@ -82,6 +103,11 @@ export interface CartItem {
   price: number;
   cartId: string;
   productId: string;
+}
+
+export interface CartData {
+  cart_item: CartItem;
+  product: Product;
 }
 
 export interface Address {
@@ -94,12 +120,16 @@ export interface Address {
   state: string;
   postalCode: string;
   country: string;
-  isDefault: boolean;
+  latitude: number;
+  longitude: number;
+  isDefault?: boolean;
   userId: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export type DiscountTypeEnum = "percentage" | "flat";
+
 export interface Discount {
   id: string;
   code: string;
@@ -121,6 +151,7 @@ export type PaymentStatusEnum =
   | "failed"
   | "cancelled"
   | "refunded";
+
 export interface Payment {
   id: string;
   provider: PaymentProviderEnum;
@@ -151,19 +182,25 @@ export type ShipmentStatusEnum =
   | "out_for_delivery"
   | "delivered"
   | "failed";
+
 export interface Shipment {
   id: string;
   trackingNumber: string;
   status: ShipmentStatusEnum;
   orderId: string;
   createdAt: Date;
-  shippedAt?: Date |null;
-  deliveredAt?: Date |null;
+  shippedAt?: Date | null;
+  deliveredAt?: Date | null;
 }
 
 export interface Wishlist {
   id: string;
   productId: string;
   userId: string;
-  createdAt: Date;
+}
+
+export interface WishlistItem {
+  wishlist: {
+    productId : string
+  }
 }

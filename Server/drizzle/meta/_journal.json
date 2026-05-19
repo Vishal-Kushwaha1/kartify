@@ -15,6 +15,48 @@
       "when": 1776580563736,
       "tag": "0001_easy_expediter",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776952874194,
+      "tag": "0002_tranquil_hellfire_club",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1777008667065,
+      "tag": "0003_milky_masque",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777038908146,
+      "tag": "0004_aberrant_midnight",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777124387599,
+      "tag": "0005_icy_hairball",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1778767147201,
+      "tag": "0006_safe_exodus",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1778823357121,
+      "tag": "0007_remarkable_catseye",
+      "breakpoints": true
     }
   ]
 }
