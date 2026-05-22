@@ -71,6 +71,8 @@ export type OrderEnum =
   | "cancelled"
   | "returned";
 
+export type PaymentEnum = "COD" | "STRIPE" | "RAZORPAY";
+
 export interface Order {
   id: string;
   status: OrderEnum;
@@ -78,6 +80,7 @@ export interface Order {
   addressId: string;
   userId: string;
   discountId?: string | null;
+  paymentMethod: PaymentEnum;
   paymentId?: string | null;
   shipmentId?: string | null;
   createdAt: Date;
@@ -201,6 +204,6 @@ export interface Wishlist {
 
 export interface WishlistItem {
   wishlist: {
-    productId : string
-  }
+    productId: string;
+  };
 }

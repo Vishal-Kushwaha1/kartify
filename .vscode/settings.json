@@ -3,6 +3,7 @@
         "aadhar",
         "ilike",
         "kartify",
-        "latlng"
+        "latlng",
+        "ondismiss"
     ]
 }

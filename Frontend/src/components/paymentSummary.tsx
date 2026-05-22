@@ -1,14 +1,11 @@
 import type { CartData } from "@/types/type";
 import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   cart: CartData[];
 };
 
 export const PaymentSummary = ({ cart }: Props) => {
-  const navigate = useNavigate();
-
   // subtotal
   const rawSubTotal =
     cart.reduce((acc, item) => {

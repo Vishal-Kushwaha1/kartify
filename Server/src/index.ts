@@ -13,10 +13,7 @@ import productRouter from "./routes/product.js"
 import cartRouter from "./routes/cart.js"
 import wishlistRouter from "./routes/wishlist.js"
 import addressRouter from "./routes/address.js"
-import { wishlist } from "./models/wishlist.js";
-// import { upload } from "./utils/multer.js";
-// import { uploadOnCloudinary } from "./utils/cloudinary.js";
-// import { asyncHandler } from "./utils/asyncHandler.js";
+import orderRouter from "./routes/order.js"
 
 const app = express();
 app.use(
@@ -49,6 +46,7 @@ app.use("/api/v1/products", productRouter)
 app.use("/api/v1/cart", cartRouter)
 app.use("/api/v1/wishlist", wishlistRouter)
 app.use("/api/v1/address", addressRouter)
+app.use("/api/v1/order", orderRouter)
 
 
 const PORT = process.env.PORT as string
