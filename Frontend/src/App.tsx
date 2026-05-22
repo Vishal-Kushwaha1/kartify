@@ -8,7 +8,6 @@ import {User} from "@/pages/User";
 import {Products} from "@/pages/Products";
 import {Wishlist} from "@/pages/Wishlist";
 import {Orders} from "@/pages/Orders";
-import {Notification} from "@/pages/Notification";
 import {useAppDispatch} from "./redux/hook";
 import {useEffect} from "react";
 import {fetchUser} from "./redux/user/userThunk";
@@ -20,6 +19,7 @@ import {fetchCartItem} from "@/redux/cart/cartThunk.ts";
 import { AddAddressPage } from "./pages/AddAddressPage";
 import { Checkout } from "./pages/Checkout";
 import { OrderSuccess } from "@/pages/OrderSuccess";
+import { OrderDetail } from "./pages/OrderDetail";
 
 export const App = () => {
     const dispatch = useAppDispatch();
@@ -43,7 +43,7 @@ export const App = () => {
                 <Route path="/cart" element={<Cart/>}/>
                 <Route path="/wishlist" element={<Wishlist/>}/>
                 <Route path="/orders" element={<Orders/>}/>
-                <Route path="/notification" element={<Notification/>}/>
+                <Route path="/orders/:orderId" element={<OrderDetail/>}/>
                 <Route path="/add-address" element={<AddAddressPage/>}/>
                 <Route path="/checkout" element={<Checkout/>}/>
                 <Route path="/order-success" element={<OrderSuccess/>}/>

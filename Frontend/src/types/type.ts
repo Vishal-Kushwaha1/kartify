@@ -83,8 +83,9 @@ export interface Order {
   paymentMethod: PaymentEnum;
   paymentId?: string | null;
   shipmentId?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
+  items: OrderItem[];
 }
 
 export interface OrderItem {
@@ -93,6 +94,7 @@ export interface OrderItem {
   price: number;
   orderId: string;
   productId: string;
+  product: Product;
 }
 
 export interface Cart {

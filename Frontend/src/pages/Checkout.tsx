@@ -3,7 +3,7 @@ import { LoadingPage } from "@/components/LoadingPage";
 import { PaymentSummary } from "@/components/paymentSummary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { RootState } from "@/redux/store";
@@ -15,6 +15,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { fetchCartItem } from "@/redux/cart/cartThunk";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { MapPin, ShieldCheck, CreditCard, Wallet, Banknote } from "lucide-react";
 
 declare global {
   interface Window {
@@ -113,10 +114,10 @@ export const Checkout = () => {
         amount: amount,
         currency,
         name: "Kartify",
-        description: "An e-commerce platform",
+        description: "Premium E-commerce Experience",
         order_id: razorpayOrderId,
         theme: {
-          color: "#F37254",
+          color: "#0F172A", // using a darker premium color
         },
         handler: async (paymentResponse: {
           razorpay_order_id: string;
@@ -206,92 +207,95 @@ export const Checkout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-muted/40 px-4 py-10 sm:px-6">
-      <div className="mx-auto max-w-6xl space-y-6">
-        {/* Header */}
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">Checkout</h1>
-          <p className="text-muted-foreground">
-            Complete your purchase securely
-          </p>
+    <div className="min-h-screen bg-muted/20 pb-20">
+      
+      {/* Page Header */}
+      <div className="bg-background border-b border-border/50 px-6 py-10 mb-10">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-1 flex items-center gap-2">
+              Secure Checkout <ShieldCheck className="h-6 w-6 text-primary" />
+            </h1>
+            <p className="text-muted-foreground">
+              Complete your purchase securely.
+            </p>
+          </div>
         </div>
+      </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="grid gap-8 lg:grid-cols-[1fr_400px]">
           {/* Left Section */}
-          <div className="space-y-6">
+          <div className="space-y-8">
+            
             {/* Step 1: Delivery Address */}
-            <Card className="rounded-xl border bg-background">
-              <CardHeader>
-                <CardTitle className="text-lg font-medium tracking-tight">
+            <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm overflow-hidden">
+              <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                  <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
+                    <MapPin className="h-4 w-4" />
+                  </div>
                   Delivery Address
                 </CardTitle>
+                <CardDescription>Select where you'd like us to deliver your order.</CardDescription>
               </CardHeader>
               <CardContent className="p-6">
                 {loadingAddress ? (
-                  <div className="flex items-center justify-center py-8">
-                    <p className="text-sm text-muted-foreground">
-                      Loading addresses...
-                    </p>
+                  <div className="flex flex-col gap-3 py-4">
+                    <div className="h-20 w-full bg-muted/50 animate-pulse rounded-2xl"></div>
+                    <div className="h-20 w-full bg-muted/50 animate-pulse rounded-2xl"></div>
                   </div>
                 ) : addresses.length === 0 ? (
-                  <div className="rounded-lg border border-dashed bg-muted p-6 text-center">
+                  <div className="rounded-2xl border border-dashed border-border/60 bg-muted/30 p-8 text-center flex flex-col items-center justify-center">
+                    <MapPin className="h-10 w-10 text-muted-foreground opacity-50 mb-3" />
+                    <p className="text-foreground font-medium mb-1">No saved addresses</p>
                     <p className="text-sm text-muted-foreground mb-4">
-                      No saved addresses yet
+                      Please add an address to continue checkout
                     </p>
-                    <Button className="bg-orange-600 hover:bg-orange-700 text-white">
-                      Add Address
+                    <Button onClick={() => navigate("/user")} className="rounded-xl px-6">
+                      Go to Profile to Add Address
                     </Button>
                   </div>
                 ) : (
                   <RadioGroup
                     value={addressId ?? ""}
                     onValueChange={(id) => setAddressId(id)}
-                    className="space-y-3"
+                    className="grid gap-4 sm:grid-cols-2"
                   >
-                    {addresses.slice(0, 3).map((item) => (
-                      <div
+                    {addresses.slice(0, 4).map((item) => (
+                      <Label
                         key={item.id}
-                        className="cursor-pointer"
-                        onClick={() => setAddressId(item.id)}
+                        htmlFor={item.id}
+                        className={`cursor-pointer rounded-2xl border-2 p-5 transition-all hover:bg-muted/30 ${
+                          addressId === item.id ? "border-primary bg-primary/5 shadow-sm" : "border-border/50 bg-background"
+                        }`}
                       >
-                        <div className="rounded-lg border bg-background p-4 has-checked:border-orange-600">
-                          <div className="flex gap-3">
-                            <RadioGroupItem
-                              value={item.id}
-                              id={item.id}
-                              className="mt-1"
-                            />
-
-                            <Label
-                              htmlFor={item.id}
-                              className="flex-1 cursor-pointer"
-                            >
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <p className="text-sm font-medium text-foreground">
-                                    {item.name}
-                                  </p>
-                                  {item.isDefault && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-xs"
-                                    >
-                                      Default
-                                    </Badge>
-                                  )}
-                                </div>
-                                <p className="text-xs text-muted-foreground">
-                                  {item.recipientName} • {item.phone}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {item.address}, {item.city}, {item.state}{" "}
-                                  {item.postalCode}
-                                </p>
-                              </div>
-                            </Label>
+                        <div className="flex items-start gap-3">
+                          <RadioGroupItem
+                            value={item.id}
+                            id={item.id}
+                            className="mt-1"
+                          />
+                          <div className="space-y-1.5 flex-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-sm font-semibold text-foreground line-clamp-1">
+                                {item.name}
+                              </p>
+                              {item.isDefault && (
+                                <Badge variant="secondary" className="text-[10px] uppercase font-bold py-0 h-4">
+                                  Default
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs font-medium text-muted-foreground">
+                              {item.recipientName} • {item.phone}
+                            </p>
+                            <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                              {item.address}, {item.city}, {item.state} {item.postalCode}
+                            </p>
                           </div>
                         </div>
-                      </div>
+                      </Label>
                     ))}
                   </RadioGroup>
                 )}
@@ -299,9 +303,12 @@ export const Checkout = () => {
             </Card>
 
             {/* Step 2: Order Items */}
-            <Card className="rounded-xl border bg-background">
-              <CardHeader>
-                <CardTitle className="text-lg font-medium tracking-tight">
+            <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm overflow-hidden">
+              <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
+                <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                  <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  </div>
                   Order Items
                 </CardTitle>
               </CardHeader>
@@ -312,58 +319,58 @@ export const Checkout = () => {
               </CardContent>
             </Card>
 
-            {/* Step 3: Payment Method */}
-            <Card className="rounded-xl border bg-background">
-              <CardHeader>
-                <CardTitle className="text-lg font-medium tracking-tight">
-                  Payment Method
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      handleCOD();
-                    }}
-                    disabled={loadingPayment}
-                    className="h-20 flex-col gap-1 text-center"
-                  >
-                    <span className="text-xl">💳</span>
-                    <span className="text-sm font-medium">COD</span>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      handleStripe();
-                    }}
-                    disabled={loadingPayment}
-                    className="h-20 flex-col gap-1 text-center"
-                  >
-                    <span className="text-xl">🏦</span>
-                    <span className="text-sm font-medium">Stripe</span>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      handleRazorpay();
-                    }}
-                    disabled={loadingPayment}
-                    className="h-20 flex-col gap-1 text-center"
-                  >
-                    <span className="text-xl">₹</span>
-                    <span className="text-sm font-medium">Razorpay</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
-          {/* Right Section - Summary */}
-          <div>
-            <PaymentSummary cart={cart ?? []} />
+          {/* Right Section - Payment & Summary */}
+          <div className="relative">
+            <div className="sticky top-24 space-y-8">
+              
+              <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm overflow-hidden">
+                <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
+                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                    <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
+                      <CreditCard className="h-4 w-4" />
+                    </div>
+                    Payment Method
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="flex flex-col gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleCOD()}
+                      disabled={loadingPayment || !addressId}
+                      className="h-14 justify-start px-4 text-left font-medium border-border/50 hover:bg-muted/50 rounded-xl"
+                    >
+                      <Banknote className="h-5 w-5 mr-3 text-emerald-600" />
+                      Cash on Delivery (COD)
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => handleStripe()}
+                      disabled={loadingPayment || !addressId}
+                      className="h-14 justify-start px-4 text-left font-medium border-border/50 hover:bg-muted/50 rounded-xl"
+                    >
+                      <Wallet className="h-5 w-5 mr-3 text-indigo-600" />
+                      Pay with Stripe
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => handleRazorpay()}
+                      disabled={loadingPayment || !addressId}
+                      className="h-14 justify-start px-4 text-left font-medium border-border/50 hover:bg-muted/50 rounded-xl"
+                    >
+                      <CreditCard className="h-5 w-5 mr-3 text-blue-600" />
+                      Pay with Razorpay
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <PaymentSummary cart={cart ?? []} />
+            </div>
           </div>
         </div>
       </div>

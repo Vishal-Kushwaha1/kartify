@@ -1,14 +1,14 @@
-import { addToCart, fetchCartItem } from "@/redux/cart/cartThunk";
-import type { AppDispatch, RootState } from "@/redux/store";
-import type { Product, Wishlist, WishlistItem } from "@/types/type";
+import { addToCart } from "@/redux/cart/cartThunk";
+import type { AppDispatch } from "@/redux/store";
+import type { Product, WishlistItem } from "@/types/type";
 import { api } from "@/utils/Axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingCart, Loader2 } from "lucide-react";
+import { Heart, ShoppingCart, Loader2, Sparkles } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -25,9 +25,6 @@ export const Products = () => {
   const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  // const { cart, loading, error } = useSelector(
-  //   (state: RootState) => state.cart,
-  // );
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -105,150 +102,155 @@ export const Products = () => {
   };
 
   return (
-    <div className="min-h-screen bg-muted/40">
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="mb-10">
-          <h1 className="text-3xl font-medium tracking-tight text-foreground mb-2">
-            Products
-          </h1>
-          <p className="text-muted-foreground">
-            Discover our curated collection of premium products
-          </p>
-        </div>
+    <div className="min-h-screen bg-muted/20 pb-20">
+      
+      {/* Page Header */}
+      <div className="bg-background border-b border-border/50 px-6 py-12 mb-10 text-center">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4 flex items-center justify-center gap-2">
+          Explore Products <Sparkles className="h-6 w-6 text-primary" />
+        </h1>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Discover our curated collection of premium products, designed to elevate your everyday lifestyle.
+        </p>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-6">
         {pageLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <Loader2 className="h-8 w-8 text-orange-600 animate-spin" />
-              <p className="text-muted-foreground">Loading products...</p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+              <div key={n} className="flex flex-col gap-4">
+                <div className="h-64 w-full rounded-2xl bg-muted/50 animate-pulse"></div>
+                <div className="space-y-2">
+                  <div className="h-4 w-3/4 bg-muted/50 rounded animate-pulse"></div>
+                  <div className="h-4 w-1/2 bg-muted/50 rounded animate-pulse"></div>
+                </div>
+                <div className="h-10 w-full bg-muted/50 rounded-full animate-pulse mt-4"></div>
+              </div>
+            ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="flex items-center justify-center py-20">
-            <p className="text-muted-foreground">No products available</p>
+          <div className="flex flex-col items-center justify-center py-32 text-center bg-background rounded-3xl border border-dashed border-border">
+            <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4 opacity-50" />
+            <h2 className="text-2xl font-semibold mb-2">No products found</h2>
+            <p className="text-muted-foreground">Check back later for new arrivals.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((item) => (
-              <Card
-                key={item.id}
-                onClick={() => navigate(`/products/${item.id}`)}
-                className="border bg-background p-6 rounded-xl hover:shadow-md transition-shadow duration-200 flex flex-col"
-              >
-                <div className="mb-4">
-                  {(() => {
-                    const images = getImages(item);
-                    return images.length > 0 ? (
-                      <Carousel className="w-full" opts={{ loop: true }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {products.map((item) => {
+              const images = getImages(item);
+              const inStock = item.stock !== undefined ? item.stock > 0 : true;
+              
+              return (
+                <Card
+                  key={item.id}
+                  onClick={() => navigate(`/products/${item.id}`)}
+                  className="group flex flex-col border-none bg-background shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl overflow-hidden cursor-pointer"
+                >
+                  {/* Image Container */}
+                  <div className="relative w-full h-64 bg-muted/30 overflow-hidden">
+                    {images.length > 0 ? (
+                      <Carousel className="w-full h-full" opts={{ loop: true }}>
                         <CarouselContent>
-                          {images.map((image, idx) => (
+                          {images.map((img, idx) => (
                             <CarouselItem key={idx}>
-                              <div className="w-full h-40 bg-muted rounded-lg flex items-center justify-center overflow-hidden">
+                              <div className="w-full h-64 flex items-center justify-center">
                                 <img
-                                  src={image}
-                                  alt={`${item.name} - ${idx + 1}`}
-                                  className="w-full h-full object-cover"
+                                  src={img}
+                                  alt={item.name}
+                                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                                 />
                               </div>
                             </CarouselItem>
                           ))}
                         </CarouselContent>
                         {images.length > 1 && (
-                          <>
-                            <CarouselPrevious className="left-2" />
-                            <CarouselNext className="right-2" />
-                          </>
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <CarouselPrevious className="left-2 bg-background/50 backdrop-blur border-none hover:bg-background h-8 w-8" />
+                            <CarouselNext className="right-2 bg-background/50 backdrop-blur border-none hover:bg-background h-8 w-8" />
+                          </div>
                         )}
                       </Carousel>
                     ) : (
-                      <div className="w-full h-40 bg-muted rounded-lg flex items-center justify-center">
-                        <div className="text-muted-foreground text-sm">
-                          No image
-                        </div>
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-muted/50">
+                        No image available
                       </div>
-                    );
-                  })()}
-                </div>
+                    )}
+                    
+                    {/* Floating Wishlist Button */}
+                    <button
+                      onClick={(e) => handleWishlistToggle(e, item.id)}
+                      className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-background/60 backdrop-blur-md border border-border/50 hover:bg-background transition-colors shadow-sm"
+                    >
+                      <Heart
+                        className={`h-4 w-4 transition-colors ${
+                          wishlistIds.has(item.id)
+                            ? "fill-rose-500 text-rose-500"
+                            : "text-foreground"
+                        }`}
+                      />
+                    </button>
+                    
+                    {/* Badges */}
+                    <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
+                      {!inStock && (
+                        <Badge variant="destructive" className="shadow-sm font-semibold text-[10px] uppercase tracking-wider">
+                          Sold Out
+                        </Badge>
+                      )}
+                      {item.stock !== undefined && inStock && item.stock < 10 && (
+                        <Badge className="bg-amber-500 text-white shadow-sm font-semibold text-[10px] uppercase tracking-wider hover:bg-amber-600">
+                          Low Stock
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
 
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="flex-1">
-                    <h3 className="text-sm font-medium text-foreground line-clamp-2">
+                  {/* Content Container */}
+                  <div className="flex flex-col flex-1 p-5">
+                    
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {item.category?.map((cat) => (
+                        <span key={cat} className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                          {cat}
+                        </span>
+                      ))}
+                    </div>
+
+                    <h3 className="font-semibold text-base text-foreground line-clamp-1 mb-1 group-hover:text-primary transition-colors">
                       {item.name}
                     </h3>
-                  </div>
-                  <button
-                    onClick={(e) => handleWishlistToggle(e, item.id)}
-                    className="p-1.5 hover:bg-muted rounded-lg transition-colors"
-                  >
-                    <Heart
-                      className={`h-4 w-4 ${
-                        wishlistIds.has(item.id)
-                          ? "fill-orange-600 text-orange-600"
-                          : "text-muted-foreground"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {item.description && (
-                  <p className="text-xs text-muted-foreground line-clamp-2 mb-4">
-                    {item.description}
-                  </p>
-                )}
-                <div className="flex gap-2">
-                  {item.category?.map((cat) => (
-                    <Badge key={cat} variant="outline" className="text-xs">
-                      {cat}
-                    </Badge>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between mb-4 mt-auto">
-                  <div>
-                    {item.price && (
-                      <p className="text-lg font-medium text-foreground">
-                        ₹{item.price}
+                    
+                    {item.description && (
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
+                        {item.description}
                       </p>
                     )}
-                  </div>
-                  {item.stock !== undefined && (
-                    <Badge
-                      variant={item.stock > 0 ? "default" : "secondary"}
-                      className={
-                        item.stock > 0
-                          ? item.stock > 10
-                            ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                            : "bg-orange-100 text-orange-800 border-orange-200"
-                          : "bg-red-100 text-red-800 border-red-200"
-                      }
-                    >
-                      {item.stock > 0 ? `${item.stock} left` : "Out of stock"}
-                    </Badge>
-                  )}
-                </div>
 
-                <Button
-                  onClick={(e) => handleAddToCart(e, item.id)}
-                  disabled={
-                    actionLoading === item.id ||
-                    (item.stock !== undefined && item.stock === 0)
-                  }
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white gap-2"
-                >
-                  {actionLoading === item.id ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Adding...
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart className="h-4 w-4" />
-                      Add to cart
-                    </>
-                  )}
-                </Button>
-              </Card>
-            ))}
+                    <div className="flex items-end justify-between mt-auto pt-4 border-t border-border/50">
+                      <div className="flex flex-col">
+                        <span className="text-xs text-muted-foreground font-medium mb-0.5">Price</span>
+                        <span className="text-xl font-bold text-foreground tracking-tight">
+                          ₹{item.price?.toLocaleString("en-IN") ?? "0"}
+                        </span>
+                      </div>
+                      
+                      <Button
+                        onClick={(e) => handleAddToCart(e, item.id)}
+                        disabled={actionLoading === item.id || !inStock}
+                        size="icon"
+                        className="rounded-full h-10 w-10 bg-primary hover:bg-primary/90 shadow-sm hover:shadow-md transition-all group-hover:scale-110"
+                      >
+                        {actionLoading === item.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin text-primary-foreground" />
+                        ) : (
+                          <ShoppingCart className="h-4 w-4 text-primary-foreground" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         )}
       </div>

@@ -6,6 +6,8 @@ import {
   verifyStripe,
   createStripeOrder,
   cancelOrder,
+  getAllOrders,
+  getOrderById,
 } from "../controllers/order.js";
 import {
   attachUserSession,
@@ -15,7 +17,12 @@ import {
 
 const router = express.Router();
 
-router.use(attachUserSession, isUserActive, isEmailVerified);
+router.use(attachUserSession, );
+
+router.get("/",getAllOrders)
+router.get("/:orderId",getOrderById)
+
+router.use(isUserActive, isEmailVerified)
 
 router.post("/cash", createCodOrder);
 

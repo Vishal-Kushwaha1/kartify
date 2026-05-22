@@ -1,5 +1,5 @@
-import { and, eq, sql, gte } from "drizzle-orm";
-import { dbPool } from "../db/db.js";
+import { and, eq, sql, gte, desc } from "drizzle-orm";
+import { db, dbPool } from "../db/db.js";
 import { cart } from "../models/cart.js";
 import { cartItem } from "../models/cartItem.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -314,7 +314,7 @@ export const createStripeOrder = asyncHandler(async (req, res) => {
     });
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card","upi","pay_by_bank", "amazon_pay"],
+      payment_method_types: ["card", "upi", "pay_by_bank", "amazon_pay"],
       mode: "payment",
       success_url: `${process.env.FRONTEND_URL}/order-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/checkout?stripe_cancelled=true&orderId=${createdOrder.id}`,
@@ -386,4 +386,73 @@ export const verifyStripe = asyncHandler(async (req, res) => {
   });
 
   res.json(new ApiResponse(200, { orderId }, "Payment verified successfully"));
+});
+
+export const getAllOrders = asyncHandler(async (req, res) => {
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
+
+  const result = await db
+    .select()
+    .from(order)
+    .where(eq(order.userId, user.id))
+    .leftJoin(orderItem, eq(orderItem.orderId, order.id))
+    .leftJoin(product, eq(product.id, orderItem.productId))
+    .orderBy(desc(order.createdAt))
+
+  if (!result.length) {
+    return res.json(new ApiResponse(200, [], "No order found"));
+  }
+
+  const orderMap = new Map();
+
+  for (const row of result) {
+    const orderId = row.order.id;
+    if (!orderMap.has(orderId)) {
+      orderMap.set(orderId, {
+        ...row.order,
+        items: [],
+      });
+    }
+    if (row.order_item) {
+      orderMap.get(orderId).items.push({
+        ...row.order_item,
+        product: row.product,
+      });
+    }
+  }
+  const orders = Array.from(orderMap.values());
+
+  res.json(new ApiResponse(200, orders, "Orders fetched"));
+});
+
+export const getOrderById = asyncHandler(async (req, res) => {
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
+
+  const { orderId } = req.params as { orderId: string };
+  if (!orderId) throw new ApiError(400, "Order Id is required");
+
+  const result = await db
+    .select()
+    .from(order)
+    .where(and(eq(order.id, orderId), eq(order.userId, user.id)))
+    .leftJoin(orderItem, eq(orderItem.orderId, order.id))
+    .leftJoin(product, eq(product.id, orderItem.productId));
+
+  if (!result.length) {
+    throw new ApiError(404, "Order not found");
+  }
+
+  const firstRow = result[0];
+  const orderData = {
+    ...firstRow?.order,
+    items: result
+      .filter((row) => row.order_item)
+      .map((row) => ({
+        ...row.order_item,
+        product: row.product,
+      })),
+  };
+  res.json(new ApiResponse(200, orderData, "Order fetched"));
 });

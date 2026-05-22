@@ -1,5 +1,6 @@
 import type { CartData } from "@/types/type";
 import { Card } from "@/components/ui/card";
+import { Receipt } from "lucide-react";
 
 type Props = {
   cart: CartData[];
@@ -26,47 +27,52 @@ export const PaymentSummary = ({ cart }: Props) => {
   const total = Number((subTotal + gst + deliveryFee).toFixed(2));
 
   return (
-    <Card className="sticky top-10 h-fit space-y-6 rounded-xl border bg-background p-6">
+    <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm p-6 overflow-hidden relative">
+      <div className="absolute top-0 right-0 p-4 opacity-5">
+        <Receipt className="w-32 h-32" />
+      </div>
+      
       {/* Header */}
-      <div className="space-y-2">
-        <h2 className="text-xl font-medium tracking-tight text-foreground">Order Summary</h2>
-        <p className="text-xs text-muted-foreground">
+      <div className="space-y-1 mb-6 relative z-10">
+        <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+          Order Summary
+        </h2>
+        <p className="text-sm text-muted-foreground font-medium">
           {cart.length} item{cart.length !== 1 ? "s" : ""}
         </p>
       </div>
 
-      {/* Divider */}
-      <div className="h-px bg-border" />
-
       {/* Breakdown */}
-      <div className="space-y-3 text-sm">
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Subtotal</span>
-          <span className="font-medium text-foreground">₹{subTotal}</span>
+      <div className="space-y-4 text-sm relative z-10">
+        <div className="flex justify-between items-center bg-muted/30 p-3 rounded-xl">
+          <span className="text-muted-foreground font-medium">Subtotal</span>
+          <span className="font-bold text-foreground">₹{subTotal.toLocaleString('en-IN')}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">GST (18%)</span>
-          <span className="font-medium text-foreground">₹{gst}</span>
+        <div className="flex justify-between items-center bg-muted/30 p-3 rounded-xl">
+          <span className="text-muted-foreground font-medium">GST (18%)</span>
+          <span className="font-bold text-foreground">₹{gst.toLocaleString('en-IN')}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Delivery</span>
-          <span className={`font-medium ${deliveryFee === 0 ? 'text-green-600' : 'text-foreground'}`}>
-            {deliveryFee === 0 ? 'Free' : `₹${deliveryFee}`}
+        <div className="flex justify-between items-center bg-muted/30 p-3 rounded-xl">
+          <span className="text-muted-foreground font-medium">Delivery</span>
+          <span className={`font-bold ${deliveryFee === 0 ? 'text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded' : 'text-foreground'}`}>
+            {deliveryFee === 0 ? 'Free' : `₹${deliveryFee.toLocaleString('en-IN')}`}
           </span>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-border" />
-
-      {/* Total */}
-      <div className="space-y-1">
-        <div className="flex justify-between text-lg">
-          <span className="font-medium text-foreground">Total</span>
-          <span className="font-bold text-orange-600">₹{total}</span>
-        </div>
+      <div className="my-6 border-t border-dashed border-border/80 relative z-10">
+        <div className="absolute -left-8 -top-3 w-6 h-6 rounded-full bg-muted/20"></div>
+        <div className="absolute -right-8 -top-3 w-6 h-6 rounded-full bg-muted/20"></div>
       </div>
 
+      {/* Total */}
+      <div className="space-y-1 relative z-10">
+        <div className="flex justify-between items-end">
+          <span className="text-base font-bold text-foreground">Total</span>
+          <span className="text-3xl font-black text-primary tracking-tight">₹{total.toLocaleString('en-IN')}</span>
+        </div>
+      </div>
     </Card>
   );
 };
