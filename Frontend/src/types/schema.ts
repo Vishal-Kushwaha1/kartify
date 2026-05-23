@@ -90,3 +90,10 @@ export const newAddressSchema = z.object({
 });
 
 export type NewAddressProps = z.infer<typeof newAddressSchema>;
+
+
+export const reviewSchema = z.object({
+  rating: z.number().min(1, "Please select star as rating").max(5,"maximum 5 is allowed"),
+  comment: z.string().nullable().optional()
+})
+export type ReviewProps = z.infer<typeof reviewSchema>

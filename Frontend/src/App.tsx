@@ -20,6 +20,8 @@ import { AddAddressPage } from "./pages/AddAddressPage";
 import { Checkout } from "./pages/Checkout";
 import { OrderSuccess } from "@/pages/OrderSuccess";
 import { OrderDetail } from "./pages/OrderDetail";
+import { ProductDetailPage } from "./pages/ProductDetailPage";
+import { Dashboard } from "./pages/Dashboard";
 
 export const App = () => {
     const dispatch = useAppDispatch();
@@ -31,13 +33,14 @@ export const App = () => {
         <>
             <Navbar/>
             <Routes>
-                <Route index element={<Home/>}/>
+                <Route index element={<Dashboard/>}/>
                 {/* <Route element={<PublicOnlyRoutes />}> */}
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/signup" element={<Signup/>}/>
                 <Route path="/forgot-password" element={<ForgotPassword/>}/>
                 {/* </Route> */}
                 <Route path="/products" element={<Products/>}/>
+                <Route path="/products/:id" element={<ProductDetailPage/>}/>
                 {/* <Route element={<ProtectedRoute />}> */}
                 <Route path="/user" element={<User/>}/>
                 <Route path="/cart" element={<Cart/>}/>

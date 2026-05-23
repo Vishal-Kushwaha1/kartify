@@ -83,7 +83,7 @@
     --sidebar-ring: oklch(0.708 0 0);
 }
 
-.dark {
+[data-theme="dark"] {
     --background: oklch(0.1 0.01 260);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.13 0.01 260);
@@ -146,4 +146,4 @@
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-rose-500;
   }
-}
+}

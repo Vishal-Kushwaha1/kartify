@@ -1,4 +1,5 @@
 import { StrictMode } from "react";
+import { ThemeProvider } from "next-themes";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { App } from "./App.tsx";
@@ -10,11 +11,13 @@ import { Toaster } from "@/components/ui/sonner";
 
 createRoot(document.getElementById("root")!).render(
   // <StrictMode>
-    <Provider store={store}>
+  <Provider store={store}>
+    <ThemeProvider>
       <BrowserRouter>
         <App />
         <Toaster position={"top-right"} />
       </BrowserRouter>
-    </Provider>
+    </ThemeProvider>
+  </Provider>,
   // </StrictMode>,
 );

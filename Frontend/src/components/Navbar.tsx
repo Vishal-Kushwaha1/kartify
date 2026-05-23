@@ -1,6 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, User, Search, Package, LogOut } from "lucide-react";
+import {
+  ShoppingCart,
+  Heart,
+  User,
+  Search,
+  Package,
+  LogOut,
+  Sun,
+  Moon,
+} from "lucide-react";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import {
   DropdownMenu,
@@ -12,12 +21,14 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { api } from "@/utils/Axios";
 import { clearUser } from "@/redux/user/userSlice";
+import { useTheme } from "next-themes";
 
 export const Navbar = () => {
   const { user } = useAppSelector((state) => state.user);
   const { cart } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const cartItemsCount = cart?.length || 0;
 
@@ -34,7 +45,6 @@ export const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 w-full glass-panel border-b border-border/40 bg-background/60 backdrop-blur-md">
       <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-        
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
           <div className="h-8 w-8 bg-primary text-primary-foreground rounded-lg flex items-center justify-center font-bold text-lg shadow-sm group-hover:shadow-md transition-shadow">
@@ -45,29 +55,45 @@ export const Navbar = () => {
           </span>
         </Link>
 
-        {/* Search & Links */}
-        {/* <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
-          <Link to="/products" className="hover:text-primary transition-colors">Products</Link>
-          <Link to="/categories" className="hover:text-primary transition-colors">Categories</Link>
-          <Link to="/deals" className="hover:text-primary transition-colors">Deals</Link>
-        </nav> */}
 
         {/* Right actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-          
-          <Button variant="ghost" size="icon" className="hidden sm:inline-flex rounded-full text-muted-foreground hover:text-foreground">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden sm:inline-flex rounded-full text-muted-foreground hover:text-foreground"
+          >
             <Search className="h-4 w-4" />
           </Button>
 
+          <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full text-muted-foreground hover:text-foreground"
+                onClick={()=>setTheme(theme==="dark"? "light": "dark")}
+              >
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+
           {user ? (
             <>
-              <Button variant="ghost" size="icon" asChild className="rounded-full text-muted-foreground hover:text-foreground">
+              <Button
+                variant="ghost"
+                size="icon"
+                asChild
+                className="rounded-full text-muted-foreground hover:text-foreground"
+              >
                 <Link to="/wishlist">
                   <Heart className="h-5 w-5" />
                 </Link>
               </Button>
-              
-              <Button variant="ghost" size="icon" asChild className="rounded-full relative text-muted-foreground hover:text-foreground mr-1">
+
+              <Button
+                variant="ghost"
+                size="icon"
+                asChild
+                className="rounded-full relative text-muted-foreground hover:text-foreground mr-1"
+              >
                 <Link to="/cart">
                   <ShoppingCart className="h-5 w-5" />
                   {cartItemsCount > 0 && (
@@ -80,9 +106,12 @@ export const Navbar = () => {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-9 w-9 rounded-full ml-2 ring-2 ring-transparent hover:ring-primary/20 transition-all">
+                  <Button
+                    variant="ghost"
+                    className="relative h-9 w-9 rounded-full ml-2 ring-2 ring-transparent hover:ring-primary/20 transition-all"
+                  >
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src={user.profilePic || ""} alt={user.name} />
+                      <AvatarImage src={user?.image || ""} alt={user.name} />
                       <AvatarFallback className="bg-primary/10 text-primary font-medium">
                         {user.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
@@ -93,7 +122,7 @@ export const Navbar = () => {
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1 leading-none">
                       <p className="font-medium">{user.name}</p>
-                      <p className="w-[200px] truncate text-sm text-muted-foreground">
+                      <p className="w-50 truncate text-sm text-muted-foreground">
                         {user.email}
                       </p>
                     </div>
@@ -112,7 +141,10 @@ export const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50">
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/50"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -121,10 +153,19 @@ export const Navbar = () => {
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" asChild className="hidden sm:flex hover:text-primary">
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="hidden sm:flex hover:text-primary"
+              >
                 <Link to="/login">Sign In</Link>
               </Button>
-              <Button size="sm" className="bg-primary hover:bg-primary/90 rounded-full px-5 shadow-sm hover:shadow-md transition-all" asChild>
+              <Button
+                size="sm"
+                className="bg-primary hover:bg-primary/90 rounded-full px-5 shadow-sm hover:shadow-md transition-all"
+                asChild
+              >
                 <Link to="/signup">Get Started</Link>
               </Button>
             </div>

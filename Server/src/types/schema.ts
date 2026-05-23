@@ -39,3 +39,9 @@ export const newAddressSchema = z.object({
   longitude: z.coerce.number(),
   isDefault: z.boolean(),
 });
+
+
+export const reviewSchema = z.object({
+  rating: z.number().min(1, "Please select a rating"),
+  comment: z.string().nullable().optional()
+})
