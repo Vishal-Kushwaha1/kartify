@@ -24,7 +24,7 @@ router.get("/:orderId",getOrderById)
 
 router.use(isUserActive, isEmailVerified)
 
-router.post("/cash", createCodOrder);
+router.post("/cash", createCodOrder); //
 
 router.post("/razorpay/create", createRazorpayOrder);
 router.post("/razorpay/verify", verifyRazorpayPayment);
