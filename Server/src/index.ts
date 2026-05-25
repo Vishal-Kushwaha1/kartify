@@ -15,6 +15,7 @@ import wishlistRouter from "./routes/wishlist.js"
 import addressRouter from "./routes/address.js"
 import orderRouter from "./routes/order.js"
 import reviewRouter from "./routes/review.js"
+import adminRouter from "./routes/admin.js"
 
 const app = express();
 app.use(
@@ -49,6 +50,7 @@ app.use("/api/v1/wishlist", wishlistRouter)
 app.use("/api/v1/address", addressRouter)
 app.use("/api/v1/order", orderRouter)
 app.use("/api/v1/review", reviewRouter)
+app.use("/api/v1/admin", adminRouter)
 
 
 const PORT = process.env.PORT as string

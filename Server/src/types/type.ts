@@ -16,6 +16,7 @@ export type ProductType =
       category?: string[] | null;
       image?: string[] | null;
       isActive: boolean;
+    userId:string
       sellerId: string;
       createdAt: Date;
       updatedAt: Date;

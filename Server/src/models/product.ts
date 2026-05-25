@@ -2,6 +2,7 @@ import { pgTable } from "drizzle-orm/pg-core";
 
 import * as t from "drizzle-orm/pg-core";
 import { seller } from "./seller.js";
+import {user} from "./user.js";
 
 export const product = pgTable("product", {
   id: t.uuid("id").primaryKey().defaultRandom(),
@@ -14,6 +15,11 @@ export const product = pgTable("product", {
   category: t.text("category").array(),
   image: t.text("image").array(),
   isActive: t.boolean("is_active").default(true).notNull(),
+  userId: t
+      .text("user_id")
+      .notNull()
+      .unique()
+      .references(() => user.id, {onDelete: "cascade"}),
   sellerId: t
     .uuid("seller_id")
     .notNull()

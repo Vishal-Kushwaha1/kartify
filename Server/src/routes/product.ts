@@ -9,8 +9,8 @@ import { attachUserSession, isEmailVerified } from "../middleware/auth.js";
 import {
   createProduct,
   deleteProduct,
-  getAllProducts,
-  getProductById,
+  getAllProducts, getAllProductsOfSeller,
+  getProductById, getSellerProductById,
   searchProducts,
   toggleProduct,
   updateProduct,
@@ -22,8 +22,16 @@ const router = express.Router();
 
 router.get("/", getAllProducts);
 router.get("/search", searchProducts);
+
+// Seller routes MUST come before the dynamic /:id route
+const sellerAuth = [attachUserSession, isEmailVerified, isSeller];
+router.get("/seller", sellerAuth, getAllProductsOfSeller);
+router.get("/seller/:id", sellerAuth, attachProduct, isProductOwner, getSellerProductById);
+
+// Public dynamic route
 router.get("/:id", attachProduct, getProductById);
 
+// Middleware for remaining mutating routes
 router.use(attachUserSession, isEmailVerified, isSeller);
 
 router.post(

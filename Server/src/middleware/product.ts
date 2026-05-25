@@ -36,7 +36,7 @@ export const isProductActive = asyncHandler(async (req, res, next) => {
 
 export const isProductOwner = asyncHandler(async (req, res, next) => {
     const user = req.user as User;
-    if (req.product?.sellerId !== user?.id) {
+    if (req.product?.userId !== user?.id) {
         throw new ApiError(403, "Unauthorized");
     }
     next();

@@ -17,7 +17,7 @@ import {
 
 const router = express.Router();
 
-router.use(attachUserSession, );
+router.use(attachUserSession);
 
 router.get("/",getAllOrders)
 router.get("/:orderId",getOrderById)
