@@ -1,5 +1,5 @@
 import type { User, UserSession } from "../utils/auth.ts";
-import type { CartItemsType, CartType, ProductType } from "./type.ts";
+import type {  CartType, ProductType } from "./type.ts";
 
 declare global {
   namespace Express {

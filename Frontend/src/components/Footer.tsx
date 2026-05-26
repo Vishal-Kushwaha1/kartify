@@ -40,16 +40,17 @@ export const Footer = () => {
           <span className="text-foreground font-semibold mb-1">Account</span>
           <Link to="/login" className="hover:text-primary transition-colors">Login</Link>
           <Link to="/signup" className="hover:text-primary transition-colors">Create Account</Link>
+          <Link to="/apply" className="hover:text-primary transition-colors">Become A Seller</Link>
           <Link to="/orders" className="hover:text-primary transition-colors">Track Orders</Link>
           <Link to="/wishlist" className="hover:text-primary transition-colors">My Wishlist</Link>
         </div>
 
         <div className="flex flex-col gap-3">
           <span className="text-foreground font-semibold mb-1">Legal & Support</span>
-          <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-          <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
-          <Link to="/faq" className="hover:text-primary transition-colors">FAQ</Link>
-          <Link to="/contact" className="hover:text-primary transition-colors">Contact Us</Link>
+          <Link to="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
+          <Link to="#" className="hover:text-primary transition-colors">Terms of Service</Link>
+          <Link to="#" className="hover:text-primary transition-colors">FAQ</Link>
+          <Link to="#" className="hover:text-primary transition-colors">Contact Us</Link>
         </div>
 
       </div>

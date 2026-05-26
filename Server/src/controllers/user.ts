@@ -1,6 +1,5 @@
 import { eq } from "drizzle-orm";
 import { db } from "../db/db.js";
-import { user } from "../models/user.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -52,6 +51,8 @@ export const applyForSeller = asyncHandler(async (req, res) => {
   if (!gstCertificateUrl || !shopImageUrl) {
     throw new ApiError(500, "Cloudinary error");
   }
+  console.log(gstCertificateUrl.secure_url);
+  console.log(shopImageUrl.secure_url);
   const result = await db
     .insert(seller)
     .values({
@@ -63,7 +64,7 @@ export const applyForSeller = asyncHandler(async (req, res) => {
       aadharNumber,
       gstNumber,
       gstCertificate: gstCertificateUrl.secure_url,
-      shopImage: shopImage.secure_url,
+      shopImage: shopImageUrl.secure_url,
     })
     .returning();
 

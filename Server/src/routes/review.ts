@@ -1,7 +1,6 @@
 import express from "express"
 import { createReviewOfProduct, getAllReviewOfProduct } from "../controllers/review.js"
 import { attachUserSession } from "../middleware/auth.js"
-import { attachProduct } from "../middleware/product.js"
 import { validateReviewInput } from "../middleware/review.js"
 
 const router = express.Router()

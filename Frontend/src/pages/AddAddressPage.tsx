@@ -112,9 +112,9 @@ export const AddAddressPage = () => {
     }
   };
 
-  const handlePick = (lat: number, lng: number) => {
+  const handlePick = async (lat: number, lng: number) => {
     setPinned({ lat, lng, address: "" });
-    reverseGeocode(lat, lng);
+    await reverseGeocode(lat, lng);
     setValue("latitude", lat);
     setValue("longitude", lng);
   };
@@ -129,7 +129,7 @@ export const AddAddressPage = () => {
       reset();
       setPinned(null);
       toast.success("Address saved");
-      fetchAddresses()
+      await fetchAddresses()
     } catch {
       toast.error("Failed to save address");
     } finally {

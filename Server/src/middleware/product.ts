@@ -5,8 +5,6 @@ import {ApiError} from "../utils/ApiError.js";
 import {asyncHandler} from "../utils/asyncHandler.js";
 import {productSchema} from "../types/schema.js";
 import type {User} from "../utils/auth.js";
-import type { ProductType } from "../types/type.js";
-
 export const attachProduct = asyncHandler(async (req, res, next) => {
     const {id} = req.params as { id: string };
 

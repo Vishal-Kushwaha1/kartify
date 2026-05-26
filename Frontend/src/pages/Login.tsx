@@ -81,7 +81,7 @@ export const Login = () => {
           alt="Abstract Background" 
           className="absolute inset-0 w-full h-full object-cover opacity-80"
         />
-        <div className="relative z-20 flex flex-col items-start justify-end h-full w-full p-16 bg-gradient-to-t from-background/90 to-transparent">
+        <div className="relative z-20 flex flex-col items-start justify-end h-full w-full p-16 bg-linear-to-t from-background/90 to-transparent">
           <div className="h-12 w-12 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center font-bold text-2xl mb-6 shadow-xl">
             K
           </div>

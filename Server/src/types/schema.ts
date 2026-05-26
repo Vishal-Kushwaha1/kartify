@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ApiError } from "../utils/ApiError.js";
 
 export const productSchema = z.object({
   name: z.string().trim().min(2, "Minimum 2 characters required"),

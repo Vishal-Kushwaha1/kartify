@@ -9,8 +9,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useState } from "react";
 import { api } from "@/utils/Axios";
+import {useNavigate} from "react-router-dom";
 
 export const ApplyForSeller = () => {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false);
   const {
     register,
@@ -40,12 +42,13 @@ export const ApplyForSeller = () => {
       formData.append("gstCertificate", data.gstCertificate[0]);
       formData.append("shopImage", data.shopImage[0]);
 
-      const result = await api.post("/user/applyForSeller", formData);
+      const result = await api.post("/user/applyForSeller", formData,{withCredentials: true});
       if (result.status !== 200) {
         return toast.error("Something went wrong");
       }
       reset()
       toast.success("applied for seller. wait for response on your email");
+      navigate("/products")
     } catch (error: unknown) {
       return toast.error("Something went wrong");
     } finally {

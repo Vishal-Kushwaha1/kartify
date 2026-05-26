@@ -14,7 +14,6 @@ import {
   searchProducts,
   toggleProduct,
   updateProduct,
-  updateProductStock,
 } from "../controllers/product.js";
 import { upload } from "../utils/multer.js";
 
