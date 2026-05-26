@@ -36,7 +36,7 @@ export const SingleProduct = () => {
       try {
         setLoading(true);
 
-        const result = await api.get(`/products/${id}`);
+        const result = await api.get(`/products/seller/${id}`,{withCredentials: true});
 
         const product = result?.data?.data;
         if (!product) {
@@ -60,8 +60,7 @@ export const SingleProduct = () => {
   const handleDelete = async () => {
     const productId = id;
     try {
-      const result = await api.delete(`/products/${productId}`);
-      toast.success("Product Deleted");
+      await api.delete(`/products/${productId}`);
       navigate("/seller/products");
     } catch (error: unknown) {
       const message =
@@ -111,7 +110,7 @@ export const SingleProduct = () => {
           <Badge
             className={`border px-3 py-1 text-xs font-normal ${
               product.isActive
-                ? "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900 dark:bg-orange-950 dark:text-orange-300"
+                ? "border-primary/20 bg-primary/10 text-primary dark:border-primary/20 dark:bg-primary/20 dark:text-primary"
                 : ""
             }`}
           >
@@ -168,7 +167,7 @@ export const SingleProduct = () => {
                 </div>
 
                 <div className="flex items-center gap-2 text-foreground">
-                  <IndianRupee className="h-5 w-5 text-orange-600" />
+                  <IndianRupee className="h-5 w-5 text-primary" />
 
                   <span className="text-2xl font-medium tracking-tight">
                     {product.price}
@@ -247,7 +246,7 @@ export const SingleProduct = () => {
                   variant="outline"
                   className={`rounded-md px-3 py-1 text-xs font-normal ${
                     product.isActive
-                      ? "border-orange-200 text-orange-700 dark:border-orange-900 dark:text-orange-300"
+                      ? "border-primary/20 text-primary dark:border-primary/20 dark:text-primary"
                       : ""
                   }`}
                 >
@@ -274,7 +273,7 @@ export const SingleProduct = () => {
             <div className="flex gap-3">
               <Button
                 onClick={() => navigate(`/seller/product/${id}/edit`)}
-                className="bg-orange-600 text-white hover:bg-orange-700"
+                className="bg-primary text-white hover:bg-primary/90"
               >
                 Edit Product
               </Button>

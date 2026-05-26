@@ -41,8 +41,12 @@ export const sellerSchema = z.object({
     .trim()
     .min(15, "Write valid GST Number")
     .max(15, "Write valid GST Number"),
-  gstCertificate: z.any(), // TODO: set validation for image
-  shopImage: z.any(),
+  gstCertificate: z
+    .instanceof(FileList)
+    .refine((list) => list.length > 0, "GST Certificate is required"),
+  shopImage: z
+    .instanceof(FileList)
+    .refine((list) => list.length > 0, "Shop Image is required"),
 });
 export type SellerProps = z.infer<typeof sellerSchema>;
 

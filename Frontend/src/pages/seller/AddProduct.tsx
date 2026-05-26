@@ -25,7 +25,8 @@ export const AddProduct = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<NewProductInputProps, any, NewProductProps>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } = useForm<NewProductInputProps, any, NewProductProps>({ // <NewProductInputProps,any, NewProductProps>
     resolver: zodResolver(newProductSchema),
   });
 
@@ -222,9 +223,9 @@ export const AddProduct = () => {
                   />
                   <Upload className="h-4 w-4 text-muted-foreground" />
                 </div>
-                {watch("image")?.length > 0 && (
+                {(watch("image")?.length ??0) > 0 && (
                   <p className="text-xs text-muted-foreground">
-                    {watch("image").length} / 5 images selected
+                    {watch("image")?.length} / 5 images selected
                   </p>
                 )}
                 {errors.image && (
@@ -238,7 +239,7 @@ export const AddProduct = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  className="w-full bg-primary hover:bg-primary/90 text-white"
                 >
                   {loading ? "Adding..." : "Add Product"}
                 </Button>

@@ -41,7 +41,6 @@ export const ForgotPassword = () => {
   const handleSendOtp = async ({ email }: Inputs) => {
     try {
       setLoading(true);
-      //TODO: go to next when user exists
       const { error: otpError } =
         await authClient.emailOtp.requestPasswordReset({
           email,
@@ -230,3 +229,5 @@ export const ForgotPassword = () => {
     </div>
   );
 };
+
+export default ForgotPassword;

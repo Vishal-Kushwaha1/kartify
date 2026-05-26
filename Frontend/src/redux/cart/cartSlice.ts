@@ -27,6 +27,7 @@ const handlePending = (state: CartState) => {
 
 const handleRejected = (
   state: CartState,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: any,
 ) => {
   state.loading = false;

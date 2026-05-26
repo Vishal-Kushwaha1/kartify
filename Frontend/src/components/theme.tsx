@@ -1,7 +1,7 @@
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 
-export const Theme = () => {
+const Theme = () => {
   const { theme, setTheme } = useTheme();
   return (
     <div>
@@ -11,3 +11,5 @@ export const Theme = () => {
     </div>
   );
 };
+
+export default Theme

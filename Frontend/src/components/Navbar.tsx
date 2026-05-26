@@ -19,9 +19,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { api } from "@/utils/Axios";
 import { clearUser } from "@/redux/user/userSlice";
 import { useTheme } from "next-themes";
+import {authClient} from "@/lib/authClient.ts";
 
 export const Navbar = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -34,7 +34,7 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post("/user/logout");
+      await authClient.signOut()
       dispatch(clearUser());
       navigate("/login");
     } catch (error) {

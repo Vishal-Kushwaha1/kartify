@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, Package, Search, ShoppingCart, Trash2 } from "lucide-react";
 import type { Product, Wishlist as WishlistType } from "@/types/type";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 type WishlistItem = {
   wishlist: WishlistType;
@@ -25,32 +26,34 @@ export const Wishlist = () => {
     }, 0);
   }, [wishlistItems]);
 
-  const fetchWishlist = async () => {
-    try {
-      const response = await api.get("/wishlist", {
-        withCredentials: true,
-      });
-      const payload = response?.data?.data ?? response?.data ?? [];
-      setWishlistItems(Array.isArray(payload) ? payload : []);
-    } catch (error) {
-      console.error("Error fetching wishlist:", error);
-    }
-  };
+  const navigate= useNavigate()
 
-  const handleAddToWishlist = async (productId: string) => {
-    try {
-      await api.post(
-        "/wishlist",
-        { productId },
-        { withCredentials: true },
-      );
-      toast.success("Item added to wishlist");
-      await fetchWishlist();
-    } catch (error) {
-      console.error("Error adding to wishlist:", error);
-      toast.error("Failed to add to wishlist");
-    }
-  };
+  // const fetchWishlist = async () => {
+  //   try {
+  //     const response = await api.get("/wishlist", {
+  //       withCredentials: true,
+  //     });
+  //     const payload = response?.data?.data ?? response?.data ?? [];
+  //     setWishlistItems(Array.isArray(payload) ? payload : []);
+  //   } catch (error) {
+  //     console.error("Error fetching wishlist:", error);
+  //   }
+  // };
+
+  // const handleAddToWishlist = async (productId: string) => {
+  //   try {
+  //     await api.post(
+  //       "/wishlist",
+  //       { productId },
+  //       { withCredentials: true },
+  //     );
+  //     toast.success("Item added to wishlist");
+  //     await fetchWishlist();
+  //   } catch (error) {
+  //     console.error("Error adding to wishlist:", error);
+  //     toast.error("Failed to add to wishlist");
+  //   }
+  // };
 
   const handleRemoveFromWishlist = async (productId: string) => {
     try {
@@ -198,7 +201,7 @@ export const Wishlist = () => {
                   Start exploring products and save items you want to buy later.
                 </p>
               </div>
-              <Button className="bg-orange-600 text-white hover:bg-orange-700">
+              <Button className="bg-primary text-white hover:bg-primary/90" onClick={()=>navigate("/products")}>
                 Browse products
               </Button>
             </CardContent>
@@ -252,12 +255,7 @@ export const Wishlist = () => {
                           ))}
                       </div>
 
-                      {/* Extra details TODO: Add real rating, brand and added date */}
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-                        <span>⭐ 4.5 Rating</span>
-                        <span>Brand: Nike</span>
-                        <span>Added 2 days ago</span>
-                      </div>
+                      {/* Extra details like rating and brand can be added here in the future when available in the DB */}
                     </div>
                   </div>
 
@@ -266,7 +264,7 @@ export const Wishlist = () => {
                     className={`rounded-md px-3 py-1 ${
                       item.product.stock && item.product.stock > 0
                         ? "border-green-200 bg-green-50 text-green-700"
-                        : "border-orange-200 bg-orange-50 text-orange-700"
+                        : "border-primary/20 bg-primary/10 text-primary"
                     }`}
                   >
                     {item.product.stock && item.product.stock > 0
@@ -307,7 +305,7 @@ export const Wishlist = () => {
                           item.wishlist.productId || item.product.id,
                         )
                       }
-                      className="bg-orange-600 text-white hover:bg-orange-700"
+                      className="bg-primary text-white hover:bg-primary/90"
                     >
                       <ShoppingCart className="mr-2 h-4 w-4" />
                       Move to cart
@@ -334,3 +332,5 @@ export const Wishlist = () => {
     </div>
   );
 };
+
+export default Wishlist;

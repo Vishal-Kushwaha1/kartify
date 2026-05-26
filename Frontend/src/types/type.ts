@@ -56,7 +56,9 @@ export interface Product {
   category?: string[] | null;
   image?: string[] | null;
   isActive: boolean;
+  userId: string;
   sellerId: string;
+  sellerStore?: string;
   createdAt: Date;
   updatedAt: Date;
 }

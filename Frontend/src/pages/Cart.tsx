@@ -112,3 +112,5 @@ export const Cart = () => {
     </div>
   );
 };
+
+export default Cart;

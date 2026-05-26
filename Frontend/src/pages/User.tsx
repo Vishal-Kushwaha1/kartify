@@ -48,7 +48,7 @@ export const User = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             <div className="flex items-center gap-3 p-4 rounded-lg border bg-muted/30">
-              <UserIcon size={16} className="text-orange-600" />
+              <UserIcon size={16} className="text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">User ID</p>
                 <p className="text-sm font-mono break-all">{user.id}</p>
@@ -56,7 +56,7 @@ export const User = () => {
             </div>
 
             <div className="flex items-center gap-3 p-4 rounded-lg border bg-muted/30">
-              <Mail size={16} className="text-orange-600" />
+              <Mail size={16} className="text-primary" />
               <div>
                 <p className="text-xs text-muted-foreground">Email</p>
                 <p className="text-sm">{user.email}</p>
@@ -68,11 +68,11 @@ export const User = () => {
           {/* Status */}
           <div className="flex items-center justify-between border-t pt-4">
             <span className="text-sm text-muted-foreground flex items-center gap-2">
-              <ShieldCheck size={16} className="text-orange-600" />
+              <ShieldCheck size={16} className="text-primary" />
               Account Status
             </span>
 
-            <Badge className="bg-orange-600 hover:bg-orange-700">
+            <Badge className="bg-primary hover:bg-primary/90">
               Active
             </Badge>
           </div>
@@ -82,3 +82,5 @@ export const User = () => {
     </div>
   )
 }
+
+export default User

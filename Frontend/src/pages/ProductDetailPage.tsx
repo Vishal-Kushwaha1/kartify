@@ -77,9 +77,9 @@ export const ProductDetailPage = () => {
     stock > 10 ? "In Stock" : stock > 0 ? "Low Stock" : "Out of Stock";
   const stockDotClass =
     stock > 10
-      ? "bg-orange-600"
+      ? "bg-primary"
       : stock > 0
-        ? "bg-orange-600"
+        ? "bg-primary"
         : "bg-muted-foreground";
 
   if (loading) {
@@ -125,7 +125,7 @@ export const ProductDetailPage = () => {
             The product you are looking for may have been removed.
           </p>
           <Button
-            className="mt-6 bg-orange-600 text-white hover:bg-orange-700"
+            className="mt-6 bg-primary text-white hover:bg-primary/90"
             onClick={() => navigate(-1)}
           >
             <ArrowLeft className="mr-2 size-4" />
@@ -207,7 +207,7 @@ export const ProductDetailPage = () => {
 
                 <Badge
                   variant="outline"
-                  className="border-orange-600/30 text-orange-600"
+                  className="border-primary/30 text-primary"
                 >
                   {product.isActive ? (
                     <CheckCircle2 className="mr-1 size-3" />
@@ -249,7 +249,9 @@ export const ProductDetailPage = () => {
                         <Store className="size-4" />
                       </AvatarFallback>
                     </Avatar>
-                    <p className="truncate text-sm">{product.sellerId}</p>
+                    <p className="truncate text-sm font-medium">
+                      {product.sellerStore || "Kartify Seller"}
+                    </p>
                   </div>
                 </div>
 
@@ -272,7 +274,7 @@ export const ProductDetailPage = () => {
 
                     <Badge
                       variant="outline"
-                      className="border-orange-600/30 text-orange-600"
+                      className="border-primary/30 text-primary"
                     >
                       {stock} left
                     </Badge>
@@ -335,7 +337,7 @@ export const ProductDetailPage = () => {
                               0,
                             ) / reviews.length,
                           )
-                            ? "fill-orange-600 text-orange-600"
+                            ? "fill-primary text-primary"
                             : "text-muted-foreground"
                         }`}
                       />
@@ -393,3 +395,5 @@ export const ProductDetailPage = () => {
     </div>
   );
 };
+
+export default ProductDetailPage;

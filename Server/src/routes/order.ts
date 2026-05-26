@@ -7,13 +7,13 @@ import {
   createStripeOrder,
   cancelOrder,
   getAllOrders,
-  getOrderById,
-} from "../controllers/order.js";
+  getOrderById, getAllSellerOrders, getSellerOrderById, updateSellerOrderStatus} from "../controllers/order.js";
 import {
   attachUserSession,
   isEmailVerified,
   isUserActive,
 } from "../middleware/auth.js";
+import {isSeller} from "../middleware/role.js";
 
 const router = express.Router();
 
@@ -24,7 +24,11 @@ router.get("/:orderId",getOrderById)
 
 router.use(isUserActive, isEmailVerified)
 
-router.post("/cash", createCodOrder); //
+router.get("/seller/order",isSeller, getAllSellerOrders)
+router.get("/seller/order/:orderId",isSeller, getSellerOrderById)
+router.put("/seller/order/:orderId/status",isSeller, updateSellerOrderStatus)
+
+router.post("/cash", createCodOrder);
 
 router.post("/razorpay/create", createRazorpayOrder);
 router.post("/razorpay/verify", verifyRazorpayPayment);

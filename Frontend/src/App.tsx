@@ -1,61 +1,128 @@
-import {Route, Routes} from "react-router-dom";
-import {Home} from "@/pages/Home";
-import {Login} from "@/pages/Login";
-import {Signup} from "@/pages/Signup";
-import {Navbar} from "@/components/Navbar";
-import {Footer} from "@/components/Footer";
-import {User} from "@/pages/User";
-import {Products} from "@/pages/Products";
-import {Wishlist} from "@/pages/Wishlist";
-import {Orders} from "@/pages/Orders";
-import {useAppDispatch} from "./redux/hook";
-import {useEffect} from "react";
-import {fetchUser} from "./redux/user/userThunk";
-import {ForgotPassword} from "./pages/ForgotPassword";
-import {SellerRoutes} from "./pages/seller/SellerRoutes";
-import {ApplyForSeller} from "./pages/ApplyForSeller";
-import {Cart} from "./pages/Cart";
-import {fetchCartItem} from "@/redux/cart/cartThunk.ts";
-import { AddAddressPage } from "./pages/AddAddressPage";
-import { Checkout } from "./pages/Checkout";
-import { OrderSuccess } from "@/pages/OrderSuccess";
-import { OrderDetail } from "./pages/OrderDetail";
-import { ProductDetailPage } from "./pages/ProductDetailPage";
-import { Dashboard } from "./pages/Dashboard";
+import { lazy, Suspense, useEffect } from "react";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "./redux/hook";
+import { fetchUser } from "./redux/user/userThunk";
+import { fetchCartItem } from "@/redux/cart/cartThunk.ts";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { RoleRoute } from "@/components/RoleRoute";
+import AdminRoutes from "@/pages/admin/AdminRoutes.tsx";
+
+// Unprotected
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Products = lazy(() => import("@/pages/Products"));
+const ProductDetailPage = lazy(() => import("@/pages/ProductDetailPage"));
+
+// Auth
+const Login = lazy(() => import("@/pages/Login"));
+const Signup = lazy(() => import("@/pages/Signup"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+
+// User protected
+const User = lazy(() => import("@/pages/User"));
+const Cart = lazy(() => import("@/pages/Cart"));
+const Wishlist = lazy(() => import("@/pages/Wishlist"));
+const Orders = lazy(() => import("@/pages/Orders"));
+const OrderDetail = lazy(() => import("@/pages/OrderDetail"));
+const AddAddressPage = lazy(() => import("@/pages/AddAddressPage"));
+const Checkout = lazy(() => import("@/pages/Checkout"));
+const OrderSuccess = lazy(() => import("@/pages/OrderSuccess"));
+const ApplyForSeller = lazy(() => import("@/pages/ApplyForSeller"));
+
+// Seller protected
+const SellerRoutes = lazy(() => import("@/pages/seller/SellerRoutes"));
+
+// Main Layout for routes that need Navbar & Footer
+const MainLayout = () => {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchCartItem());
+  }, [dispatch]);
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+// Redirect root to corresponding dashboards if logged in
+const RootRedirect = () => {
+  const { user, loading } = useAppSelector((state) => state.user);
+  if (loading) return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+  );
+  if (user) {
+    if (user.role === "admin") return <Navigate to="/admin" replace />;
+    if (user.role === "seller") return <Navigate to="/seller" replace />;
+    if (user.role === "user") return <Navigate to="/products" replace />;
+  }
+  return <Dashboard />;
+};
 
 export const App = () => {
-    const dispatch = useAppDispatch();
-    useEffect(() => {
-        dispatch(fetchUser());
-        dispatch((fetchCartItem()))
-    }, [dispatch]);
-    return (
-        <>
-            <Navbar/>
-            <Routes>
-                <Route index element={<Dashboard/>}/>
-                {/* <Route element={<PublicOnlyRoutes />}> */}
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/signup" element={<Signup/>}/>
-                <Route path="/forgot-password" element={<ForgotPassword/>}/>
-                {/* </Route> */}
-                <Route path="/products" element={<Products/>}/>
-                <Route path="/products/:id" element={<ProductDetailPage/>}/>
-                {/* <Route element={<ProtectedRoute />}> */}
-                <Route path="/user" element={<User/>}/>
-                <Route path="/cart" element={<Cart/>}/>
-                <Route path="/wishlist" element={<Wishlist/>}/>
-                <Route path="/orders" element={<Orders/>}/>
-                <Route path="/orders/:orderId" element={<OrderDetail/>}/>
-                <Route path="/add-address" element={<AddAddressPage/>}/>
-                <Route path="/checkout" element={<Checkout/>}/>
-                <Route path="/order-success" element={<OrderSuccess/>}/>
-                <Route path="/apply" element={<ApplyForSeller/>}/>
-                {/* </Route> */}
-                <Route path="/seller/*" element={<SellerRoutes/>}/>
-                <Route path="*" element={<h2>Page Not Found</h2>}/>
-            </Routes>
-            <Footer/>
-        </>
-    );
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
+
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-600 border-t-transparent" />
+        </div>
+      }
+    >
+      <Routes>
+        {/* Routes WITH Navbar and Footer */}
+        <Route element={<MainLayout />}>
+          {/* Unprotected */}
+          <Route path="/" element={<RootRedirect />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetailPage />} />
+
+          {/* Auth routes */}
+          {/*<Route element={<PublicRoute/>}>*/}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          {/*</Route>*/}
+
+          {/* User routes */}
+          <Route element={<RoleRoute allowedRole="user" />}>
+            <Route path="/user" element={<User />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/:orderId" element={<OrderDetail />} />
+            <Route path="/add-address" element={<AddAddressPage />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
+            <Route path="/apply" element={<ApplyForSeller />} />
+          </Route>
+        </Route>
+
+        {/* Routes WITHOUT Navbar and Footer (Dashboards) */}
+
+        {/* Seller routes */}
+        <Route element={<RoleRoute allowedRole="seller" />}>
+          <Route path="/seller/*" element={<SellerRoutes />} />
+        </Route>
+
+        {/* Admin routes */}
+        <Route element={<RoleRoute allowedRole="admin" />}>
+          <Route path="/admin/*" element={<AdminRoutes />} />
+        </Route>
+
+        <Route path="*" element={<h2>Page Not Found</h2>} />
+      </Routes>
+    </Suspense>
+  );
 };

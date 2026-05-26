@@ -4,7 +4,7 @@ import { ShoppingCart, ShieldCheck, Star, ArrowRight, Zap, Gift } from "lucide-r
 
 const features = [
   {
-    icon: <ShoppingCart size={24} className="text-orange-500" />,
+    icon: <ShoppingCart size={24} className="text-primary" />,
     title: "Seamless Checkout",
     desc: "Experience frictionless one-click purchases with saved presets.",
   },
@@ -34,7 +34,7 @@ export const Dashboard = () => {
       <section className="relative px-6 py-32 md:py-48 flex flex-col items-center justify-center text-center overflow-hidden">
         {/* Background Gradients */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl">
-          <div className="absolute top-[20%] left-[20%] w-160 h-160 bg-orange-500/10 rounded-full blur-3xl" />
+          <div className="absolute top-[20%] left-[20%] w-160 h-160 bg-primary/10 rounded-full blur-3xl" />
           <div className="absolute bottom-[10%] right-[20%] w-140 h-140 bg-rose-500/10 rounded-full blur-3xl" />
         </div>
 
@@ -80,7 +80,7 @@ export const Dashboard = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {trendingCategories.map((cat, idx) => (
+            {trendingCategories.map((cat) => (
               <Link key={cat.name} to={`/categories/${cat.name.toLowerCase()}`} className="group relative h-80 rounded-3xl overflow-hidden glass-card">
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors z-10" />
                 <img 
@@ -104,7 +104,7 @@ export const Dashboard = () => {
       <section className="py-24 px-6 border-y bg-background">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
-            {features.map((f, idx) => (
+            {features.map((f) => (
               <div key={f.title} className="flex flex-col items-center md:items-start space-y-4 p-6 rounded-3xl hover:bg-muted/50 transition-colors">
                 <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center shadow-sm">
                   {f.icon}
@@ -141,3 +141,5 @@ export const Dashboard = () => {
     </div>
   );
 };
+
+export default Dashboard;

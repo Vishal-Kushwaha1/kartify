@@ -1,0 +1,108 @@
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import { LayoutDashboard, Package, PlusCircle, ShoppingBag, LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {useDispatch} from "react-redux";
+import {authClient} from "@/lib/authClient.ts";
+import {clearUser} from "@/redux/user/userSlice.ts";
+import {toast} from "sonner";
+import {Button} from "@/components/ui/button.tsx";
+
+const sidebarLinks = [
+  {
+    title: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/seller",
+  },
+  {
+    title: "My Products",
+    icon: Package,
+    href: "/seller/products",
+  },
+  {
+    title: "Add Product",
+    icon: PlusCircle,
+    href: "/seller/add",
+  },
+  {
+    title: "Orders",
+    icon: ShoppingBag,
+    href: "/seller/orders",
+  }
+];
+
+export const SellerSidebar = () => {
+  const location = useLocation();
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
+
+  const handleSignOut =async ()=>{
+    try {
+      await authClient.signOut()
+      dispatch(clearUser());
+      toast.success("User logged out");
+      navigate("/login")
+    }catch {
+      toast.error("Something went wrong",{
+        description:"Please try again",
+      });
+    }
+  }
+
+  return (
+    <aside className="w-64 border-r bg-background hidden md:flex flex-col min-h-screen">
+      <div className="p-6">
+        <h2 className="text-xl font-bold tracking-tight text-primary">Seller Center</h2>
+        <p className="text-xs text-muted-foreground mt-1">Manage your business</p>
+      </div>
+
+      <nav className="flex-1 px-4 space-y-1">
+        {sidebarLinks.map((item) => {
+          // Check active state
+          // e.g. if href is /seller, it should strictly match or else /seller/products would make it active
+          const isActive = 
+            item.href === "/seller" 
+              ? location.pathname === "/seller" || location.pathname === "/seller/"
+              : location.pathname.startsWith(item.href);
+
+          return (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                isActive
+                  ? "bg-primary/15 text-primary dark:bg-primary/10 dark:text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              <item.icon className={cn("h-4 w-4", isActive ? "text-primary dark:text-primary" : "")} />
+              {item.title}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* A small help card at the bottom */}
+      <div className="p-4 mt-auto space-y-4">
+        <div className="rounded-xl bg-primary/10 dark:bg-primary/10 p-4 border border-primary/10 dark:border-primary/20">
+          <h4 className="text-sm font-semibold text-primary dark:text-primary">Need Help?</h4>
+          <p className="text-xs text-primary/80 dark:text-primary/80 mt-1 mb-3">
+            Check our seller guidelines or contact support.
+          </p>
+          <button className="text-xs w-full bg-white dark:bg-background border shadow-sm py-1.5 rounded-md font-medium text-foreground hover:bg-muted transition-colors">
+            Seller Support
+          </button>
+        </div>
+        
+        <Button 
+            variant="ghost" 
+            className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10" 
+            onClick={handleSignOut}
+        >
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+        </Button>
+      </div>
+    </aside>
+  );
+};

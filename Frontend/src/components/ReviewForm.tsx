@@ -76,7 +76,7 @@ export const ReviewForm = () => {
                 <Star
                   className={`size-5 ${
                     value <= rating
-                      ? "fill-orange-600 text-orange-600"
+                      ? "fill-primary text-primary"
                       : "text-muted-foreground"
                   }`}
                 />
@@ -85,7 +85,7 @@ export const ReviewForm = () => {
           </div>
 
           {errors.rating && (
-            <p className="text-xs text-orange-600">{errors.rating.message}</p>
+            <p className="text-xs text-primary">{errors.rating.message}</p>
           )}
         </div>
 
@@ -99,7 +99,7 @@ export const ReviewForm = () => {
           />
 
           {errors.comment && (
-            <p className="text-xs text-orange-600">{errors.comment.message}</p>
+            <p className="text-xs text-primary">{errors.comment.message}</p>
           )}
         </div>
 
@@ -107,7 +107,7 @@ export const ReviewForm = () => {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="bg-orange-600 text-white hover:bg-orange-700"
+            className="bg-primary text-white hover:bg-primary/90"
           >
             {isSubmitting ? "Submitting..." : "Submit Review"}
           </Button>

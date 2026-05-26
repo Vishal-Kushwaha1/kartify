@@ -1,10 +1,7 @@
 import { useState } from "react";
 import {
   Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
+  CardContent
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,8 +14,9 @@ import { authClient } from "@/lib/authClient";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/user/userSlice";
-import type { User } from "@/types/type";
-import { Sparkles, Loader2 } from "lucide-react";
+import type {User, UserRoleEnum} from "@/types/type";
+import {  Loader2 } from "lucide-react";
+import { getDashboardPath } from "@/utils/authUtils";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -45,7 +43,7 @@ export const Login = () => {
       toast.success("Login successful");
       const { data: session } = await authClient.getSession();
       dispatch(setUser(session?.user as User));
-      navigate("/user");
+      navigate(getDashboardPath((session?.user as User)?.role as UserRoleEnum));
     } catch {
       toast.error("Something went wrong.");
     } finally {
@@ -209,3 +207,5 @@ export const Login = () => {
     </div>
   );
 };
+
+export default Login;

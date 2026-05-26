@@ -276,7 +276,7 @@ export const AddAddressPage = () => {
                     </label>
                     <Input placeholder="Home" {...register("name")} />
                     {errors.name && (
-                      <p className="text-xs text-orange-600">
+                      <p className="text-xs text-primary">
                         {errors.name.message}
                       </p>
                     )}
@@ -290,7 +290,7 @@ export const AddAddressPage = () => {
                       {...register("recipientName")}
                     />
                     {errors.recipientName && (
-                      <p className="text-xs text-orange-600">
+                      <p className="text-xs text-primary">
                         {errors.recipientName.message}
                       </p>
                     )}
@@ -304,7 +304,7 @@ export const AddAddressPage = () => {
                     </label>
                     <Input placeholder="Phone number" {...register("phone")} />
                     {errors.phone && (
-                      <p className="text-xs text-orange-600">
+                      <p className="text-xs text-primary">
                         {errors.phone.message}
                       </p>
                     )}
@@ -315,7 +315,7 @@ export const AddAddressPage = () => {
                     </label>
                     <Input placeholder="Country" {...register("country")} />
                     {errors.country && (
-                      <p className="text-xs text-orange-600">
+                      <p className="text-xs text-primary">
                         {errors.country.message}
                       </p>
                     )}
@@ -331,7 +331,7 @@ export const AddAddressPage = () => {
                     {...register("address")}
                   />
                   {errors.address && (
-                    <p className="text-xs text-orange-600">
+                    <p className="text-xs text-primary">
                       {errors.address.message}
                     </p>
                   )}
@@ -344,7 +344,7 @@ export const AddAddressPage = () => {
                     </label>
                     <Input placeholder="City" {...register("city")} />
                     {errors.city && (
-                      <p className="text-xs text-orange-600">
+                      <p className="text-xs text-primary">
                         {errors.city.message}
                       </p>
                     )}
@@ -355,7 +355,7 @@ export const AddAddressPage = () => {
                     </label>
                     <Input placeholder="State" {...register("state")} />
                     {errors.state && (
-                      <p className="text-xs text-orange-600">
+                      <p className="text-xs text-primary">
                         {errors.state.message}
                       </p>
                     )}
@@ -369,7 +369,7 @@ export const AddAddressPage = () => {
                       {...register("postalCode")}
                     />
                     {errors.postalCode && (
-                      <p className="text-xs text-orange-600">
+                      <p className="text-xs text-primary">
                         {errors.postalCode.message}
                       </p>
                     )}
@@ -388,7 +388,7 @@ export const AddAddressPage = () => {
                 <div className="flex flex-wrap items-center gap-3">
                   <Button
                     type="submit"
-                    className="bg-orange-600 text-white hover:bg-orange-700"
+                    className="bg-primary text-white hover:bg-primary/90"
                     disabled={adding}
                   >
                     {adding ? "Saving..." : "Save address"}
@@ -475,7 +475,7 @@ export const AddAddressPage = () => {
                     {/* Right Section */}
                     <Button
                       variant="outline"
-                      className="bg-orange-600 text-white hover:bg-orange-700"
+                      className="bg-primary text-white hover:bg-primary/90"
                       disabled={settingDefault || deletingId === item.id }
                       onClick={() => handleDelete(item.id)}
                     >
@@ -491,3 +491,5 @@ export const AddAddressPage = () => {
     </div>
   );
 };
+
+export default AddAddressPage;

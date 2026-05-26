@@ -208,7 +208,7 @@ export const ApplyForSeller = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="mt-4 bg-orange-600 hover:bg-orange-700 text-white"
+                  className="mt-4 bg-primary hover:bg-primary/90 text-white"
                 >
                   Apply
                 </Button>
@@ -220,3 +220,5 @@ export const ApplyForSeller = () => {
     </div>
   );
 };
+
+export default ApplyForSeller;

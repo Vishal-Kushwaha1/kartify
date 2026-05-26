@@ -10,7 +10,7 @@ export const Review = ({ feedback }: { feedback: ReviewPropsData }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* Avatar */}
-          <div className="h-9 w-9 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-semibold text-sm">
+          <div className="h-9 w-9 rounded-full bg-primary/15 text-primary flex items-center justify-center font-semibold text-sm">
             {feedback.user.name[0].toUpperCase()}
           </div>
 
@@ -19,7 +19,7 @@ export const Review = ({ feedback }: { feedback: ReviewPropsData }) => {
               <p className="text-sm font-medium">{feedback.user.name}</p>
               {/* Verified Badge */}
               {feedback.user.emailVerified && (
-                <BadgeCheck className="size-4 text-orange-600" />
+                <BadgeCheck className="size-4 text-primary" />
               )}
             </div>
             {/* Date */}
@@ -37,7 +37,7 @@ export const Review = ({ feedback }: { feedback: ReviewPropsData }) => {
             key={star}
             className={`size-4 ${
               star <= feedback.review.rating
-                ? "fill-orange-600 text-orange-600"
+                ? "fill-primary text-primary"
                 : "text-muted-foreground"
             }`}
           />

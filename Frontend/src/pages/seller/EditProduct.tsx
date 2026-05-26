@@ -2,7 +2,7 @@ import { LoadingPage } from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { type NewProductProps, newProductSchema } from "@/types/schema";
+import { type NewProductProps, type NewProductInputProps, newProductSchema } from "@/types/schema";
 import type { Product } from "@/types/type";
 import { api } from "@/utils/Axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,8 +27,9 @@ export const EditProduct = () => {
     handleSubmit,
     reset,
     setValue,
-    formState: { isDirty, dirtyFields, errors },
-  } = useForm<NewProductProps>({
+    formState: {  dirtyFields, errors },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } = useForm<NewProductInputProps, any, NewProductProps>({
     resolver: zodResolver(newProductSchema),
   });
 
@@ -41,7 +42,7 @@ export const EditProduct = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const result = await api.get(`/products/${id}`);
+        const result = await api.get(`/products/seller/${id}`);
 
         const data = result?.data?.data;
         if (!data) {
@@ -237,6 +238,7 @@ export const EditProduct = () => {
                     <img
                       key={i}
                       src={img}
+                      alt={"product_image"}
                       className="h-16 w-16 rounded-md object-cover border"
                     />
                   ))}
@@ -259,7 +261,7 @@ export const EditProduct = () => {
             <Button
               type="submit"
               disabled={submitting}
-              className="w-full bg-orange-600 text-white hover:bg-orange-700"
+              className="w-full bg-primary text-white hover:bg-primary/90"
             >
               {submitting ? "Saving..." : "Save Changes"}
             </Button>

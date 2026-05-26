@@ -1,10 +1,8 @@
 import {
     and,
-    arrayContained,
     arrayContains,
     eq,
     ilike,
-    lte,
     or,
 } from "drizzle-orm";
 import {db} from "../db/db.js";
@@ -157,11 +155,11 @@ export const getProductById = asyncHandler(async (req, res) => {
     if (!productData.length) {
         return res.json(new ApiError(404, "Product not found"));
     }
-    
+
     let sellerStore = "Kartify Seller";
-    if (productData[0].sellerId) {
+    if (productData[0]?.sellerId) {
         const sellerData = await db.select().from(seller).where(eq(seller.id, productData[0].sellerId));
-        if (sellerData.length > 0 && sellerData[0].storeName) {
+        if (sellerData.length > 0 && sellerData[0]?.storeName) {
             sellerStore = sellerData[0].storeName;
         }
     }
