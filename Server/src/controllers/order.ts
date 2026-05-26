@@ -507,7 +507,7 @@ export const getSellerOrderById = asyncHandler(async (req, res) => {
     const user = req.user;
     if (!user) throw new ApiError(401, "Unauthorized");
 
-    const { orderId } = req.params;
+    const { orderId } = req.params as { orderId: string };
     if (!orderId) throw new ApiError(400, "Order ID is required");
 
     const sellerData = await db.select().from(seller).where(eq(seller.userId, user.id));
@@ -528,7 +528,7 @@ export const getSellerOrderById = asyncHandler(async (req, res) => {
 
     const firstRow = result[0];
     const orderData = {
-        ...firstRow.order,
+        ...firstRow?.order,
         items: result.map((row) => ({
             ...row.order_item,
             product: row.product,
@@ -542,7 +542,7 @@ export const updateSellerOrderStatus = asyncHandler(async (req, res) => {
     const user = req.user;
     if (!user) throw new ApiError(401, "Unauthorized");
 
-    const { orderId } = req.params;
+    const { orderId } = req.params as {orderId: string};
     const { status } = req.body;
     
     if (!orderId) throw new ApiError(400, "Order ID is required");

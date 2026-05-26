@@ -130,7 +130,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 })
 
 export const getOrderById = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params as {id:string}
     if (!id) throw new ApiError(400, "Order Id is required");
 
     const result = await db
@@ -158,7 +158,7 @@ export const getOrderById = asyncHandler(async (req, res) => {
 });
 
 export const updateOrderStatus = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params as {id:string}
     const { status } = req.body;
     
     if (!id) throw new ApiError(400, "Order Id is required");
