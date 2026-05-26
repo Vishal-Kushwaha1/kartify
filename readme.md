@@ -1,77 +1,128 @@
-Design a modern, production-grade e-commerce UI using React + Tailwind CSS + shadcn/ui components.
+# Kartify 🛒
 
-Follow these strict design rules:
+Kartify is a modern, full-stack E-Commerce platform built with cutting-edge technologies. It features robust user authentication, product management (seller and buyer roles), shopping cart, secure payment gateways, and order management.
 
-1. Theme & Colors:
+## 🚀 Tech Stack
 
-* Use a soft neutral base with:
+### Frontend
+- **Framework:** React 19 + Vite
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4, Shadcn UI
+- **State Management:** Redux Toolkit
+- **Forms & Validation:** React Hook Form, Zod
+- **Routing:** React Router v7
+- **Payments:** Razorpay, Stripe
 
-  * Background: bg-muted/40 (page background)
-  * Surfaces: bg-background (cards, sections)
-  * Borders: subtle border (border class)
-  * Text:
+### Backend
+- **Runtime:** Node.js, Express
+- **Language:** TypeScript
+- **Database:** PostgreSQL (Neon Serverless)
+- **ORM:** Drizzle ORM
+- **Authentication:** Better-Auth (Email/Password & Google OAuth)
+- **Image Storage:** Cloudinary
+- **Emails:** Resend
+- **File Uploads:** Multer
 
-    * Primary: text-foreground
-    * Secondary: text-muted-foreground
-* Accent color: warm orange (#D85A30)
+---
 
-  * Use for primary buttons, highlights, and active states
-* Do NOT use random colors (no blue, no hardcoded gray, etc.)
+## 🛠️ Getting Started
 
-2. Layout System:
+Follow these steps to set up the project locally on your machine.
 
-* Use clean spacing and consistent structure:
+### Prerequisites
+- Node.js (v18+)
+- npm or yarn
+- A PostgreSQL database (Neon recommended)
 
-  * Page padding: px-6 py-10
-  * Container: max-w-6xl mx-auto
-  * Cards: rounded-xl border bg-background p-6
-* Use flex and grid layouts (responsive first)
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/kartify.git
+cd kartify
+```
 
-3. Typography:
+### 2. Backend Setup
+Navigate to the `Server` directory:
+```bash
+cd Server
+npm install
+```
 
-* Headings: text-xl or text-2xl font-medium tracking-tight
-* Labels: text-xs text-muted-foreground
-* Body text: text-sm
-* Keep everything minimal and clean (no heavy bold everywhere)
+Create a `.env` file in the `Server` directory and configure the following variables:
+```env
+PORT=3000
+FRONTEND_URL=http://localhost:5173
+BETTER_AUTH_SECRET=your_secret_key
+BETTER_AUTH_URL=http://localhost:3000
 
-4. Components (shadcn style):
+# Database
+DATABASE_URL=your_postgres_connection_string
 
-* Buttons:
+# Authentication (Google OAuth)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
 
-  * Primary: bg-orange-600 hover:bg-orange-700 text-white
-  * Secondary: outline variant
-* Use:
+# Email
+RESEND_API_KEY=your_resend_api_key
+EMAIL_FROM=onboarding@resend.dev
 
-  * Card
-  * Avatar
-  * Badge
-  * Input
-  * Button
-* Use lucide-react icons where appropriate (small, subtle)
+# Image Upload
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
-5. Design Style:
+# Payments
+RAZORPAY_KEY_ID=your_razorpay_key
+RAZORPAY_KEY_SECRET=your_razorpay_secret
+STRIPE_PUBLISH_KEY=your_stripe_publish_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+```
 
-* Minimal, clean, and modern (like shadcn or Vercel UI)
-* Soft shadows or no shadows (prefer border-based design)
-* No gradients unless explicitly needed
-* No clutter — spacing is more important than decoration
+Run the backend server:
+```bash
+npm run dev
+```
+*(The backend runs on `http://localhost:3000`)*
 
-6. UX Rules:
+### 3. Frontend Setup
+Open a new terminal and navigate to the `Frontend` directory:
+```bash
+cd Frontend
+npm install
+```
 
-* Center important content when needed
-* Use loading states (spinner or skeleton)
-* Keep interactions simple and fast
+Create a `.env` file in the `Frontend` directory with required environment variables (like your backend URL and Stripe public key):
+```env
+VITE_BACKEND_URL=http://localhost:3000
+VITE_FRONTEND_URL=http://localhost:5173
+```
 
-7. Dark Mode Ready:
+Run the frontend app:
+```bash
+npm run dev
+```
+*(The frontend runs on `http://localhost:5173`)*
 
-* Use semantic Tailwind classes (bg-background, text-foreground, etc.)
-* Avoid hardcoded colors so dark mode works automatically
+---
 
-8. Consistency:
+## 🏗️ Project Structure
+- **/Frontend:** Contains all React components, pages, Redux slices, and UI assets.
+- **/Server:** Contains the Express server, Drizzle schemas, Better-Auth config, API routes, and database logic.
+- **ER-Diagrame.svg:** The Entity Relationship diagram of the database schema.
 
-* All pages must look like part of the same system
-* Same spacing, colors, borders, and typography everywhere
+---
 
-Now generate the UI for: [INSERT PAGE / COMPONENT HERE]
+## 🛡️ Authentication
+Kartify uses **Better-Auth** for comprehensive authentication, supporting both traditional Email/Password login and Google OAuth out-of-the-box. Roles (`user`, `seller`, `admin`) are natively supported.
 
-Do NOT explain anything. Only output clean code.
+## 💳 Payments
+Integrated with **Razorpay** and **Stripe** for processing secure checkout experiences.
+
+## 📸 Media Storage
+Product images are uploaded through the backend using **Multer** and directly stored in **Cloudinary**.
+
+---
+
+## 🌐 Deployment
+The project is configured for deployment on **Vercel** with provided `vercel.json` configurations in both frontend and backend directories.
+- Frontend deployed as a standard Vite SPA.
+- Backend deployed as Vercel Serverless Functions (`@vercel/node`).
