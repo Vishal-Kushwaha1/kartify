@@ -14,9 +14,8 @@ import { authClient } from "@/lib/authClient";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/user/userSlice";
-import type {User, UserRoleEnum} from "@/types/type";
+import type {User} from "@/types/type";
 import {  Loader2 } from "lucide-react";
-import { getDashboardPath } from "@/utils/authUtils";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -43,7 +42,7 @@ export const Login = () => {
       toast.success("Login successful");
       const { data: session } = await authClient.getSession();
       dispatch(setUser(session?.user as User));
-      navigate(getDashboardPath((session?.user as User)?.role as UserRoleEnum));
+      navigate("/");
     } catch {
       toast.error("Something went wrong.");
     } finally {
@@ -62,6 +61,8 @@ export const Login = () => {
         return toast.error("Google login failed", {
           description: error.message,
         });
+      toast.success("Login successful");
+      navigate("/")
     } catch {
       toast.error("Something went wrong.");
     } finally {

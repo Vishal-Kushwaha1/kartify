@@ -1,11 +1,11 @@
-import { lazy, Suspense, useEffect } from "react";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "./redux/hook";
-import { fetchUser } from "./redux/user/userThunk";
-import { fetchCartItem } from "@/redux/cart/cartThunk.ts";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import { RoleRoute } from "@/components/RoleRoute";
+import {lazy, Suspense, useEffect} from "react";
+import {Routes, Route, Outlet, Navigate} from "react-router-dom";
+import {useAppSelector, useAppDispatch} from "./redux/hook";
+import {fetchUser} from "./redux/user/userThunk";
+import {fetchCartItem} from "@/redux/cart/cartThunk.ts";
+import {Navbar} from "@/components/Navbar";
+import {Footer} from "@/components/Footer";
+import {RoleRoute} from "@/components/RoleRoute";
 import AdminRoutes from "@/pages/admin/AdminRoutes.tsx";
 
 // Unprotected
@@ -34,95 +34,95 @@ const SellerRoutes = lazy(() => import("@/pages/seller/SellerRoutes"));
 
 // Main Layout for routes that need Navbar & Footer
 const MainLayout = () => {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchCartItem());
-  }, [dispatch]);
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-1">
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
-  );
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        dispatch(fetchCartItem());
+    }, [dispatch]);
+    return (
+        <div className="flex flex-col min-h-screen">
+            <Navbar/>
+            <main className="flex-1">
+                <Outlet/>
+            </main>
+            <Footer/>
+        </div>
+    );
 };
 
 // Redirect root to corresponding dashboards if logged in
 const RootRedirect = () => {
-  const { user, loading } = useAppSelector((state) => state.user);
-  if (loading) return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-  );
-  if (user) {
-    if (user.role === "admin") return <Navigate to="/admin" replace />;
-    if (user.role === "seller") return <Navigate to="/seller" replace />;
-    if (user.role === "user") return <Navigate to="/products" replace />;
-  }
-  return <Dashboard />;
+    const {user, loading} = useAppSelector((state) => state.user);
+    if (loading) return (
+        <div className="flex h-screen items-center justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"/>
+        </div>
+    );
+    if (user) {
+        if (user.role === "admin") return <Navigate to="/admin" replace/>;
+        if (user.role === "seller") return <Navigate to="/seller" replace/>;
+        if (user.role === "user") return <Navigate to="/products" replace/>;
+    }
+    return <Dashboard/>;
 };
 
 export const App = () => {
-  const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchUser());
-  }, [dispatch]);
+    useEffect(() => {
+        dispatch(fetchUser());
+    }, [dispatch]);
 
-  return (
-    <Suspense
-      fallback={
-        <div className="flex h-screen items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-600 border-t-transparent" />
-        </div>
-      }
-    >
-      <Routes>
-        {/* Routes WITH Navbar and Footer */}
-        <Route element={<MainLayout />}>
-          {/* Unprotected */}
-          <Route path="/" element={<RootRedirect />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/:id" element={<ProductDetailPage />} />
+    const {user} = useAppSelector((state) => state.user);
 
-          {/* Auth routes */}
-          {/*<Route element={<PublicRoute/>}>*/}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          {/*</Route>*/}
+    return (
+        <Suspense
+            fallback={
+                <div className="flex h-screen items-center justify-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-600 border-t-transparent"/>
+                </div>
+            }
+        >
+            <Routes>
+                {/* Routes WITH Navbar and Footer */}
+                <Route element={<MainLayout/>}>
+                    {/* Unprotected */}
+                    <Route path="/" element={<RootRedirect/>}/>
+                    <Route path="/products" element={<Products/>}/>
+                    <Route path="/products/:id" element={<ProductDetailPage/>}/>
 
-          {/* User routes */}
-          <Route element={<RoleRoute allowedRole="user" />}>
-            <Route path="/user" element={<User />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/:orderId" element={<OrderDetail />} />
-            <Route path="/add-address" element={<AddAddressPage />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-success" element={<OrderSuccess />} />
-            <Route path="/apply" element={<ApplyForSeller />} />
-          </Route>
-        </Route>
+                    <Route path="/login" element={user ? <Navigate to="/" replace/> : <Login/>}/>
+                    <Route path="/signup" element={user ? <Navigate to="/" replace/> : <Signup/>}/>
+                    <Route path="/forgot-password"
+                           element={user ? <Navigate to="/" replace/> : <ForgotPassword/>}/>
 
-        {/* Routes WITHOUT Navbar and Footer (Dashboards) */}
+                    {/* User routes */}
+                    <Route element={<RoleRoute allowedRole="user"/>}>
+                        <Route path="/user" element={<User/>}/>
+                        <Route path="/cart" element={<Cart/>}/>
+                        <Route path="/wishlist" element={<Wishlist/>}/>
+                        <Route path="/orders" element={<Orders/>}/>
+                        <Route path="/orders/:orderId" element={<OrderDetail/>}/>
+                        <Route path="/add-address" element={<AddAddressPage/>}/>
+                        <Route path="/checkout" element={<Checkout/>}/>
+                        <Route path="/order-success" element={<OrderSuccess/>}/>
+                        <Route path="/apply" element={<ApplyForSeller/>}/>
+                    </Route>
+                </Route>
 
-        {/* Seller routes */}
-        <Route element={<RoleRoute allowedRole="seller" />}>
-          <Route path="/seller/*" element={<SellerRoutes />} />
-        </Route>
+                {/* Routes WITHOUT Navbar and Footer (Dashboards) */}
 
-        {/* Admin routes */}
-        <Route element={<RoleRoute allowedRole="admin" />}>
-          <Route path="/admin/*" element={<AdminRoutes />} />
-        </Route>
+                {/* Seller routes */}
+                <Route element={<RoleRoute allowedRole="seller"/>}>
+                    <Route path="/seller/*" element={<SellerRoutes/>}/>
+                </Route>
 
-        <Route path="*" element={<h2>Page Not Found</h2>} />
-      </Routes>
-    </Suspense>
-  );
+                {/* Admin routes */}
+                <Route element={<RoleRoute allowedRole="admin"/>}>
+                    <Route path="/admin/*" element={<AdminRoutes/>}/>
+                </Route>
+
+                <Route path="*" element={<h2>Page Not Found</h2>}/>
+            </Routes>
+        </Suspense>
+    );
 };

@@ -7,11 +7,18 @@ export const fetchUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data: session, error } = await authClient.getSession();
-
-      if (error) {
-        return rejectWithValue(error.message ?? "Auth error");
+        if (error) {
+            return rejectWithValue(error.message ?? "Auth error");
+        }
+      const user = session?.user;
+      if(user){
+          return {
+              ...user,
+              createdAt: new Date(user.createdAt).toISOString(),
+              updatedAt: new Date(user.updatedAt).toISOString(),
+          } as unknown as User
       }
-      return (session?.user as User) ?? null;
+      return null;
     } catch (error: unknown) {
       return rejectWithValue("Something went wrong");
     }

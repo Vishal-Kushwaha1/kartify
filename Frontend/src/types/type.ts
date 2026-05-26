@@ -9,8 +9,8 @@ export interface User {
   phone?: string | null;
   role: UserRoleEnum;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date| string;
+  updatedAt: Date| string;
 }
 
 export type businessTypeEnum =
