@@ -18,7 +18,6 @@ export const product = pgTable("product", {
   userId: t
       .text("user_id")
       .notNull()
-      .unique()
       .references(() => user.id, {onDelete: "cascade"}),
   sellerId: t
     .uuid("seller_id")

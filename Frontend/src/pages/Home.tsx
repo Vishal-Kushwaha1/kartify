@@ -60,7 +60,7 @@ export const Home = () => {
               </Link>
             </Button>
             <Button variant="outline" size="lg" className="h-14 px-8 rounded-full text-base bg-background/50 backdrop-blur-sm hover:bg-muted transition-all" asChild>
-              <Link to="/categories">Browse Categories</Link>
+              <Link to="/products">Browse Categories</Link>
             </Button>
           </div>
         </div>
@@ -75,13 +75,13 @@ export const Home = () => {
               <p className="text-muted-foreground">Shop the most popular categories this week.</p>
             </div>
             <Button variant="ghost" className="hidden sm:flex hover-lift" asChild>
-              <Link to="/categories">View All</Link>
+              <Link to="/products">View All</Link>
             </Button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {trendingCategories.map((cat) => (
-              <Link key={cat.name} to={`/categories/${cat.name.toLowerCase()}`} className="group relative h-80 rounded-3xl overflow-hidden glass-card">
+              <Link key={cat.name} to={`/products`} className="group relative h-80 rounded-3xl overflow-hidden glass-card">
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors z-10" />
                 <img 
                   src={cat.image} 

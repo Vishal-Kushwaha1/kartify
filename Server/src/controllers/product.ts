@@ -34,7 +34,7 @@ export const createProduct = asyncHandler(async (req, res) => {
         throw new ApiError(403, "Seller account not found");
     }
 
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    const files = req.files as { [fieldName: string]: Express.Multer.File[] };
     const images = files?.image || [];
     if (images.length > 5) {
         throw new ApiError(400, "Maximum 5 images allowed");
