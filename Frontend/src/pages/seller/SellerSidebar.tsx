@@ -89,7 +89,7 @@ export const SellerSidebar = () => {
           <p className="text-xs text-primary/80 dark:text-primary/80 mt-1 mb-3">
             Check our seller guidelines or contact support.
           </p>
-          <button className="text-xs w-full bg-white dark:bg-background border shadow-sm py-1.5 rounded-md font-medium text-foreground hover:bg-muted transition-colors">
+          <button className="text-xs w-full bg-background border shadow-sm py-1.5 rounded-md font-medium text-foreground hover:bg-muted transition-colors">
             Seller Support
           </button>
         </div>

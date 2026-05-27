@@ -90,7 +90,7 @@ export const Products = () => {
               )}
               {/* Badges on image */}
               <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-                <Badge variant={product.isActive ? "default" : "secondary"} className={product.isActive ? "bg-green-600 hover:bg-green-700 text-white shadow-sm" : "shadow-sm backdrop-blur-md bg-white/80"}>
+                <Badge variant={product.isActive ? "default" : "secondary"} className={product.isActive ? "bg-green-600 hover:bg-green-700 text-white shadow-sm" : "shadow-sm backdrop-blur-md bg-background/80 text-foreground"}>
                   {product.isActive ? "Active" : "Draft"}
                 </Badge>
                 {product.stock <= 5 && product.stock > 0 && (
@@ -104,7 +104,7 @@ export const Products = () => {
               <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="icon" className="h-8 w-8 rounded-full shadow-sm bg-white/90 hover:bg-white text-black backdrop-blur-md border-0">
+                    <Button variant="secondary" size="icon" className="h-8 w-8 rounded-full shadow-sm bg-background/90 hover:bg-background text-foreground backdrop-blur-md border-0">
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>

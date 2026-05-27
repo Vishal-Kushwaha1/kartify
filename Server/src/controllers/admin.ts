@@ -1,5 +1,5 @@
 import {asyncHandler} from "../utils/asyncHandler.js";
-import {db} from "../db/db.js";
+import {db, dbPool} from "../db/db.js";
 import {seller} from "../models/seller.js";
 import {and, eq} from "drizzle-orm";
 import {ApiResponse} from "../utils/ApiResponse.js";
@@ -22,20 +22,20 @@ export const getAllSellers = asyncHandler(async (req, res) => {
 
 export const getSellerById = asyncHandler(async (req, res) => {
     const {id} = req.params
-    if(!id){
+    if (!id) {
         throw new ApiError(400, "Seller id is required")
     }
     const result = await db.select().from(seller).where(eq(seller.id, id as string))
-    if(!result){
+    if (!result) {
         throw new ApiError(404, "Seller not found")
     }
     res.json(new ApiResponse(200, result[0], "Seller found"))
 })
 
 export const getUserById = asyncHandler(async (req, res) => {
-    const { id } = req.params
+    const {id} = req.params
     const result = await db.select().from(user).where(eq(user.id, id as string))
-    if(!result[0]){
+    if (!result[0]) {
         throw new ApiError(404, "User does not exist")
     }
     res.json(new ApiResponse(200, result[0], "user"))
@@ -47,17 +47,20 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 })
 
 export const makeSellerVerified = asyncHandler(async (req, res) => {
-    const {id} = req.params as {id: string};
+    const {id} = req.params as { id: string };
     if (!id) throw new ApiError(404, "Seller id is required")
-    const result = await db.update(seller).set({isVerified: true}).where(and(eq(seller.id, id), eq(seller.isVerified, false))).returning()
-    if (!result[0]) {
-        throw new ApiError(402, "Seller already verified")
-    }
+    await dbPool.transaction(async (trx) => {
+        const result = await trx.update(seller).set({isVerified: true}).where(and(eq(seller.id, id), eq(seller.isVerified, false))).returning()
+        if (!result[0]) {
+            throw new ApiError(402, "Seller already verified")
+        }
+        await trx.update(user).set({role: "seller"}).where(eq(user.id, result[0].userId))
+    })
     res.json(new ApiResponse(200, null, "Seller verified"))
 })
 
 export const blockSeller = asyncHandler(async (req, res) => {
-    const {id} = req.params as {id:string}
+    const {id} = req.params as { id: string }
     if (!id) throw new ApiError(404, "Seller id is required")
     const result = await db.update(seller).set({isActive: false}).where(and(eq(seller.id, id), eq(seller.isActive, true))).returning()
     if (!result[0]) {
@@ -67,7 +70,7 @@ export const blockSeller = asyncHandler(async (req, res) => {
 })
 
 export const unBlockSeller = asyncHandler(async (req, res) => {
-    const {id} = req.params as {id:string}
+    const {id} = req.params as { id: string }
     if (!id) throw new ApiError(404, "Seller id is required")
     const result = await db.update(seller).set({isActive: true}).where(and(eq(seller.id, id), eq(seller.isActive, false))).returning()
     if (!result[0]) {
@@ -77,7 +80,7 @@ export const unBlockSeller = asyncHandler(async (req, res) => {
 })
 
 export const blockUser = asyncHandler(async (req, res) => {
-    const {id} = req.params as {id:string}
+    const {id} = req.params as { id: string }
     if (!id) throw new ApiError(404, "User id is required")
     const result = await db.update(user).set({isActive: false}).where(and(eq(user.id, id), eq(user.isActive, true))).returning()
     if (!result[0]) {
@@ -87,7 +90,7 @@ export const blockUser = asyncHandler(async (req, res) => {
 })
 
 export const unBlockUser = asyncHandler(async (req, res) => {
-    const {id} = req.params as {id:string}
+    const {id} = req.params as { id: string }
     if (!id) throw new ApiError(404, "User id is required")
     const result = await db.update(user).set({isActive: true}).where(and(eq(user.id, id), eq(user.isActive, false))).returning()
     if (!result[0]) {
@@ -103,7 +106,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
         .leftJoin(orderItem, eq(orderItem.orderId, order.id))
         .leftJoin(product, eq(product.id, orderItem.productId))
         .orderBy(desc(order.createdAt))
-    
+
     if (!result.length) {
         return res.json(new ApiResponse(200, [], "No order found"));
     }
@@ -130,7 +133,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
 })
 
 export const getOrderById = asyncHandler(async (req, res) => {
-    const { id } = req.params as {id:string}
+    const {id} = req.params as { id: string }
     if (!id) throw new ApiError(400, "Order Id is required");
 
     const result = await db
@@ -158,14 +161,14 @@ export const getOrderById = asyncHandler(async (req, res) => {
 });
 
 export const updateOrderStatus = asyncHandler(async (req, res) => {
-    const { id } = req.params as {id:string}
-    const { status } = req.body;
-    
+    const {id} = req.params as { id: string }
+    const {status} = req.body;
+
     if (!id) throw new ApiError(400, "Order Id is required");
     if (!status) throw new ApiError(400, "Status is required");
 
     const result = await db.update(order)
-        .set({ status, updatedAt: new Date() })
+        .set({status, updatedAt: new Date()})
         .where(eq(order.id, id))
         .returning();
 
