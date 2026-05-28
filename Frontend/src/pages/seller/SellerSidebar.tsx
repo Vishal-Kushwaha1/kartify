@@ -1,11 +1,12 @@
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import { LayoutDashboard, Package, PlusCircle, ShoppingBag, LogOut } from "lucide-react";
+import {LayoutDashboard, Package, PlusCircle, ShoppingBag, LogOut, Moon, Sun} from "lucide-react";
 import { cn } from "@/lib/utils";
 import {useDispatch} from "react-redux";
 import {authClient} from "@/lib/authClient.ts";
 import {clearUser} from "@/redux/user/userSlice.ts";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button.tsx";
+import {useTheme} from "next-themes";
 
 const sidebarLinks = [
   {
@@ -34,6 +35,7 @@ export const SellerSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate()
   const dispatch = useDispatch();
+  const {theme, setTheme} = useTheme()
 
   const handleSignOut =async ()=>{
     try {
@@ -84,6 +86,26 @@ export const SellerSidebar = () => {
 
       {/* A small help card at the bottom */}
       <div className="p-4 mt-auto space-y-4">
+        <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 rounded-lg px-3 py-6 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+        >
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            {theme === "dark" ? (
+                <Moon className="h-4 w-4" />
+            ) : (
+                <Sun className="h-4 w-4" />
+            )}
+          </div>
+
+          <div className="flex flex-col items-start leading-none">
+            <span>Theme</span>
+            <span className="mt-1 text-xs font-normal text-muted-foreground capitalize">
+      {theme || "system"} mode
+    </span>
+          </div>
+        </Button>
         <div className="rounded-xl bg-primary/10 dark:bg-primary/10 p-4 border border-primary/10 dark:border-primary/20">
           <h4 className="text-sm font-semibold text-primary dark:text-primary">Need Help?</h4>
           <p className="text-xs text-primary/80 dark:text-primary/80 mt-1 mb-3">

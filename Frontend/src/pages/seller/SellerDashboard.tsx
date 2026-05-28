@@ -107,7 +107,7 @@ export const SellerDashboard = () => {
 
       {/* Quick Actions / Recent Activity Area */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="rounded-3xl overflow-hidden border-transparent bg-gradient-to-br from-orange-500 to-rose-500 text-white shadow-xl">
+        <Card className="rounded-3xl overflow-hidden border-transparent bg-linear-to-br from-orange-500 to-rose-500 text-white shadow-xl">
           <CardContent className="p-8 sm:p-10 flex flex-col h-full justify-center relative">
             <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
             <div className="bg-white/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm z-10">
@@ -117,7 +117,7 @@ export const SellerDashboard = () => {
             <p className="text-white/90 text-lg mb-8 max-w-md z-10 leading-relaxed">
               Add more products to your inventory to attract more customers and increase your sales potential.
             </p>
-            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 self-start rounded-full px-8 font-semibold shadow-lg z-10 hover:-translate-y-1 transition-transform">
+            <Button asChild size="lg" className="bg-white! text-primary hover:bg-white/90 self-start rounded-full px-8 font-semibold shadow-lg z-10 hover:-translate-y-1 transition-transform">
               <Link to="/seller/add">
                 Create New Product <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

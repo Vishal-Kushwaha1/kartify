@@ -1,11 +1,12 @@
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import {LayoutDashboard, Package, Users, Clock, ShoppingCart, LogOut} from "lucide-react";
+import {LayoutDashboard, Package, Users, Clock, ShoppingCart, LogOut, Moon, Sun} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {authClient} from "@/lib/authClient.ts";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button.tsx";
 import {clearUser} from "@/redux/user/userSlice.ts";
 import {useDispatch} from "react-redux";
+import {useTheme} from "next-themes";
 
 const sidebarLinks = [
     {
@@ -36,21 +37,21 @@ const sidebarLinks = [
 ];
 
 
-
 const AdminSidebar = () => {
     const location = useLocation();
     const navigate = useNavigate()
     const dispatch = useDispatch();
+    const {theme, setTheme} = useTheme()
 
-    const handleSignOut =async ()=>{
+    const handleSignOut = async () => {
         try {
             await authClient.signOut()
             dispatch(clearUser());
             toast.success("User logged out");
             navigate("/login")
-        }catch {
-            toast.error("Something went wrong",{
-                description:"Please try again",
+        } catch {
+            toast.error("Something went wrong", {
+                description: "Please try again",
             });
         }
     }
@@ -91,12 +92,32 @@ const AdminSidebar = () => {
             </nav>
 
             <div className="p-4 border-t bg-muted/10">
-                <Button 
-                    variant="ghost" 
-                    className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10" 
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 rounded-lg px-3 py-6 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
+                    onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        {theme === "dark" ? (
+                            <Moon className="h-4 w-4"/>
+                        ) : (
+                            <Sun className="h-4 w-4"/>
+                        )}
+                    </div>
+                    <div className="flex flex-col items-start leading-none">
+                        <span>Theme</span>
+                        <span className="mt-1 text-xs font-normal text-muted-foreground capitalize">
+      {theme || "system"} mode
+    </span>
+                    </div>
+                </Button>
+
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                     onClick={handleSignOut}
                 >
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="mr-2 h-4 w-4"/>
                     Logout
                 </Button>
             </div>
