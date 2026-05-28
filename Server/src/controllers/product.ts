@@ -1,6 +1,6 @@
 import {
     and,
-    arrayContains,
+    arrayContains, asc, count,
     eq,
     ilike,
     or,
@@ -139,11 +139,25 @@ export const updateProduct = asyncHandler(async (req, res) => {
 });
 
 export const getAllProducts = asyncHandler(async (req, res) => {
-    const allProducts = await db.select().from(product);
-    if (!allProducts[0]) {
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 20;
+    const skip = (page - 1) * limit
+
+    const totalProducts = await db.select({value:count(product.id)}).from(product)
+    const totalCount = Number(totalProducts[0]?.value)
+    const totalPages = Math.ceil(totalCount / limit)
+
+    const allProducts = await db.select().from(product).orderBy(asc(product.id)).limit(limit).offset(skip);
+    if (!allProducts[0] && totalCount > 0) {
         return res.json(new ApiResponse(201, [], "No product found"));
     }
-    return res.json(new ApiResponse(200, allProducts, "Product fetched"));
+    const responseData = {
+        products: allProducts,
+        totalPages: totalPages,
+        currentPage: Number(page),
+        totalProducts: totalCount,
+    }
+    return res.json(new ApiResponse(200, responseData, "Product fetched"));
 });
 
 export const getProductById = asyncHandler(async (req, res) => {
