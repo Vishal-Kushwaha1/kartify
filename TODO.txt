@@ -2,6 +2,7 @@
 2.product sorting
 3.product recommendation using AI
 4.After payment from stripe user redirect to home page not on order-success page
+5.User Support and seller support option create
 
 
 backend url https://kartify-28ia.onrender.com
@@ -13,6 +14,6 @@ backend url https://kartify-28ia.onrender.com
 6. seller and admin page ka logout button kaam nhi kr rha hai (have to check)
 7.product page pr add to cart and wishlist ka button add kro. and agar possible ho to checkout ka bhi
 4. review ka average calculate kro
-
-
 3. pagination implement kro products page and review wale me
+
+
