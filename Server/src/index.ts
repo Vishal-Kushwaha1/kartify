@@ -11,6 +11,7 @@ import { ApiError } from "./utils/ApiError.js";
 import userRouter from "./routes/user.js"
 import productRouter from "./routes/product.js"
 import cartRouter from "./routes/cart.js"
+import recommendationRouter from "./routes/recommendation.js"
 import wishlistRouter from "./routes/wishlist.js"
 import addressRouter from "./routes/address.js"
 import orderRouter from "./routes/order.js"
@@ -46,6 +47,7 @@ app.get("/api/me", async (req, res) => {
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/products", productRouter)
 app.use("/api/v1/cart", cartRouter)
+app.use("/api/v1/recommendation", recommendationRouter)
 app.use("/api/v1/wishlist", wishlistRouter)
 app.use("/api/v1/address", addressRouter)
 app.use("/api/v1/order", orderRouter)

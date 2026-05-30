@@ -5,17 +5,7 @@ import {api} from "@/utils/Axios";
 import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {toast} from "sonner";
-import {Button} from "@/components/ui/button";
-import {Card} from "@/components/ui/card";
-import {Badge} from "@/components/ui/badge";
-import {Heart, ShoppingCart, Loader2, Sparkles} from "lucide-react";
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselPrevious,
-    CarouselNext,
-} from "@/components/ui/carousel";
+
 import {
     Pagination,
     PaginationContent, PaginationEllipsis,
@@ -25,6 +15,9 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import {useNavigate} from "react-router-dom";
+import {ShoppingCart, Sparkles} from "lucide-react";
+import ProductCard from "@/components/ProductCard";
+
 
 
 export const Products = () => {
@@ -32,11 +25,13 @@ export const Products = () => {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [pageLoading, setPageLoading] = useState(true);
     const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
+    const [recommendations, setRecommendations] = useState<Product[]>([]);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(10);
     const limit = 20;
+
     const fetchProducts = async (page: number) => {
         try {
             setPageLoading(true);
@@ -54,9 +49,23 @@ export const Products = () => {
             setPageLoading(false);
         }
     };
+
     useEffect(() => {
         fetchProducts(currentPage);
     }, [currentPage]);
+
+    const fetchRecommendations = async () => {
+        try {
+            const response = await api.get(`/recommendation`,{withCredentials:true});
+            const data = response?.data?.data ?? response?.data;
+            if (Array.isArray(data)) {
+                setRecommendations(data);
+            }
+        } catch (error) {
+            console.error("Recommendation error", error);
+        }
+    }
+
     useEffect(() => {
         const fetchWishlist = async () => {
             try {
@@ -69,7 +78,10 @@ export const Products = () => {
             }
         };
         fetchWishlist();
+        fetchRecommendations();
     }, []);
+
+
     const handleAddToCart = async (e: React.MouseEvent, productId: string) => {
         e.stopPropagation();
         try {
@@ -82,6 +94,7 @@ export const Products = () => {
             setActionLoading(null);
         }
     };
+
     const handleWishlistToggle = async (
         e: React.MouseEvent,
         productId: string,
@@ -106,15 +119,8 @@ export const Products = () => {
             toast.error("Wishlist error");
         }
     };
-    const getImages = (item: Product) => {
-        if (Array.isArray(item.image) && item.image.length > 0) {
-            return item.image;
-        }
-        if (typeof item.image === "string" && item.image) {
-            return [item.image];
-        }
-        return [];
-    };
+
+
     return (
         <div className="min-h-screen bg-muted/20 pb-20">
             {/* Page Header */}
@@ -127,6 +133,31 @@ export const Products = () => {
                 </p>
             </div>
             <div className="max-w-7xl mx-auto px-6">
+                {recommendations.length > 0 && (
+                    <div className="mb-12">
+                        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-foreground">
+                            <Sparkles className="h-6 w-6 text-primary" /> Recommended for You
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                            {recommendations.map((item) => (
+                                <ProductCard
+                                    key={`reco-${item.id}`}
+                                    item={item}
+                                    wishlistIds={wishlistIds}
+                                    actionLoading={actionLoading}
+                                    onWishlistToggle={handleWishlistToggle}
+                                    onAddToCart={handleAddToCart}
+                                    navigate={navigate}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+                
+                {recommendations.length > 0 && (
+                    <h2 className="text-2xl font-bold mb-6 text-foreground">All Products</h2>
+                )}
+
                 {pageLoading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                         {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
@@ -150,123 +181,17 @@ export const Products = () => {
                 ) : (
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-10">
-                            {products.map((item) => {
-                                const images = getImages(item);
-                                const inStock = item.stock !== undefined ? item.stock > 0 : true;
-                                return (
-                                    <Card
-                                        key={item.id}
-                                        onClick={() => navigate(`/products/${item.id}`)}
-                                        className="group flex flex-col border-none bg-background shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl overflow-hidden cursor-pointer"
-                                    >
-                                        {/* Image Container */}
-                                        <div className="relative w-full h-64 bg-muted/30 overflow-hidden">
-                                            {images.length > 0 ? (
-                                                <Carousel className="w-full h-full" opts={{loop: true}}>
-                                                    <CarouselContent>
-                                                        {images.map((img, idx) => (
-                                                            <CarouselItem key={idx}>
-                                                                <div
-                                                                    className="w-full h-64 flex items-center justify-center">
-                                                                    <img
-                                                                        src={img}
-                                                                        alt={item.name}
-                                                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                                                                    />
-                                                                </div>
-                                                            </CarouselItem>
-                                                        ))}
-                                                    </CarouselContent>
-                                                    {images.length > 1 && (
-                                                        <div
-                                                            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                            <CarouselPrevious
-                                                                className="left-2 bg-background/50 backdrop-blur border-none hover:bg-background h-8 w-8"/>
-                                                            <CarouselNext
-                                                                className="right-2 bg-background/50 backdrop-blur border-none hover:bg-background h-8 w-8"/>
-                                                        </div>
-                                                    )}
-                                                </Carousel>
-                                            ) : (
-                                                <div
-                                                    className="w-full h-full flex items-center justify-center text-muted-foreground bg-muted/50">
-                                                    No image available
-                                                </div>
-                                            )}
-                                            {/* Floating Wishlist Button */}
-                                            <button
-                                                onClick={(e) => handleWishlistToggle(e, item.id)}
-                                                className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-background/60 backdrop-blur-md border border-border/50 hover:bg-background transition-colors shadow-sm"
-                                            >
-                                                <Heart
-                                                    className={`h-4 w-4 transition-colors ${
-                                                        wishlistIds.has(item.id)
-                                                            ? "fill-rose-500 text-rose-500"
-                                                            : "text-foreground"
-                                                    }`}
-                                                />
-                                            </button>
-                                            {/* Badges */}
-                                            <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
-                                                {!inStock && (
-                                                    <Badge variant="destructive"
-                                                           className="shadow-sm font-semibold text-[10px] uppercase tracking-wider">
-                                                        Sold Out
-                                                    </Badge>
-                                                )}
-                                                {item.stock !== undefined && inStock && item.stock < 10 && (
-                                                    <Badge
-                                                        className="bg-amber-500 text-white shadow-sm font-semibold text-[10px] uppercase tracking-wider hover:bg-amber-600">
-                                                        Low Stock
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                        </div>
-                                        {/* Content Container */}
-                                        <div className="flex flex-col flex-1 p-5">
-                                            <div className="flex flex-wrap gap-1.5 mb-3">
-                                                {item.category?.map((cat) => (
-                                                    <span key={cat}
-                                                          className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                            {cat}
-                          </span>
-                                                ))}
-                                            </div>
-                                            <h3 className="font-semibold text-base text-foreground line-clamp-1 mb-1 group-hover:text-primary transition-colors">
-                                                {item.name}
-                                            </h3>
-                                            {item.description && (
-                                                <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
-                                                    {item.description}
-                                                </p>
-                                            )}
-                                            <div
-                                                className="flex items-end justify-between mt-auto pt-4 border-t border-border/50">
-                                                <div className="flex flex-col">
-                                                    <span
-                                                        className="text-xs text-muted-foreground font-medium mb-0.5">Price</span>
-                                                    <span className="text-xl font-bold text-foreground tracking-tight">
-                            ₹{item.price?.toLocaleString("en-IN") ?? "0"}
-                          </span>
-                                                </div>
-                                                <Button
-                                                    onClick={(e) => handleAddToCart(e, item.id)}
-                                                    disabled={actionLoading === item.id || !inStock}
-                                                    size="icon"
-                                                    className="rounded-full h-10 w-10 bg-primary hover:bg-primary/90 shadow-sm hover:shadow-md transition-all group-hover:scale-110"
-                                                >
-                                                    {actionLoading === item.id ? (
-                                                        <Loader2
-                                                            className="h-4 w-4 animate-spin text-primary-foreground"/>
-                                                    ) : (
-                                                        <ShoppingCart className="h-4 w-4 text-primary-foreground"/>
-                                                    )}
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </Card>
-                                );
-                            })}
+                            {products.map((item) => (
+                                <ProductCard
+                                    key={item.id}
+                                    item={item}
+                                    wishlistIds={wishlistIds}
+                                    actionLoading={actionLoading}
+                                    onWishlistToggle={handleWishlistToggle}
+                                    onAddToCart={handleAddToCart}
+                                    navigate={navigate}
+                                />
+                            ))}
                         </div>
                         <Pagination>
                             <PaginationContent>

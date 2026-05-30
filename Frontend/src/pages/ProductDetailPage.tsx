@@ -75,6 +75,7 @@ export const ProductDetailPage = () => {
                 setLoading(true);
                 const result = await api.get(`/products/${id}`);
                 setProduct(result.data.data);
+                await api.post(`/recommendation/track`, {productId:id,actionType:"view"},{withCredentials:true})
             } catch {
                 toast.error("Unable to load product. Please refresh");
             } finally {

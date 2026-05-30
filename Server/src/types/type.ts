@@ -31,3 +31,13 @@ export type CartType =
       updatedAt: Date;
     }
   | undefined;
+
+export type actionEnum  = "view"|"cart"|"wishlist"
+
+export type actionType ={
+    id: string;
+    userId: string;
+    productId: string;
+    actionType: actionEnum,
+    createdAt: Date;
+}

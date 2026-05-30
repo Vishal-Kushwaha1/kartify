@@ -85,6 +85,13 @@
       "when": 1779624969015,
       "tag": "0011_equal_wolfsbane",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1780117485727,
+      "tag": "0012_pink_madame_web",
+      "breakpoints": true
     }
   ]
 }

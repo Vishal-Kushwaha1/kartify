@@ -7,13 +7,7 @@
 
 backend url https://kartify-28ia.onrender.com
 
-
-1.seller dashboard page "Create new Product button " done
-2. seller and admin page pr dark and light mode toggle button
-5. dark mode me user logout krte time light mode aa rha hai
-6. seller and admin page ka logout button kaam nhi kr rha hai (have to check)
-7.product page pr add to cart and wishlist ka button add kro. and agar possible ho to checkout ka bhi
-4. review ka average calculate kro
-3. pagination implement kro products page and review wale me
-
-
+1. products page se search option remove kro
+2. seller my products me edit button ke upar padding
+3. seller my product ke card pr click krke uske page pr redirect ho jaye
+4.

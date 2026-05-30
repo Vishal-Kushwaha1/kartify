@@ -25,6 +25,7 @@ export const useWishlistActions = () => {
                 { productId },
                 { withCredentials: true },
             );
+            await api.post(`/recommendation/track`, {productId,actionType:"wishlist"},{withCredentials:true})
             toast.success("Item added to wishlist");
             await fetchWishlist();
         } catch (error) {

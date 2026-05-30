@@ -24,6 +24,7 @@ export const addToCart = createAsyncThunk(
                 {productId},
                 {withCredentials: true},
             );
+            await api.post(`/recommendation/track`, {productId,actionType:"cart"},{withCredentials:true})
             return response.data;
         } catch (error: unknown) {
             return rejectWithValue("Unable to add cart item");
