@@ -55,7 +55,7 @@ export const Login = () => {
       setLoading(true);
       const { error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: `${import.meta.env.VITE_FRONTEND_URL}/user`,
+        callbackURL: `${import.meta.env.VITE_FRONTEND_URL}/products`,
       });
       if (error)
         return toast.error("Google login failed", {
