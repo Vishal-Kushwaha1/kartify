@@ -19,7 +19,6 @@ import reviewRouter from "./routes/review.js"
 import adminRouter from "./routes/admin.js"
 
 const app = express();
-app.set("trust proxy", 1);
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:5173", //TODO: change this to your frontend URL in production

@@ -16,9 +16,18 @@ export const auth = betterAuth({
     provider: "pg",
     schema: userSchema,
   }),
-  trustedOrigins: [process.env.FRONTEND_URL! as string, process.env.VITE_BETTER_AUTH_URL! as string, process.env.BETTER_AUTH_URL! as string, "http://localhost:5173", "http://localhost:3000"],
+  trustedOrigins: [
+    process.env.FRONTEND_URL! as string,
+    process.env.BETTER_AUTH_URL! as string,
+    "http://localhost:5173",
+    "http://localhost:3000",
+  ],
   baseURL: process.env.BETTER_AUTH_URL || process.env.VITE_BETTER_AUTH_URL,
   emailAndPassword: { enabled: true },
+  account:{
+    skipStateCookieCheck: true,
+    storage: "database"
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -75,7 +84,10 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
+      httpOnly: true
     },
+    cookiePrefix: "Kartify",
+    useSecureCookies : true
   },
   rateLimit: {
     enabled: true,
@@ -97,5 +109,5 @@ export const auth = betterAuth({
   },
 });
 
-export type UserSession = typeof auth.$Infer.Session.session
-export type User = typeof auth.$Infer.Session.user
+export type UserSession = typeof auth.$Infer.Session.session;
+export type User = typeof auth.$Infer.Session.user;
