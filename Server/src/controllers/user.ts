@@ -28,8 +28,13 @@ export const applyForSeller = asyncHandler(async (req, res) => {
     gstNumber,
   } = req.body;
 
-  const gstCertificate = (req.files as any)?.gstCertificate?.[0];
-  const shopImage = (req.files as any)?.shopImage?.[0];
+  const files = req.files as {
+    gstCertificate?: Express.Multer.File[],
+    shopImage?: Express.Multer.File[]
+  }
+
+  const gstCertificate = files?.gstCertificate?.[0];
+  const shopImage = files?.shopImage?.[0];
   if (
     !storeName ||
     !panNumber ||
@@ -51,8 +56,6 @@ export const applyForSeller = asyncHandler(async (req, res) => {
   if (!gstCertificateUrl || !shopImageUrl) {
     throw new ApiError(500, "Cloudinary error");
   }
-  console.log(gstCertificateUrl.secure_url);
-  console.log(shopImageUrl.secure_url);
   const result = await db
     .insert(seller)
     .values({
