@@ -5,7 +5,7 @@ import { LoadingPage } from "@/components/LoadingPage.tsx";
 import { Card, CardContent, CardFooter } from "@/components/ui/card.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Plus, Edit, Eye, PackageOpen, Tag, MoreVertical } from "lucide-react";
 import {
   DropdownMenu,
@@ -17,11 +17,14 @@ import {
 export const Products = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const result = await api.get("/products/seller", { withCredentials: true });
+        const result = await api.get("/products/seller", {
+          withCredentials: true,
+        });
         setProducts(result.data?.data || []);
       } catch (error) {
         console.error("Failed to fetch products", error);
@@ -46,7 +49,10 @@ export const Products = () => {
             Manage your inventory, prices, and product details.
           </p>
         </div>
-        <Button asChild className="shrink-0 bg-primary hover:bg-primary/90 h-11 px-6 rounded-full shadow-md">
+        <Button
+          asChild
+          className="shrink-0 bg-primary hover:bg-primary/90 h-11 px-6 rounded-full shadow-md"
+        >
           <Link to="/seller/add">
             <Plus className="mr-2 h-4 w-4" /> Add New Product
           </Link>
@@ -61,9 +67,13 @@ export const Products = () => {
           </div>
           <h2 className="text-xl font-semibold mb-2">No products found</h2>
           <p className="text-muted-foreground max-w-sm mb-6 leading-relaxed">
-            You haven't added any products to your store yet. Start selling by adding your first product.
+            You haven't added any products to your store yet. Start selling by
+            adding your first product.
           </p>
-          <Button asChild className="bg-primary hover:bg-primary/90 rounded-full px-8">
+          <Button
+            asChild
+            className="bg-primary hover:bg-primary/90 rounded-full px-8"
+          >
             <Link to="/seller/add">
               <Plus className="mr-2 h-4 w-4" /> Add Product
             </Link>
@@ -74,7 +84,11 @@ export const Products = () => {
       {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => (
-          <Card key={product.id} className="flex flex-col overflow-hidden group hover:shadow-xl transition-all duration-300 rounded-3xl border-transparent bg-muted/10 hover:bg-background">
+          <Card
+            key={product.id}
+            onClick={() => navigate(`/seller/product/${product.id}`)}
+            className="flex flex-col overflow-hidden group hover:shadow-xl transition-all duration-300 rounded-3xl border-transparent bg-muted/10 hover:bg-background"
+          >
             {/* Image Section */}
             <div className="relative aspect-square bg-muted/50 overflow-hidden rounded-t-3xl">
               {product.image && product.image.length > 0 ? (
@@ -90,31 +104,52 @@ export const Products = () => {
               )}
               {/* Badges on image */}
               <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-                <Badge variant={product.isActive ? "default" : "secondary"} className={product.isActive ? "bg-green-600 hover:bg-green-700 text-white shadow-sm" : "shadow-sm backdrop-blur-md bg-background/80 text-foreground"}>
+                <Badge
+                  variant={product.isActive ? "default" : "secondary"}
+                  className={
+                    product.isActive
+                      ? "bg-green-600 hover:bg-green-700 text-white shadow-sm"
+                      : "shadow-sm backdrop-blur-md bg-background/80 text-foreground"
+                  }
+                >
                   {product.isActive ? "Active" : "Draft"}
                 </Badge>
                 {product.stock <= 5 && product.stock > 0 && (
-                  <Badge variant="destructive" className="shadow-sm">Low Stock</Badge>
+                  <Badge variant="destructive" className="shadow-sm">
+                    Low Stock
+                  </Badge>
                 )}
                 {product.stock === 0 && (
-                  <Badge variant="destructive" className="shadow-sm">Out of Stock</Badge>
+                  <Badge variant="destructive" className="shadow-sm">
+                    Out of Stock
+                  </Badge>
                 )}
               </div>
               {/* Dropdown Action Menu */}
               <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="icon" className="h-8 w-8 rounded-full shadow-sm bg-background/90 hover:bg-background text-foreground backdrop-blur-md border-0">
+                    <Button
+                      variant="secondary"
+                      size="icon"
+                      className="h-8 w-8 rounded-full shadow-sm bg-background/90 hover:bg-background text-foreground backdrop-blur-md border-0"
+                    >
                       <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-40 rounded-xl">
-                    <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                    <DropdownMenuItem
+                      asChild
+                      className="cursor-pointer rounded-lg"
+                    >
                       <Link to={`/seller/product/${product.id}`}>
                         <Eye className="mr-2 h-4 w-4" /> View Details
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
+                    <DropdownMenuItem
+                      asChild
+                      className="cursor-pointer rounded-lg"
+                    >
                       <Link to={`/seller/product/${product.id}/edit`}>
                         <Edit className="mr-2 h-4 w-4" /> Edit Product
                       </Link>
@@ -127,14 +162,17 @@ export const Products = () => {
             {/* Content Section */}
             <CardContent className="p-5 flex-1 flex flex-col bg-background">
               <div className="flex justify-between items-start gap-2 mb-2">
-                <h3 className="font-semibold text-lg line-clamp-1" title={product.name}>
+                <h3
+                  className="font-semibold text-lg line-clamp-1"
+                  title={product.name}
+                >
                   {product.name}
                 </h3>
                 <span className="font-bold text-lg text-primary shrink-0">
                   ${product.price?.toFixed(2)}
                 </span>
               </div>
-              
+
               <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
                 {product.description || "No description provided."}
               </p>
@@ -154,8 +192,12 @@ export const Products = () => {
             </CardContent>
 
             {/* Footer Actions */}
-            <CardFooter className="p-4 pt-0 flex gap-2 bg-background border-t mt-4 pb-5 rounded-b-3xl">
-              <Button variant="outline" className="w-full text-sm h-10 rounded-full hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-colors" asChild>
+            <CardFooter className="p-4 pt-2 flex gap-2 bg-background border-t mt-4 pb-2 rounded-b-3xl">
+              <Button
+                variant="outline"
+                className="w-full text-sm h-10 rounded-full hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-colors"
+                asChild
+              >
                 <Link to={`/seller/product/${product.id}/edit`}>
                   <Edit className="mr-2 h-4 w-4" /> Edit
                 </Link>

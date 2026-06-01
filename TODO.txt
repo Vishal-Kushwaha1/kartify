@@ -3,11 +3,10 @@
 3.product recommendation using AI
 4.After payment from stripe user redirect to home page not on order-success page
 5.User Support and seller support option create
+6.Compare 2 product 
+7. Discount Coupon
+8. Ai search
+9. Ai chatbot for user
 
 
 backend url https://kartify-28ia.onrender.com
-
-1. products page se search option remove kro
-2. seller my products me edit button ke upar padding
-3. seller my product ke card pr click krke uske page pr redirect ho jaye
-4.
