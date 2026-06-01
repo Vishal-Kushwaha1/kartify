@@ -21,9 +21,19 @@ import adminRouter from "./routes/admin.js"
 const app = express();
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173", //TODO: change this to your frontend URL in production
+    origin: (origin, callback) => {
+      // Allow Vercel domains, localhost, and explicit FRONTEND_URL
+      if (!origin || origin.includes("vercel.app") || origin.includes("localhost") || origin === process.env.FRONTEND_URL) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-  }),
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie", "Accept"],
+    exposedHeaders: ["Set-Cookie"],
+  })
 );
 
 app.all("/api/auth/*any", toNodeHandler(auth));
