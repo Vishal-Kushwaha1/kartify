@@ -36,7 +36,7 @@ const Store = () => {
   if (!seller) return <div className="p-6 text-center">Seller not found</div>;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 p-4 md:p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header Section with Store Banner */}
         <div className="relative mb-8">
@@ -56,22 +56,22 @@ const Store = () => {
 
           {/* Store Info Card - Overlapping Banner */}
           <div className="relative -mt-16 mx-4 md:mx-0">
-            <Card className="bg-white shadow-xl border-0">
+            <Card className="bg-white dark:bg-slate-900 shadow-xl border-0 dark:border-slate-800">
               <CardContent className="p-6 md:p-8">
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
                           {seller.storeName}
                         </h1>
-                        <div className="flex items-center gap-2 text-gray-600 mb-4">
+                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4">
                           <MapPin className="w-4 h-4" />
                           <span>
                             {seller.storeLocation || "Location not provided"}
                           </span>
                         </div>
-                        <p className="text-gray-700 text-sm leading-relaxed max-w-2xl">
+                        <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed max-w-2xl">
                           {seller.storeDescription ||
                             "No description provided."}
                         </p>
@@ -110,36 +110,36 @@ const Store = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Business Info */}
           <div className="space-y-6">
-            <Card className="shadow-md">
-              <CardHeader className="bg-linear-to-r from-blue-50 to-blue-100 border-b">
-                <CardTitle className="text-lg text-gray-900">
+            <Card className="shadow-md dark:bg-slate-900 dark:border-slate-800">
+              <CardHeader className="bg-linear-to-r from-blue-50 to-blue-100 dark:from-blue-950/40 dark:to-blue-900/40 border-b dark:border-slate-700">
+                <CardTitle className="text-lg text-gray-900 dark:text-white">
                   Store Details
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                     Store ID
                   </p>
-                  <p className="font-mono text-sm bg-gray-100 px-3 py-2 rounded-md mt-2 text-gray-700">
+                  <p className="font-mono text-sm bg-gray-100 dark:bg-slate-800 px-3 py-2 rounded-md mt-2 text-gray-700 dark:text-gray-300">
                     {seller.id}
                   </p>
                 </div>
-                <Separator />
+                <Separator className="dark:bg-slate-700" />
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                     Owner ID
                   </p>
-                  <p className="font-mono text-sm bg-gray-100 px-3 py-2 rounded-md mt-2 text-gray-700">
+                  <p className="font-mono text-sm bg-gray-100 dark:bg-slate-800 px-3 py-2 rounded-md mt-2 text-gray-700 dark:text-gray-300">
                     {seller.userId}
                   </p>
                 </div>
-                <Separator />
+                <Separator className="dark:bg-slate-700" />
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                     Member Since
                   </p>
-                  <p className="text-sm text-gray-700 mt-2 font-medium">
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-2 font-medium">
                     {new Date(seller.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
@@ -153,58 +153,58 @@ const Store = () => {
 
           {/* Right Column - Verification Documents */}
           <div className="lg:col-span-2 space-y-6">
-            <Card className="shadow-md">
-              <CardHeader className="bg-linear-to-r from-purple-50 to-purple-100 border-b">
-                <CardTitle className="text-lg text-gray-900">
+            <Card className="shadow-md dark:bg-slate-900 dark:border-slate-800">
+              <CardHeader className="bg-linear-to-r from-purple-50 to-purple-100 dark:from-purple-950/40 dark:to-purple-900/40 border-b dark:border-slate-700">
+                <CardTitle className="text-lg text-gray-900 dark:text-white">
                   Business Verification
                 </CardTitle>
-                <CardDescription className="text-sm text-gray-600 mt-1">
+                <CardDescription className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   Government issued identification and tax documents
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {/* PAN Card */}
-                  <div className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-orange-50 to-orange-100/50">
+                  <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-sm font-bold">
                         P
                       </div>
-                      <p className="text-xs font-semibold text-gray-600 uppercase">
+                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
                         PAN Number
                       </p>
                     </div>
-                    <p className="font-mono font-bold text-gray-900 text-lg tracking-widest">
+                    <p className="font-mono font-bold text-gray-900 dark:text-white text-lg tracking-widest">
                       {seller.panNumber}
                     </p>
                   </div>
 
                   {/* Aadhar Card */}
-                  <div className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-green-50 to-green-100/50">
+                  <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/20">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold">
                         A
                       </div>
-                      <p className="text-xs font-semibold text-gray-600 uppercase">
+                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
                         Aadhar Number
                       </p>
                     </div>
-                    <p className="font-mono font-bold text-gray-900 text-lg tracking-widest">
+                    <p className="font-mono font-bold text-gray-900 dark:text-white text-lg tracking-widest">
                       {seller.aadharNumber}
                     </p>
                   </div>
 
                   {/* GST Card */}
-                  <div className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-blue-50 to-blue-100/50">
+                  <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold">
                         G
                       </div>
-                      <p className="text-xs font-semibold text-gray-600 uppercase">
+                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
                         GST Number
                       </p>
                     </div>
-                    <p className="font-mono font-bold text-gray-900 text-lg tracking-widest mb-3">
+                    <p className="font-mono font-bold text-gray-900 dark:text-white text-lg tracking-widest mb-3">
                       {seller.gstNumber}
                     </p>
                     {seller.gstCertificate ? (
@@ -212,12 +212,12 @@ const Store = () => {
                         href={seller.gstCertificate}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md transition-colors"
+                        className="inline-flex items-center justify-center text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 px-3 py-1 rounded-md transition-colors"
                       >
                         View Certificate
                       </a>
                     ) : (
-                      <p className="text-xs text-gray-500 italic">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 italic">
                         No certificate uploaded
                       </p>
                     )}
