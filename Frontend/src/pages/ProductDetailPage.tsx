@@ -185,7 +185,7 @@ export const ProductDetailPage = () => {
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Card className="rounded-xl border bg-background p-6 shadow-none">
             {images?.length > 0 ? (
-              <Carousel className="w-full">
+              <Carousel className="w-full" opts={{align:"start", loop: true}}>
                 <CarouselContent>
                   {images.map((img, index) => (
                     <CarouselItem key={index}>
@@ -332,14 +332,14 @@ export const ProductDetailPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="grid gap-3 border-t pt-6 sm:grid-cols-2">
+              {user && <div className="grid gap-3 border-t pt-6 sm:grid-cols-2">
                 <Button onClick={() => handleAddToWishlist(product.id)}>
                   Add to Wishlist
                 </Button>
                 <Button onClick={handleButtonCLick} disabled={cartLoading}>
                   {isInCart ? "Checkout" : "Add to Cart"}
                 </Button>
-              </div>
+              </div>}
             </div>
           </Card>
         </div>

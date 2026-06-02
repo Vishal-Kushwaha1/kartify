@@ -9,9 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { api } from "@/utils/Axios";
 import { useParams } from "react-router-dom";
+import { useAppSelector } from "@/redux/hook";
 
 export const ReviewForm = () => {
   const [rating, setRating] = useState(0);
+
+  const {user} = useAppSelector((state)=> state.user)
 
   const { id } = useParams();
 
@@ -106,7 +109,7 @@ export const ReviewForm = () => {
         <div className="flex justify-end">
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={!user || isSubmitting}
             className="bg-primary text-white hover:bg-primary/90"
           >
             {isSubmitting ? "Submitting..." : "Submit Review"}
