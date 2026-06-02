@@ -7,6 +7,7 @@ import {
   LogOut,
   Moon,
   Sun,
+  Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
@@ -36,6 +37,11 @@ const sidebarLinks = [
     title: "Orders",
     icon: ShoppingBag,
     href: "/seller/orders",
+  },
+  {
+    title: "Store",
+    icon: Store,
+    href: "/seller/store",
   },
 ];
 

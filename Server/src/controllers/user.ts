@@ -29,9 +29,9 @@ export const applyForSeller = asyncHandler(async (req, res) => {
   } = req.body;
 
   const files = req.files as {
-    gstCertificate?: Express.Multer.File[],
-    shopImage?: Express.Multer.File[]
-  }
+    gstCertificate?: Express.Multer.File[];
+    shopImage?: Express.Multer.File[];
+  };
 
   const gstCertificate = files?.gstCertificate?.[0];
   const shopImage = files?.shopImage?.[0];
@@ -75,4 +75,19 @@ export const applyForSeller = asyncHandler(async (req, res) => {
     throw new ApiError(500, "DB error");
   }
   return res.json(new ApiResponse(200, result[0], "Applied successfully"));
+});
+
+export const getSellerById = asyncHandler(async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    throw new ApiError(401, "Unauthorized");
+  }
+  const result = await db
+    .select()
+    .from(seller)
+    .where(eq(seller.userId, user.id));
+  if (!result) {
+    throw new ApiError(404, "Seller not found");
+  }
+  res.json(new ApiResponse(200, result[0], "Seller found"));
 });
