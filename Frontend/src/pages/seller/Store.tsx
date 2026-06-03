@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "@/utils/Axios";
 import { LoadingPage } from "@/components/LoadingPage";
 import type { Seller } from "@/types/type";
@@ -25,8 +25,7 @@ const Store = () => {
   const [seller, setSeller] = useState<Seller | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSeller = async () => {
+  const fetchSeller = useCallback(async () => {
       try {
         setLoading(true);
 
@@ -40,10 +39,11 @@ const Store = () => {
       } finally {
         setLoading(false);
       }
-    };
+    },[])
 
+  useEffect(() => {
     fetchSeller();
-  }, []);
+  }, [fetchSeller]);
 
   if (loading) return <LoadingPage />;
 

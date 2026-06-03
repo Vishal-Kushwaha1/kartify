@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { Order, OrderItem } from "@/types/type";
 import { api } from "@/utils/Axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Package, CreditCard, ShoppingBag, ChevronRight } from "lucide-react";
 
@@ -38,8 +38,7 @@ export const Orders = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchOrders = async () => {
+  const fetchOrders =useCallback( async () => {
       try {
         setLoading(true);
         const result = await api.get("/order", { withCredentials: true });
@@ -49,9 +48,11 @@ export const Orders = () => {
       } finally {
         setLoading(false);
       }
-    };
+    },[])
+
+  useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [fetchOrders]);
 
   if (loading) return <LoadingPage />;
 

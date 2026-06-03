@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {api} from "@/utils/Axios.tsx";
 import {LoadingPage} from "@/components/LoadingPage.tsx";
@@ -18,8 +18,7 @@ const OrderPage = () => {
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [selectedStatus, setSelectedStatus] = useState<OrderEnum | "">("");
 
-    useEffect(() => {
-        const fetchOrder = async () => {
+    const fetchOrder = useCallback(async () => {
             try {
                 setLoading(true);
                 const result = await api.get(`/admin/orders/${id}`);
@@ -30,11 +29,13 @@ const OrderPage = () => {
             } finally {
                 setLoading(false);
             }
-        };
+        },[id])
+        
+    useEffect(() => {
         if (id) {
             fetchOrder();
         }
-    }, [id]);
+    }, [fetchOrder, id]);
 
     const handleUpdateStatus = async () => {
         if (!order || !selectedStatus) return;

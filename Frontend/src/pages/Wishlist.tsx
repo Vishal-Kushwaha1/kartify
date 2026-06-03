@@ -1,5 +1,5 @@
 import { api } from "@/utils/Axios";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -90,9 +90,7 @@ export const Wishlist = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchWishlist = async () => {
+  const fetchWishlist = useCallback(async () => {
       setLoading(true);
       try {
         const response = await api.get("/wishlist", {
@@ -105,10 +103,11 @@ export const Wishlist = () => {
       } finally {
         setLoading(false);
       }
-    };
+    },[])
 
+  useEffect(() => {
     fetchWishlist();
-  }, []);
+  }, [fetchWishlist]);
 
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();

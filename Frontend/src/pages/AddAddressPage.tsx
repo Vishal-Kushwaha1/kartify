@@ -6,7 +6,7 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -137,7 +137,7 @@ export const AddAddressPage = () => {
     }
   };
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     try {
       setLoading(true);
       const res = await api.get("/address", { withCredentials: true });
@@ -148,7 +148,7 @@ export const AddAddressPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  },[])
 
   const handleDelete = async (id: string) => {
     try {
@@ -189,7 +189,7 @@ export const AddAddressPage = () => {
 
   useEffect(() => {
     fetchAddresses();
-  }, []);
+  }, [fetchAddresses]);
 
   return (
     <div className="bg-muted/40 px-6 py-10">

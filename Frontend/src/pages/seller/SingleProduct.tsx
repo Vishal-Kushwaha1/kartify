@@ -17,7 +17,7 @@ import {
   Package,
 } from "lucide-react";
 
-export const SingleProduct = () => {
+const SingleProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -299,3 +299,5 @@ export const SingleProduct = () => {
     </div>
   );
 };
+
+export default SingleProduct

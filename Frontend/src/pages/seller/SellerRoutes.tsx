@@ -1,13 +1,15 @@
+import { lazy } from "react";
 import { Route, Routes, Outlet } from "react-router-dom";
-import { AddProduct } from "./AddProduct";
-import { SingleProduct } from "./SingleProduct";
-import { Products } from "./Products";
-import { EditProduct } from "./EditProduct";
 import { SellerDashboard } from "@/pages/seller/SellerDashboard.tsx";
 import { SellerSidebar } from "./SellerSidebar";
-import Order from "@/pages/seller/Order.tsx";
-import Orders from "@/pages/seller/Orders.tsx";
-import Store from "./Store";
+
+const AddProduct = lazy(()=>import("@/pages/seller/AddProduct"))
+const SingleProduct = lazy(()=>import("@/pages/seller/SingleProduct"))
+const Products = lazy(()=>import("@/pages/seller/Products"))
+const EditProduct = lazy(()=>import("@/pages/seller/EditProduct"))
+const Order = lazy(()=>import("@/pages/seller/Order"))
+const Orders = lazy(()=>import("@/pages/seller/Orders"))
+const Store = lazy(()=>import("@/pages/seller/Store"))
 
 // Layout wrapper for Seller section
 const SellerLayout = () => {

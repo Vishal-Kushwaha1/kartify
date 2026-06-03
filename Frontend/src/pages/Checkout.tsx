@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { RootState } from "@/redux/store";
 import type { Address } from "@/types/type";
 import { api } from "@/utils/Axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/redux/hook";
 import { fetchCartItem } from "@/redux/cart/cartThunk";
@@ -51,7 +51,7 @@ export const Checkout = () => {
     });
   };
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     try {
       setLoadingAddress(true);
       const res = await api.get("/address", { withCredentials: true });
@@ -68,7 +68,12 @@ export const Checkout = () => {
     } finally {
       setLoadingAddress(false);
     }
-  };
+  },[])
+
+  
+  useEffect(() => {
+    fetchAddresses();
+  }, [fetchAddresses]);
 
   const handleCOD = async () => {
     if (!addressId) {
@@ -185,9 +190,6 @@ export const Checkout = () => {
     }
   };
 
-  useEffect(() => {
-    fetchAddresses();
-  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

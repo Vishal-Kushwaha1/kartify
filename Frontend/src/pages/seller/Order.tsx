@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {toast} from "sonner";
 import { IndianRupee, Package, User, Clock, CreditCard } from "lucide-react";
 
-const OrderPage = () => {
+const Order = () => {
     const {id} = useParams<{id: string}>();
     const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -229,4 +229,4 @@ const OrderPage = () => {
     );
 };
 
-export default OrderPage;
+export default Order;

@@ -12,7 +12,7 @@ import { Upload, X } from "lucide-react";
 import { api } from "@/utils/Axios";
 import { useNavigate } from "react-router-dom";
 
-export const AddProduct = () => {
+const  AddProduct = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [categoryInput, setCategoryInput] = useState("");
@@ -251,3 +251,5 @@ export const AddProduct = () => {
     </div>
   );
 };
+
+export default AddProduct

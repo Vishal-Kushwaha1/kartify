@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button.tsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
@@ -10,8 +10,7 @@ export const SellerDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
       try {
         const result = await api.get("/products/seller", { withCredentials: true });
         setProducts(result.data?.data || []);
@@ -20,9 +19,11 @@ export const SellerDashboard = () => {
       } finally {
         setLoading(false);
       }
-    };
+    },[])
+
+  useEffect(() => {
     fetchStats();
-  }, []);
+  }, [fetchStats]);
 
   const totalProducts = products.length;
   const activeProducts = products.filter(p => p.isActive).length;

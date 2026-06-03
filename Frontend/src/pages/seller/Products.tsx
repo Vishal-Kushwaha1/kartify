@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Product } from "@/types/type.ts";
 import { api } from "@/utils/Axios.tsx";
 import { LoadingPage } from "@/components/LoadingPage.tsx";
@@ -14,13 +14,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.tsx";
 
-export const Products = () => {
+const Products = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<Product[]>([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
       try {
         const result = await api.get("/products/seller", {
           withCredentials: true,
@@ -31,9 +30,11 @@ export const Products = () => {
       } finally {
         setLoading(false);
       }
-    };
+    },[])
+
+  useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   if (loading) {
     return <LoadingPage />;
@@ -209,3 +210,5 @@ export const Products = () => {
     </div>
   );
 };
+
+export default Products

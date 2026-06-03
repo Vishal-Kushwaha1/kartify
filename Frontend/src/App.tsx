@@ -5,8 +5,7 @@ import {fetchUser} from "./redux/user/userThunk";
 import {fetchCartItem} from "@/redux/cart/cartThunk.ts";
 import {Navbar} from "@/components/Navbar";
 import {Footer} from "@/components/Footer";
-import {RoleRoute} from "@/components/RoleRoute";
-import AdminRoutes from "@/pages/admin/AdminRoutes.tsx";
+import RoleRoute from "./components/RoleRoute";
 
 // Unprotected
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -29,8 +28,10 @@ const Checkout = lazy(() => import("@/pages/Checkout"));
 const OrderSuccess = lazy(() => import("@/pages/OrderSuccess"));
 const ApplyForSeller = lazy(() => import("@/pages/ApplyForSeller"));
 
+
 // Seller protected
 const SellerRoutes = lazy(() => import("@/pages/seller/SellerRoutes"));
+const AdminRoutes = lazy(()=> import("@/pages/admin/AdminRoutes"))
 
 // Main Layout for routes that need Navbar & Footer
 const MainLayout = () => {

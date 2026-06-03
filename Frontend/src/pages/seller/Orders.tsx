@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {api} from "@/utils/Axios.tsx";
 import {LoadingPage} from "@/components/LoadingPage.tsx";
@@ -12,8 +12,7 @@ const Orders = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
             try {
                 setLoading(true);
                 const result = await api.get("/order/seller/order");
@@ -23,7 +22,9 @@ const Orders = () => {
             } finally {
                 setLoading(false);
             }
-        };
+        },[])
+
+    useEffect(() => {
         fetchOrders();
     }, []);
 

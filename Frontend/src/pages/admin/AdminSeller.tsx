@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {api} from "@/utils/Axios.tsx";
 import {LoadingPage} from "@/components/LoadingPage.tsx";
@@ -15,8 +15,7 @@ const AdminSeller = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-    useEffect(() => {
-        const fetchSeller = async () => {
+    const fetchSeller = useCallback(async () => {
             try {
                 setLoading(true);
                 const result = await api.get(`/admin/seller/${id}`,{withCredentials: true});
@@ -26,11 +25,12 @@ const AdminSeller = () => {
             } finally {
                 setLoading(false);
             }
-        };
+        },[id])
+    useEffect(() => {
         if (id) {
             fetchSeller();
         }
-    }, [id]);
+    }, [id, fetchSeller]);
 
     const handleToggleBan = async () => {
         if (!seller) return;

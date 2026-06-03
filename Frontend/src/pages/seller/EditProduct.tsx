@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
-export const EditProduct = () => {
+const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -271,3 +271,5 @@ export const EditProduct = () => {
     </div>
   );
 };
+
+export default EditProduct

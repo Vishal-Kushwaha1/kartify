@@ -7,7 +7,7 @@ interface RoleRouteProps {
   allowedRole: UserRoleEnum;
 }
 
-export const RoleRoute = ({ allowedRole }: RoleRouteProps) => {
+const RoleRoute = ({ allowedRole }: RoleRouteProps) => {
   const { user, loading } = useAppSelector((state) => state.user);
 
   if (loading) {
@@ -30,3 +30,5 @@ export const RoleRoute = ({ allowedRole }: RoleRouteProps) => {
 
   return <Outlet />;
 };
+
+export default RoleRoute
