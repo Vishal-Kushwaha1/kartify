@@ -1,5 +1,4 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAppSelector } from "@/redux/hook";
 import { getDashboardPath } from "@/utils/authUtils";
 import type { UserRoleEnum } from "@/types/type";
 
@@ -8,27 +7,27 @@ interface RoleRouteProps {
 }
 
 const RoleRoute = ({ allowedRole }: RoleRouteProps) => {
-  const { user, loading } = useAppSelector((state) => state.user);
-
-  if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-orange-600 border-t-transparent" />
-      </div>
-    );
+  const roleData = localStorage.getItem("kartify_role");
+  
+  // Parse the role - it might be JSON stringified or plain string
+  let role = roleData;
+  try {
+    role = JSON.parse(roleData || "");
+  } catch {
+    role = roleData;
   }
 
   // Not logged in
-  if (!user) {
+  if (!role) {
     return <Navigate to="/login" replace />;
   }
 
   // Logged in but wrong role
-  if (user && user.role !== allowedRole) {
-    return <Navigate to={getDashboardPath(user.role)} replace />;
+  if (role && role !== allowedRole) {
+    return <Navigate to={getDashboardPath(role as UserRoleEnum)} replace />;
   }
 
   return <Outlet />;
 };
 
-export default RoleRoute
+export default RoleRoute;

@@ -33,6 +33,8 @@ const ApplyForSeller = lazy(() => import("@/pages/ApplyForSeller"));
 const SellerRoutes = lazy(() => import("@/pages/seller/SellerRoutes"));
 const AdminRoutes = lazy(()=> import("@/pages/admin/AdminRoutes"))
 
+
+
 // Main Layout for routes that need Navbar & Footer
 const MainLayout = () => {
     const dispatch = useAppDispatch();
@@ -62,6 +64,7 @@ const RootRedirect = () => {
         </div>
     );
     if (user) {
+        localStorage.setItem("kartify_role", user.role);
         if (user.role === "admin") return <Navigate to="/admin" replace/>;
         if (user.role === "seller") return <Navigate to="/seller" replace/>;
         if (user.role === "user") return <Navigate to="/products" replace/>;

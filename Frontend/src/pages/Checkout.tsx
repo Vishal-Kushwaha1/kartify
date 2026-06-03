@@ -164,7 +164,6 @@ export const Checkout = () => {
   };
 
   const handleStripe = async () => {
-    window.alert("Currently its not working well. Please try with razorpay")
     if (!addressId) {
       toast.error("Select your address");
       return;

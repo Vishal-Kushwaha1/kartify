@@ -49,6 +49,8 @@ export const Navbar = () => {
     try {
       await authClient.signOut();
       dispatch(clearUser());
+      localStorage.removeItem("kartify_recommendation")
+      localStorage.removeItem("kartify_role")
       navigate("/login");
     } catch (error) {
       console.error("Logout failed", error);
