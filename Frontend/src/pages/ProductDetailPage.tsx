@@ -49,7 +49,7 @@ export const ProductDetailPage = () => {
   const isInCart = cart?.some(
     (item) => item.cart_item.productId === product?.id,
   );
-  const { handleAddToWishlist } = useWishlistActions();
+  const { handleWishlistToggle } = useWishlistActions();
 
   const handleButtonCLick = async () => {
     if (isInCart) {
@@ -333,7 +333,7 @@ export const ProductDetailPage = () => {
                 </div>
               </div>
               {user && <div className="grid gap-3 border-t pt-6 sm:grid-cols-2">
-                <Button onClick={() => handleAddToWishlist(product.id)}>
+                <Button onClick={(e) => handleWishlistToggle(e,product.id)}>
                   Add to Wishlist
                 </Button>
                 <Button onClick={handleButtonCLick} disabled={cartLoading}>
