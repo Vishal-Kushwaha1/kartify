@@ -14,10 +14,13 @@ import {
   Briefcase,
   IdCard,
 } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export const User = () => {
   const user = useAppSelector((state) => state.user.user);
   const loading = useAppSelector((state) => state.user.loading);
+  const navigate = useNavigate()
 
   if (loading) {
     return (
@@ -98,6 +101,7 @@ export const User = () => {
                 </div>
               </div>
 
+            <Button onClick={()=> navigate("/add-address")}>Add Address</Button>
             </div>
           </CardContent>
         </Card>

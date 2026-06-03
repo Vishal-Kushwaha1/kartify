@@ -21,7 +21,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { clearUser } from "@/redux/user/userSlice";
 import { useTheme } from "next-themes";
-import {authClient} from "@/lib/authClient.ts";
+import { authClient } from "@/lib/authClient.ts";
 
 export const Navbar = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -34,7 +34,7 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await authClient.signOut()
+      await authClient.signOut();
       dispatch(clearUser());
       navigate("/login");
     } catch (error) {
@@ -55,7 +55,6 @@ export const Navbar = () => {
           </span>
         </Link>
 
-
         {/* Right actions */}
         <div className="flex items-center gap-1 sm:gap-2">
           <Button
@@ -67,13 +66,17 @@ export const Navbar = () => {
           </Button>
 
           <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full text-muted-foreground hover:text-foreground"
-                onClick={()=>setTheme(theme==="dark"? "light": "dark")}
-              >
-                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-              </Button>
+            variant="ghost"
+            size="icon"
+            className="rounded-full text-muted-foreground hover:text-foreground"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
+            {theme === "dark" ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </Button>
 
           {user ? (
             <>
@@ -132,6 +135,15 @@ export const Navbar = () => {
                     <Link to="/user" className="flex items-center w-full">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="cursor-pointer">
+                    <Link
+                      to="/add-address"
+                      className="flex items-center w-full"
+                    >
+                      <Package className="mr-2 h-4 w-4" />
+                      <span>Add address</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="cursor-pointer">
