@@ -35,9 +35,12 @@ const SellerRoutes = lazy(() => import("@/pages/seller/SellerRoutes"));
 // Main Layout for routes that need Navbar & Footer
 const MainLayout = () => {
     const dispatch = useAppDispatch();
+    const {user} = useAppSelector((state)=> state.user)
     useEffect(() => {
-        dispatch(fetchCartItem());
-    }, [dispatch]);
+        if(user){
+            dispatch(fetchCartItem());
+        }
+    }, [dispatch, user]);
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar/>
