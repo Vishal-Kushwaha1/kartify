@@ -1,227 +1,269 @@
 import { useEffect, useState } from "react";
-import { api } from "@/utils/Axios.tsx";
-import { LoadingPage } from "@/components/LoadingPage.tsx";
-import type { Seller } from "@/types/type.ts";
+import { api } from "@/utils/Axios";
+import { LoadingPage } from "@/components/LoadingPage";
+import type { Seller } from "@/types/type";
+
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Package, MapPin } from "lucide-react";
+
+import {
+  MapPin,
+  Package,
+  CalendarDays,
+  Store as StoreIcon,
+} from "lucide-react";
 
 const Store = () => {
   const [seller, setSeller] = useState<Seller | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchSeller = async () => {
       try {
         setLoading(true);
-        const result = await api.get(`/user/store`, { withCredentials: true });
-        setSeller(result.data.data || result.data);
+
+        const response = await api.get("/user/store", {
+          withCredentials: true,
+        });
+
+        setSeller(response.data.data || response.data);
       } catch (error) {
-        console.error("Error fetching seller details:", error);
+        console.error("Error fetching seller:", error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchSeller();
   }, []);
 
   if (loading) return <LoadingPage />;
-  if (!seller) return <div className="p-6 text-center">Seller not found</div>;
+
+  if (!seller) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+        Seller not found
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header Section with Store Banner */}
-        <div className="relative mb-8">
-          <div className="relative h-96 rounded-xl overflow-hidden shadow-lg bg-linear-to-r from-blue-600 to-purple-600">
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-7xl p-4 md:p-8">
+        {/* Banner */}
+        <div className="relative mb-24">
+          <div className="h-87.5 overflow-hidden rounded-3xl border bg-card shadow-lg">
             {seller.shopImage ? (
               <img
                 src={seller.shopImage}
-                alt="Shop Banner"
-                className="w-full h-full object-cover"
+                alt={seller.storeName}
+                className="h-full w-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-linear-to-r from-blue-500 to-purple-500">
-                <Package className="w-20 h-20 text-white opacity-50" />
+              <div className="flex h-full w-full items-center justify-center bg-linear-to-r from-primary/20 to-primary/5">
+                <Package className="h-20 w-20 text-muted-foreground" />
               </div>
             )}
           </div>
 
-          {/* Store Info Card - Overlapping Banner */}
-          <div className="relative -mt-16 mx-4 md:mx-0">
-            <Card className="bg-white dark:bg-slate-900 shadow-xl border-0 dark:border-slate-800">
-              <CardContent className="p-6 md:p-8">
-                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1">
-                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                          {seller.storeName}
-                        </h1>
-                        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4">
-                          <MapPin className="w-4 h-4" />
-                          <span>
-                            {seller.storeLocation || "Location not provided"}
-                          </span>
-                        </div>
-                        <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed max-w-2xl">
-                          {seller.storeDescription ||
-                            "No description provided."}
-                        </p>
-                      </div>
-                    </div>
+          {/* Store Info */}
+          <Card className="absolute -bottom-16 left-1/2 w-[95%] -translate-x-1/2 shadow-xl">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <StoreIcon className="h-8 w-8 text-primary" />
+
+                    <h1 className="text-3xl font-bold text-foreground md:text-4xl">
+                      {seller.storeName}
+                    </h1>
                   </div>
-                  <div className="flex flex-wrap items-center gap-3 md:justify-end">
-                    <Badge
-                      variant={seller.isActive ? "default" : "destructive"}
-                      className={`text-sm font-semibold px-4 py-2 ${
-                        seller.isActive
-                          ? "bg-emerald-500 hover:bg-emerald-600"
-                          : "bg-red-500 hover:bg-red-600"
-                      }`}
-                    >
-                      {seller.isActive ? "✓ Active" : "Inactive"}
-                    </Badge>
-                    <Badge
-                      variant={seller.isVerified ? "default" : "secondary"}
-                      className={`text-sm font-semibold px-4 py-2 ${
-                        seller.isVerified
-                          ? "bg-blue-500 hover:bg-blue-600"
-                          : "bg-amber-500 hover:bg-amber-600"
-                      }`}
-                    >
-                      {seller.isVerified ? "✓ Verified" : "Pending"}
-                    </Badge>
+
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
+                    <span>
+                      {seller.storeLocation || "Location not provided"}
+                    </span>
                   </div>
+
+                  <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
+                    {seller.storeDescription ||
+                      "No store description available."}
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <Badge
+                    className={
+                      seller.isActive
+                        ? "bg-green-600 hover:bg-green-700"
+                        : "bg-red-600 hover:bg-red-700"
+                    }
+                  >
+                    {seller.isActive ? "Active" : "Inactive"}
+                  </Badge>
+
+                  <Badge
+                    variant={seller.isVerified ? "default" : "secondary"}
+                  >
+                    {seller.isVerified
+                      ? "Verified"
+                      : "Verification Pending"}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Business Info */}
+        {/* Main Grid */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Left Section */}
           <div className="space-y-6">
-            <Card className="shadow-md dark:bg-slate-900 dark:border-slate-800">
-              <CardHeader className="bg-linear-to-r from-blue-50 to-blue-100 dark:from-blue-950/40 dark:to-blue-900/40 border-b dark:border-slate-700">
-                <CardTitle className="text-lg text-gray-900 dark:text-white">
-                  Store Details
-                </CardTitle>
+            <Card>
+              <CardHeader>
+                <CardTitle>Store Details</CardTitle>
+                <CardDescription>
+                  General information about your store
+                </CardDescription>
               </CardHeader>
-              <CardContent className="p-6 space-y-4">
+
+              <CardContent className="space-y-5">
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     Store ID
                   </p>
-                  <p className="font-mono text-sm bg-gray-100 dark:bg-slate-800 px-3 py-2 rounded-md mt-2 text-gray-700 dark:text-gray-300">
+
+                  <div className="mt-2 rounded-md bg-muted p-3 font-mono text-sm">
                     {seller.id}
-                  </p>
+                  </div>
                 </div>
-                <Separator className="dark:bg-slate-700" />
+
+                <Separator />
+
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     Owner ID
                   </p>
-                  <p className="font-mono text-sm bg-gray-100 dark:bg-slate-800 px-3 py-2 rounded-md mt-2 text-gray-700 dark:text-gray-300">
+
+                  <div className="mt-2 rounded-md bg-muted p-3 font-mono text-sm">
                     {seller.userId}
-                  </p>
+                  </div>
                 </div>
-                <Separator className="dark:bg-slate-700" />
+
+                <Separator />
+
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     Member Since
                   </p>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-2 font-medium">
+
+                  <div className="mt-3 flex items-center gap-2 text-sm">
+                    <CalendarDays className="h-4 w-4" />
+
                     {new Date(seller.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
                     })}
-                  </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Right Column - Verification Documents */}
-          <div className="lg:col-span-2 space-y-6">
-            <Card className="shadow-md dark:bg-slate-900 dark:border-slate-800">
-              <CardHeader className="bg-linear-to-r from-purple-50 to-purple-100 dark:from-purple-950/40 dark:to-purple-900/40 border-b dark:border-slate-700">
-                <CardTitle className="text-lg text-gray-900 dark:text-white">
-                  Business Verification
-                </CardTitle>
-                <CardDescription className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Government issued identification and tax documents
+          {/* Right Section */}
+          <div className="space-y-6 lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Business Verification</CardTitle>
+
+                <CardDescription>
+                  Government identification and tax details
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* PAN Card */}
-                  <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-orange-50 to-orange-100/50 dark:from-orange-950/30 dark:to-orange-900/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-sm font-bold">
-                        P
-                      </div>
-                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
-                        PAN Number
-                      </p>
-                    </div>
-                    <p className="font-mono font-bold text-gray-900 dark:text-white text-lg tracking-widest">
-                      {seller.panNumber}
-                    </p>
-                  </div>
 
-                  {/* Aadhar Card */}
-                  <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-green-50 to-green-100/50 dark:from-green-950/30 dark:to-green-900/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-sm font-bold">
-                        A
-                      </div>
-                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
-                        Aadhar Number
-                      </p>
-                    </div>
-                    <p className="font-mono font-bold text-gray-900 dark:text-white text-lg tracking-widest">
-                      {seller.aadharNumber}
-                    </p>
-                  </div>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {/* PAN */}
+                  <Card className="border-orange-500/20 bg-orange-500/5">
+                    <CardContent className="p-5">
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-sm font-bold text-white">
+                          P
+                        </div>
 
-                  {/* GST Card */}
-                  <div className="border border-gray-200 dark:border-slate-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-linear-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold">
-                        G
+                        <span className="text-xs font-medium uppercase text-muted-foreground">
+                          PAN Number
+                        </span>
                       </div>
-                      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
-                        GST Number
+
+                      <p className="font-mono text-lg font-bold break-all">
+                        {seller.panNumber}
                       </p>
-                    </div>
-                    <p className="font-mono font-bold text-gray-900 dark:text-white text-lg tracking-widest mb-3">
-                      {seller.gstNumber}
-                    </p>
-                    {seller.gstCertificate ? (
-                      <a
-                        href={seller.gstCertificate}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center justify-center text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 px-3 py-1 rounded-md transition-colors"
-                      >
-                        View Certificate
-                      </a>
-                    ) : (
-                      <p className="text-xs text-gray-500 dark:text-gray-400 italic">
-                        No certificate uploaded
+                    </CardContent>
+                  </Card>
+
+                  {/* Aadhaar */}
+                  <Card className="border-green-500/20 bg-green-500/5">
+                    <CardContent className="p-5">
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-sm font-bold text-white">
+                          A
+                        </div>
+
+                        <span className="text-xs font-medium uppercase text-muted-foreground">
+                          Aadhaar Number
+                        </span>
+                      </div>
+
+                      <p className="font-mono text-lg font-bold break-all">
+                        {seller.aadharNumber}
                       </p>
-                    )}
-                  </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* GST */}
+                  <Card className="border-blue-500/20 bg-blue-500/5">
+                    <CardContent className="p-5">
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white">
+                          G
+                        </div>
+
+                        <span className="text-xs font-medium uppercase text-muted-foreground">
+                          GST Number
+                        </span>
+                      </div>
+
+                      <p className="mb-4 font-mono text-lg font-bold break-all">
+                        {seller.gstNumber}
+                      </p>
+
+                      {seller.gstCertificate ? (
+                        <a
+                          href={seller.gstCertificate}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                        >
+                          View Certificate
+                        </a>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          No certificate uploaded
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
                 </div>
               </CardContent>
             </Card>
