@@ -9,6 +9,7 @@ import {
   LogOut,
   Sun,
   Moon,
+  X,
 } from "lucide-react";
 import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import {
@@ -22,6 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { clearUser } from "@/redux/user/userSlice";
 import { useTheme } from "next-themes";
 import { authClient } from "@/lib/authClient.ts";
+import { useState } from "react";
 
 export const Navbar = () => {
   const { user } = useAppSelector((state) => state.user);
@@ -29,8 +31,19 @@ export const Navbar = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const cartItemsCount = cart?.length || 0;
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
+      setSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -61,6 +74,7 @@ export const Navbar = () => {
             variant="ghost"
             size="icon"
             className="hidden sm:inline-flex rounded-full text-muted-foreground hover:text-foreground"
+            onClick={() => setSearchOpen(true)}
           >
             <Search className="h-4 w-4" />
           </Button>
@@ -182,6 +196,55 @@ export const Navbar = () => {
               </Button>
             </div>
           )}
+
+        {/* Search Modal */}
+        {searchOpen && (
+          <div className="fixed inset-0 z-50 flex items-start justify-center pt-20">
+            <div className="w-full max-w-2xl mx-4 rounded-lg bg-background shadow-lg animate-in fade-in slide-in-from-top-4">
+              <form onSubmit={handleSearch} className="p-6">
+                <div className="flex items-center gap-3">
+                  <Search className="h-5 w-5 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search products, sellers, and more..."
+                    className="flex-1 bg-transparent border-b border-border/50 px-2 py-2 outline-none text-foreground placeholder:text-muted-foreground focus:border-primary transition-colors"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    autoFocus
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setSearchOpen(false);
+                      setSearchQuery("");
+                    }}
+                    className="rounded-full text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+                <div className="mt-4 text-sm text-muted-foreground">
+                  {searchQuery ? (
+                    <p>Press Enter to search for "{searchQuery}"</p>
+                  ) : (
+                    <p>Start typing to search...</p>
+                  )}
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {searchOpen && (
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => {
+              setSearchOpen(false);
+              setSearchQuery("");
+            }}
+          />
+        )}
         </div>
       </div>
     </header>

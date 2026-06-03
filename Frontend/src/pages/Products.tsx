@@ -15,7 +15,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ShoppingCart, Sparkles } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import { useAppSelector } from "@/redux/hook";
@@ -32,11 +32,18 @@ export const Products = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(10);
   const limit = 20;
+  const [searchParams] = useSearchParams()
+  const query = searchParams.get("search")
 
-  const fetchProducts = async (page: number) => {
+  const fetchProducts = useCallback(async (page: number) => {
     try {
       setPageLoading(true);
-      const response = await api.get(`/products?page=${page}&limit=${limit}`);
+      let response
+      if(query){
+        response = await api.get(`/products?search=${query}&page=${page}&limit=${limit}`)
+      }else{
+        response = await api.get(`/products?page=${page}&limit=${limit}`);
+      }
       const data = response?.data?.data ?? response?.data;
       if (data && data.products) {
         setProducts(data.products);
@@ -49,7 +56,7 @@ export const Products = () => {
     } finally {
       setPageLoading(false);
     }
-  };
+  },[query])
 
   useEffect(() => {
     fetchProducts(currentPage);
@@ -57,7 +64,7 @@ export const Products = () => {
     if(data){
         setRecommendations(JSON.parse(data))
     }
-  }, [currentPage]);
+  }, [currentPage, query, fetchProducts]);
 
   const fetchRecommendations = useCallback(async () => {
     try {
@@ -143,7 +150,7 @@ export const Products = () => {
         </p>
       </div>
       <div className="max-w-7xl mx-auto px-6">
-        {recommendations.length > 0 && (
+        {!query && recommendations.length > 0 && (
           <div className="mb-12">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-foreground">
               <Sparkles className="h-6 w-6 text-primary" /> Recommended for You
