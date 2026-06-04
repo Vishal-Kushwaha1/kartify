@@ -1,17 +1,33 @@
-# Kartify 🛒
+<div align="center">
+  <img src="./Frontend/public/kartify.svg" width="100" height="100" alt="Kartify Logo" />
+  <h1>Kartify</h1>
+  <p>A modern, full-stack E-Commerce platform built with cutting-edge technologies.</p>
+</div>
 
-Kartify is a modern, full-stack E-Commerce platform built with cutting-edge technologies. It features robust user authentication, product management (seller and buyer roles), shopping cart, secure payment gateways, and order management.
+Kartify features robust user authentication, product management (seller and buyer roles), shopping cart, secure payment gateways, order management, and AI-powered capabilities.
 
-## 🚀 Tech Stack
+## 🚀 Features
+- **User Roles:** Natively supports Buyers, Sellers, and Admins.
+- **Authentication:** Secure Email/Password and Google OAuth.
+- **AI Integration:** Google Generative AI for smart features.
+- **Advanced Search:** Fuzzy search powered by Fuse.js.
+- **Location/Maps:** Integrated Leaflet maps for address and delivery tracking.
+- **Payments:** Secure checkout using Razorpay and Stripe.
+- **Modern UI:** Responsive design with Tailwind CSS, Shadcn UI, dark mode support, and smooth carousels.
+- **Image Uploads:** Direct integration with Cloudinary.
+
+## 💻 Tech Stack
 
 ### Frontend
 - **Framework:** React 19 + Vite
 - **Language:** TypeScript
-- **Styling:** Tailwind CSS v4, Shadcn UI
+- **Styling:** Tailwind CSS v4, Shadcn UI, Next Themes (Dark Mode)
 - **State Management:** Redux Toolkit
 - **Forms & Validation:** React Hook Form, Zod
 - **Routing:** React Router v7
+- **Maps:** Leaflet & React Leaflet
 - **Payments:** Razorpay, Stripe
+- **Icons & UI:** Lucide React, Phosphor Icons, Embla Carousel, Sonner (Toasts), Input OTP
 
 ### Backend
 - **Runtime:** Node.js, Express
@@ -19,6 +35,8 @@ Kartify is a modern, full-stack E-Commerce platform built with cutting-edge tech
 - **Database:** PostgreSQL (Neon Serverless)
 - **ORM:** Drizzle ORM
 - **Authentication:** Better-Auth (Email/Password & Google OAuth)
+- **AI Integration:** Google GenAI (@google/genai)
+- **Search:** Fuse.js
 - **Image Storage:** Cloudinary
 - **Emails:** Resend
 - **File Uploads:** Multer
@@ -75,6 +93,9 @@ RAZORPAY_KEY_ID=your_razorpay_key
 RAZORPAY_KEY_SECRET=your_razorpay_secret
 STRIPE_PUBLISH_KEY=your_stripe_publish_key
 STRIPE_SECRET_KEY=your_stripe_secret_key
+
+# AI (Optional)
+GEMINI_API_KEY=your_google_genai_key
 ```
 
 Run the backend server:
@@ -90,10 +111,11 @@ cd Frontend
 npm install
 ```
 
-Create a `.env` file in the `Frontend` directory with required environment variables (like your backend URL and Stripe public key):
+Create a `.env` file in the `Frontend` directory with required environment variables:
 ```env
 VITE_BACKEND_URL=http://localhost:3000
 VITE_FRONTEND_URL=http://localhost:5173
+VITE_STRIPE_PUBLIC_KEY=your_stripe_public_key
 ```
 
 Run the frontend app:
