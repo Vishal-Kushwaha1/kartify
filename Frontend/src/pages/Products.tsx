@@ -1,11 +1,7 @@
-import { addToCart } from "@/redux/cart/cartThunk";
-import type { AppDispatch } from "@/redux/store";
 import type { Product, WishlistItem } from "@/types/type";
 import { api } from "@/utils/Axios";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-
 import {
   Pagination,
   PaginationContent,
@@ -18,7 +14,8 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ShoppingCart, Sparkles } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
-import { useAppSelector } from "@/redux/hook";
+import { useGetUserQuery } from "@/redux/user/userApi";
+import { useAddToCartMutation } from "@/redux/cart/cartApi";
 
 export const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,8 +23,7 @@ export const Products = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
   const [recommendations, setRecommendations] = useState<Product[]>([]);
-  const dispatch = useDispatch<AppDispatch>();
-  const { user } = useAppSelector((state) => state.user);
+  const { data: user } = useGetUserQuery()
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(10);
@@ -99,11 +95,13 @@ export const Products = () => {
     }
   }, [user, fetchWishlist, fetchRecommendations]);
 
+  const [addToCart] =useAddToCartMutation()
+
   const handleAddToCart = async (e: React.MouseEvent, productId: string) => {
     e.stopPropagation();
     try {
       setActionLoading(productId);
-      await dispatch(addToCart(productId)).unwrap();
+      await addToCart(productId)
       toast.success("Item added to cart");
     } catch (error) {
       toast.error("Failed to add item");

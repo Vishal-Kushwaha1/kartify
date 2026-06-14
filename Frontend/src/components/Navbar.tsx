@@ -11,7 +11,6 @@ import {
   Moon,
   X,
 } from "lucide-react";
-import { useAppSelector, useAppDispatch } from "@/redux/hook";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,15 +19,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { clearUser } from "@/redux/user/userSlice";
 import { useTheme } from "next-themes";
-import { authClient } from "@/lib/authClient.ts";
 import { useState } from "react";
+import { useClearUserMutation, useGetUserQuery } from "@/redux/user/userApi";
+import { useGetCartItemQuery } from "@/redux/cart/cartApi";
 
 export const Navbar = () => {
-  const { user } = useAppSelector((state) => state.user);
-  const { cart } = useAppSelector((state) => state.cart);
-  const dispatch = useAppDispatch();
+  const { data: user } =useGetUserQuery()
+  const [clearUser] = useClearUserMutation()
+  const { data:cart } = useGetCartItemQuery()
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -47,8 +46,7 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await authClient.signOut();
-      dispatch(clearUser());
+      await clearUser().unwrap()
       localStorage.removeItem("kartify_recommendation")
       localStorage.removeItem("kartify_role")
       navigate("/login");

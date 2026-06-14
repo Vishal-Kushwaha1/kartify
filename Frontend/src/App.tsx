@@ -1,11 +1,9 @@
-import {lazy, Suspense, useEffect} from "react";
+import {lazy, Suspense} from "react";
 import {Routes, Route, Outlet, Navigate} from "react-router-dom";
-import {useAppSelector, useAppDispatch} from "./redux/hook";
-import {fetchUser} from "./redux/user/userThunk";
-import {fetchCartItem} from "@/redux/cart/cartThunk.ts";
 import {Navbar} from "@/components/Navbar";
 import {Footer} from "@/components/Footer";
 import RoleRoute from "./components/RoleRoute";
+import { useGetUserQuery } from "./redux/user/userApi";
 
 // Unprotected
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -37,13 +35,6 @@ const AdminRoutes = lazy(()=> import("@/pages/admin/AdminRoutes"))
 
 // Main Layout for routes that need Navbar & Footer
 const MainLayout = () => {
-    const dispatch = useAppDispatch();
-    const {user} = useAppSelector((state)=> state.user)
-    useEffect(() => {
-        if(user){
-            dispatch(fetchCartItem());
-        }
-    }, [dispatch, user]);
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar/>
@@ -57,8 +48,8 @@ const MainLayout = () => {
 
 // Redirect root to corresponding dashboards if logged in
 const RootRedirect = () => {
-    const {user, loading} = useAppSelector((state) => state.user);
-    if (loading) return (
+    const {data: user, isLoading} = useGetUserQuery()
+    if (isLoading) return (
         <div className="flex h-screen items-center justify-center">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"/>
         </div>
@@ -73,13 +64,7 @@ const RootRedirect = () => {
 };
 
 export const App = () => {
-    const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        dispatch(fetchUser());
-    }, [dispatch]);
-
-    const {user} = useAppSelector((state) => state.user);
+    const {data:user} = useGetUserQuery()
 
     return (
         <Suspense

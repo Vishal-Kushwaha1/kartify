@@ -27,9 +27,9 @@ import {
 import { ReviewForm } from "@/components/ReviewForm";
 import { Review } from "@/components/Review";
 import { toast } from "sonner";
-import { useAppDispatch, useAppSelector } from "@/redux/hook.ts";
-import { addToCart } from "@/redux/cart/cartThunk.ts";
 import { useWishlistActions } from "@/hooks/useWishlistActions.ts";
+import { useGetUserQuery } from "@/redux/user/userApi";
+import { useAddToCartMutation, useGetCartItemQuery } from "@/redux/cart/cartApi";
 
 type ReviewPropsData = { review: ReviewProps; user: User };
 
@@ -41,9 +41,9 @@ export const ProductDetailPage = () => {
   const [cartLoading, setCartLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const { user } = useAppSelector((state) => state.user);
-  const { cart } = useAppSelector((state) => state.cart);
-  const dispatch = useAppDispatch();
+  const { data: user } = useGetUserQuery();
+  const { data:cart } = useGetCartItemQuery()
+  const [addToCart] = useAddToCartMutation()
   const { id } = useParams();
 
   const isInCart = cart?.some(
@@ -57,7 +57,7 @@ export const ProductDetailPage = () => {
     } else {
       try {
         setCartLoading(true);
-        await dispatch(addToCart(`${product?.id}`)).unwrap();
+        await addToCart({productId: product?.id}).unwrap()
         toast.success("Item added to cart");
       } catch (error) {
         toast.error("Failed to add item");
@@ -185,7 +185,10 @@ export const ProductDetailPage = () => {
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Card className="rounded-xl border bg-background p-6 shadow-none">
             {images?.length > 0 ? (
-              <Carousel className="w-full" opts={{align:"start", loop: true}}>
+              <Carousel
+                className="w-full"
+                opts={{ align: "start", loop: true }}
+              >
                 <CarouselContent>
                   {images.map((img, index) => (
                     <CarouselItem key={index}>
@@ -332,14 +335,16 @@ export const ProductDetailPage = () => {
                   </div>
                 </div>
               </div>
-              {user && <div className="grid gap-3 border-t pt-6 sm:grid-cols-2">
-                <Button onClick={(e) => handleWishlistToggle(e,product.id)}>
-                  Add to Wishlist
-                </Button>
-                <Button onClick={handleButtonCLick} disabled={cartLoading}>
-                  {isInCart ? "Checkout" : "Add to Cart"}
-                </Button>
-              </div>}
+              {user && (
+                <div className="grid gap-3 border-t pt-6 sm:grid-cols-2">
+                  <Button onClick={(e) => handleWishlistToggle(e, product.id)}>
+                    Add to Wishlist
+                  </Button>
+                  <Button onClick={handleButtonCLick} disabled={cartLoading}>
+                    {isInCart ? "Checkout" : "Add to Cart"}
+                  </Button>
+                </div>
+              )}
             </div>
           </Card>
         </div>

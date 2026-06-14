@@ -1,4 +1,3 @@
-import { useAppSelector } from "@/redux/hook";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -16,13 +15,13 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useGetUserQuery } from "@/redux/user/userApi";
 
 export const User = () => {
-  const user = useAppSelector((state) => state.user.user);
-  const loading = useAppSelector((state) => state.user.loading);
+  const {data:user , isLoading} = useGetUserQuery()
   const navigate = useNavigate()
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-muted/40">
         <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />

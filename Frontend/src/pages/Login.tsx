@@ -12,15 +12,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingPage } from "@/components/LoadingPage";
 import { authClient } from "@/lib/authClient";
 import { toast } from "sonner";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/user/userSlice";
-import type {User} from "@/types/type";
 import {  Loader2 } from "lucide-react";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -40,9 +36,7 @@ export const Login = () => {
       if (error)
         return toast.error("Login failed", { description: error.message });
       toast.success("Login successful");
-      const { data: session } = await authClient.getSession();
-      dispatch(setUser(session?.user as User));
-      navigate("/");
+      navigate("/products");
     } catch {
       toast.error("Something went wrong.");
     } finally {

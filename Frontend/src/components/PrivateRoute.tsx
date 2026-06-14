@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAppSelector } from "@/redux/hook";
+import { useGetUserQuery } from "@/redux/user/userApi";
 
 export const PrivateRoute = () => {
-  const { user, loading } = useAppSelector((state) => state.user);
+  const { data:user, isLoading:loading } = useGetUserQuery()
   const location = useLocation();
 
   if (loading) {

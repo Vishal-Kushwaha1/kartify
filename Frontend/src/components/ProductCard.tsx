@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import type { Product } from "@/types/type.ts";
 import type { NavigateFunction } from "react-router-dom";
-import { useAppSelector } from "@/redux/hook";
+import { useGetUserQuery } from "@/redux/user/userApi";
 
 const ProductCard = ({
   item,
@@ -40,7 +40,7 @@ const ProductCard = ({
   const images = getImages(item);
   const inStock = item.stock !== undefined ? item.stock > 0 : true;
 
-  const {user} = useAppSelector((state) => state.user);
+  const { data: user } = useGetUserQuery();
 
   return (
     <Card
@@ -50,7 +50,10 @@ const ProductCard = ({
       {/* Image Container */}
       <div className="relative w-full h-64 bg-muted/30 overflow-hidden">
         {images.length > 0 ? (
-          <Carousel className="w-full h-full" opts={{align:"start", loop: true}}>
+          <Carousel
+            className="w-full h-full"
+            opts={{ align: "start", loop: true }}
+          >
             <CarouselContent>
               {images.map((img, idx) => (
                 <CarouselItem key={idx}>
@@ -77,18 +80,20 @@ const ProductCard = ({
           </div>
         )}
         {/* Floating Wishlist Button */}
-        {user && <button
-          onClick={(e) => onWishlistToggle(e, item.id)}
-          className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-background/60 backdrop-blur-md border border-border/50 hover:bg-background transition-colors shadow-sm"
-        >
-          <Heart
-            className={`h-4 w-4 transition-colors ${
-              wishlistIds.has(item.id)
-                ? "fill-rose-500 text-rose-500"
-                : "text-foreground"
-            }`}
-          />
-        </button>}
+        {user && (
+          <button
+            onClick={(e) => onWishlistToggle(e, item.id)}
+            className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-background/60 backdrop-blur-md border border-border/50 hover:bg-background transition-colors shadow-sm"
+          >
+            <Heart
+              className={`h-4 w-4 transition-colors ${
+                wishlistIds.has(item.id)
+                  ? "fill-rose-500 text-rose-500"
+                  : "text-foreground"
+              }`}
+            />
+          </button>
+        )}
         {/* Badges */}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-1.5">
           {!inStock && (
@@ -135,18 +140,20 @@ const ProductCard = ({
               ₹{item.price?.toLocaleString("en-IN") ?? "0"}
             </span>
           </div>
-          {user && <Button
-            onClick={(e) => onAddToCart(e, item.id)}
-            disabled={actionLoading === item.id || !inStock}
-            size="icon"
-            className="rounded-full h-10 w-10 bg-primary hover:bg-primary/90 shadow-sm hover:shadow-md transition-all group-hover:scale-110"
-          >
-            {actionLoading === item.id ? (
-              <Loader2 className="h-4 w-4 animate-spin text-primary-foreground" />
-            ) : (
-              <ShoppingCart className="h-4 w-4 text-primary-foreground" />
-            )}
-          </Button>}
+          {user && (
+            <Button
+              onClick={(e) => onAddToCart(e, item.id)}
+              disabled={actionLoading === item.id || !inStock}
+              size="icon"
+              className="rounded-full h-10 w-10 bg-primary hover:bg-primary/90 shadow-sm hover:shadow-md transition-all group-hover:scale-110"
+            >
+              {actionLoading === item.id ? (
+                <Loader2 className="h-4 w-4 animate-spin text-primary-foreground" />
+              ) : (
+                <ShoppingCart className="h-4 w-4 text-primary-foreground" />
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </Card>

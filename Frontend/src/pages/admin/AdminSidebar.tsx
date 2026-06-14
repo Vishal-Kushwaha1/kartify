@@ -13,9 +13,8 @@ import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/authClient.ts";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button.tsx";
-import { clearUser } from "@/redux/user/userSlice.ts";
-import { useDispatch } from "react-redux";
 import { useTheme } from "next-themes";
+import { useClearUserMutation } from "@/redux/user/userApi";
 
 const sidebarLinks = [
   {
@@ -48,13 +47,12 @@ const sidebarLinks = [
 const AdminSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { theme, setTheme } = useTheme();
+  const [clearUser] = useClearUserMutation();
 
   const handleSignOut = async () => {
     try {
-      await authClient.signOut();
-      dispatch(clearUser());
+      await clearUser().unwrap();
       localStorage.removeItem("kartify_role");
       toast.success("User logged out");
       navigate("/login");

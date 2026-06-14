@@ -10,12 +10,11 @@ import {
   Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDispatch } from "react-redux";
 import { authClient } from "@/lib/authClient.ts";
-import { clearUser } from "@/redux/user/userSlice.ts";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button.tsx";
 import { useTheme } from "next-themes";
+import { useClearUserMutation } from "@/redux/user/userApi";
 
 const sidebarLinks = [
   {
@@ -48,13 +47,12 @@ const sidebarLinks = [
 export const SellerSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { theme, setTheme } = useTheme();
+  const [clearUser] = useClearUserMutation()
 
   const handleSignOut = async () => {
     try {
-      await authClient.signOut();
-      dispatch(clearUser());
+      await clearUser().unwrap()
       localStorage.removeItem("kartify_role")
       toast.success("User logged out");
       navigate("/login");

@@ -1,16 +1,15 @@
-import { configureStore } from '@reduxjs/toolkit'
-import userReducer from '@/redux/user/userSlice'
-import cartReducer from '@/redux/cart/cartSlice'
+import { configureStore } from "@reduxjs/toolkit";
+import { userApi } from "./user/userApi";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { cartApi } from "./cart/cartApi";
 
 export const store = configureStore({
   reducer: {
-    user :userReducer,
-    cart:cartReducer
+    [userApi.reducerPath]: userApi.reducer,
+    [cartApi.reducerPath]: cartApi.reducer,
   },
-})
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(userApi.middleware, cartApi.middleware),
+});
 
-
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch
+setupListeners(store.dispatch);

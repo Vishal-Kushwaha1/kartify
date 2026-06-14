@@ -1,7 +1,5 @@
 import {useEffect, useState} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {useAppDispatch} from "@/redux/hook";
-import {fetchCartItem} from "@/redux/cart/cartThunk";
 import {api} from "@/utils/Axios";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent} from "@/components/ui/card";
@@ -16,7 +14,6 @@ import {
 export const OrderSuccess = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
 
     const sessionId = searchParams.get("session_id");
     const rzpOrderId = searchParams.get("rzp_order_id");
@@ -33,7 +30,7 @@ export const OrderSuccess = () => {
     const [verified, setVerified] = useState<boolean>(!isStripe && !isRazorpay);
 
     useEffect(() => {
-        dispatch(fetchCartItem());
+        
 
         if (isStripe) {
             const verifyPayment = async () => {
@@ -44,7 +41,6 @@ export const OrderSuccess = () => {
                         {withCredentials: true},
                     );
                     setVerified(true);
-                    dispatch(fetchCartItem());
                 } catch {
                     setError(
                         "Something went wrong while verifying your payment. Please contact support.",
@@ -69,7 +65,6 @@ export const OrderSuccess = () => {
                         {withCredentials: true},
                     );
                     setVerified(true);
-                    dispatch(fetchCartItem());
                 } catch {
                     setError(
                         "Something went wrong while verifying your payment. Please contact support.",
@@ -89,7 +84,6 @@ export const OrderSuccess = () => {
         orderId,
         isStripe,
         isRazorpay,
-        dispatch,
     ]);
 
     return (

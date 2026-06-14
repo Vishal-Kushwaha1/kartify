@@ -9,12 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { api } from "@/utils/Axios";
 import { useParams } from "react-router-dom";
-import { useAppSelector } from "@/redux/hook";
+import { useGetUserQuery } from "@/redux/user/userApi";
 
 export const ReviewForm = () => {
   const [rating, setRating] = useState(0);
 
-  const {user} = useAppSelector((state)=> state.user)
+  const {data:user} = useGetUserQuery()
 
   const { id } = useParams();
 

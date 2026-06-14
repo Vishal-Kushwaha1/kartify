@@ -17,9 +17,6 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterProps } from "../types/schema";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/user/userSlice";
-import type { User } from "@/types/type";
 import { Loader2, MailCheck } from "lucide-react";
 
 type Step = "form" | "otp";
@@ -39,7 +36,6 @@ export const Signup = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const dispatch = useDispatch();
 
   const handleRegister = async (formData: RegisterProps) => {
     const { email, password, fullName } = formData;
@@ -86,9 +82,6 @@ export const Signup = () => {
       });
       if (error) return toast.error(error.message || "Invalid OTP");
       toast.success("Email verified!");
-
-      const { data: session } = await authClient.getSession();
-      dispatch(setUser(session?.user as User));
       navigate("/");
     } catch {
       toast.error("Something went wrong.");

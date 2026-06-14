@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux";
-import type { RootState } from "@/redux/store";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Sparkles } from "lucide-react";
@@ -8,13 +6,14 @@ import { LoadingPage } from "@/components/LoadingPage";
 import { useCartActions } from "@/hooks/useCartAction";
 import { CartItem } from "@/components/cartItem";
 import { PaymentSummary } from "@/components/paymentSummary";
+import { useGetCartItemQuery } from "@/redux/cart/cartApi";
 
 export const Cart = () => {
   const navigate = useNavigate();
 
-  const { cart, loading: itemLoading } = useSelector(
-    (state: RootState) => state.cart,
-  );
+  const { data:cart, isLoading: itemLoading } =useGetCartItemQuery()
+  
+  
 
   const { handleClearCart, actionLoading } = useCartActions();
 
@@ -79,7 +78,7 @@ export const Cart = () => {
         <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
           {/* Items */}
           <div className="space-y-4">
-            {cart.map((item) => (
+            {cart?.map((item) => (
               <CartItem key={item.product.id} item={item} />
             ))}
           </div>

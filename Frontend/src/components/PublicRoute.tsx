@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAppSelector } from "@/redux/hook";
 import { getDashboardPath } from "@/utils/authUtils";
+import { useGetUserQuery } from "@/redux/user/userApi";
 
 export const PublicRoute = () => {
-  const { user, loading } = useAppSelector((state) => state.user);
+  const { data:user, isLoading:loading } = useGetUserQuery()
 
   if (loading) {
     return (

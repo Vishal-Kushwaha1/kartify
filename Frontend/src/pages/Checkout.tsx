@@ -3,19 +3,28 @@ import { LoadingPage } from "@/components/LoadingPage";
 import { PaymentSummary } from "@/components/paymentSummary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { RootState } from "@/redux/store";
 import type { Address } from "@/types/type";
 import { api } from "@/utils/Axios";
 import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useAppDispatch } from "@/redux/hook";
-import { fetchCartItem } from "@/redux/cart/cartThunk";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { MapPin, ShieldCheck, CreditCard, Wallet, Banknote } from "lucide-react";
+import {
+  MapPin,
+  ShieldCheck,
+  CreditCard,
+  Wallet,
+  Banknote,
+} from "lucide-react";
+import { useGetCartItemQuery } from "@/redux/cart/cartApi";
 
 declare global {
   interface Window {
@@ -26,15 +35,12 @@ declare global {
 
 export const Checkout = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [addressId, setAddressId] = useState<string | null>(null);
   const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
 
-  const { cart, loading: ItemLoading } = useSelector(
-    (state: RootState) => state.cart,
-  );
+  const { data: cart, isLoading: ItemLoading } = useGetCartItemQuery();
 
   if (cart && cart?.length < 1) {
     navigate("/products");
@@ -68,9 +74,8 @@ export const Checkout = () => {
     } finally {
       setLoadingAddress(false);
     }
-  },[])
+  }, []);
 
-  
   useEffect(() => {
     fetchAddresses();
   }, [fetchAddresses]);
@@ -85,7 +90,6 @@ export const Checkout = () => {
       await api.post("/order/cash", { addressId }, { withCredentials: true });
 
       toast.success("Order Placed successfully");
-      dispatch(fetchCartItem());
       navigate("/order-success");
     } catch (error) {
       toast.error("Something went wrong");
@@ -189,7 +193,6 @@ export const Checkout = () => {
     }
   };
 
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cancelled = params.get("stripe_cancelled");
@@ -211,7 +214,6 @@ export const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-muted/20 pb-20">
-      
       {/* Page Header */}
       <div className="bg-background border-b border-border/50 px-6 py-10 mb-10">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -230,7 +232,6 @@ export const Checkout = () => {
         <div className="grid gap-8 lg:grid-cols-[1fr_400px]">
           {/* Left Section */}
           <div className="space-y-8">
-            
             {/* Step 1: Delivery Address */}
             <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm overflow-hidden">
               <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
@@ -240,7 +241,9 @@ export const Checkout = () => {
                   </div>
                   Delivery Address
                 </CardTitle>
-                <CardDescription>Select where you'd like us to deliver your order.</CardDescription>
+                <CardDescription>
+                  Select where you'd like us to deliver your order.
+                </CardDescription>
               </CardHeader>
               <CardContent className="p-6">
                 {loadingAddress ? (
@@ -251,11 +254,16 @@ export const Checkout = () => {
                 ) : addresses.length === 0 ? (
                   <div className="rounded-2xl border border-dashed border-border/60 bg-muted/30 p-8 text-center flex flex-col items-center justify-center">
                     <MapPin className="h-10 w-10 text-muted-foreground opacity-50 mb-3" />
-                    <p className="text-foreground font-medium mb-1">No saved addresses</p>
+                    <p className="text-foreground font-medium mb-1">
+                      No saved addresses
+                    </p>
                     <p className="text-sm text-muted-foreground mb-4">
                       Please add an address to continue checkout
                     </p>
-                    <Button onClick={() => navigate("/user")} className="rounded-xl px-6">
+                    <Button
+                      onClick={() => navigate("/user")}
+                      className="rounded-xl px-6"
+                    >
                       Go to Profile to Add Address
                     </Button>
                   </div>
@@ -270,7 +278,9 @@ export const Checkout = () => {
                         key={item.id}
                         htmlFor={item.id}
                         className={`cursor-pointer rounded-2xl border-2 p-5 transition-all hover:bg-muted/30 ${
-                          addressId === item.id ? "border-primary bg-primary/5 shadow-sm" : "border-border/50 bg-background"
+                          addressId === item.id
+                            ? "border-primary bg-primary/5 shadow-sm"
+                            : "border-border/50 bg-background"
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -285,7 +295,10 @@ export const Checkout = () => {
                                 {item.name}
                               </p>
                               {item.isDefault && (
-                                <Badge variant="secondary" className="text-[10px] uppercase font-bold py-0 h-4">
+                                <Badge
+                                  variant="secondary"
+                                  className="text-[10px] uppercase font-bold py-0 h-4"
+                                >
                                   Default
                                 </Badge>
                               )}
@@ -294,7 +307,8 @@ export const Checkout = () => {
                               {item.recipientName} • {item.phone}
                             </p>
                             <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                              {item.address}, {item.city}, {item.state} {item.postalCode}
+                              {item.address}, {item.city}, {item.state}{" "}
+                              {item.postalCode}
                             </p>
                           </div>
                         </div>
@@ -310,7 +324,21 @@ export const Checkout = () => {
               <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
                 <CardTitle className="text-lg font-semibold flex items-center gap-2">
                   <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                      <path d="M3 6h18" />
+                      <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
                   </div>
                   Order Items
                 </CardTitle>
@@ -321,13 +349,11 @@ export const Checkout = () => {
                 ))}
               </CardContent>
             </Card>
-
           </div>
 
           {/* Right Section - Payment & Summary */}
           <div className="relative">
             <div className="sticky top-24 space-y-8">
-              
               <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm overflow-hidden">
                 <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
                   <CardTitle className="text-lg font-semibold flex items-center gap-2">
