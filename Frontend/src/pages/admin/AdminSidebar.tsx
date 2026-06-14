@@ -10,7 +10,6 @@ import {
   Sun,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { authClient } from "@/lib/authClient.ts";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button.tsx";
 import { useTheme } from "next-themes";

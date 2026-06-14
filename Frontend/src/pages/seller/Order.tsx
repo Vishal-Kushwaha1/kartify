@@ -88,7 +88,7 @@ const Order = () => {
                 
                 <Card className="flex items-center gap-4 p-3 bg-muted/20">
                     <Select value={selectedStatus} onValueChange={(val) => setSelectedStatus(val as OrderEnum)}>
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-45">
                             <SelectValue placeholder="Update Status" />
                         </SelectTrigger>
                         <SelectContent>
