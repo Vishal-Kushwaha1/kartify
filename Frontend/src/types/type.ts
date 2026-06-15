@@ -206,8 +206,13 @@ export interface Wishlist {
   userId: string;
 }
 
+// export interface WishlistItem {
+//   wishlist: {
+//     productId: string;
+//   };
+// }
+
 export interface WishlistItem {
-  wishlist: {
-    productId: string;
-  };
-}
+  wishlist: Wishlist;
+  product: Product;
+};

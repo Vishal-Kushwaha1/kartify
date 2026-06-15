@@ -15,11 +15,11 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { LucideLocateFixed, MapPin } from "lucide-react";
 import { api } from "@/utils/Axios";
-import type { Address } from "@/types/type";
 import { type NewAddressProps, newAddressSchema } from "@/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { useAddAddressMutation, useDeleteAddressMutation, useGetAddressQuery, useSetDefaultAddressMutation } from "@/redux/address/addressApi";
 
 const LocationPicker = ({
   onPick,
@@ -74,8 +74,6 @@ const LocateMeButton = ({
 };
 
 export const AddAddressPage = () => {
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [loading, setLoading] = useState(false);
   const [adding, setAdding] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [settingDefault, setSettingDefault] = useState(false)
@@ -84,6 +82,11 @@ export const AddAddressPage = () => {
     lng: number;
     address: string;
   } | null>(null);
+
+  const {data: addresses=[], isLoading} = useGetAddressQuery()
+  const [addAddress] = useAddAddressMutation()
+  const [deleteAddress] = useDeleteAddressMutation()
+  const [setDefaultAddress] = useSetDefaultAddressMutation()
 
   const {
     register,
@@ -122,14 +125,10 @@ export const AddAddressPage = () => {
   const onSubmit = async (values: NewAddressProps) => {
     try {
       setAdding(true);
-      await api.post("/address", values, {
-        withCredentials: true,
-      });
-      
+      await addAddress(values).unwrap()
       reset();
       setPinned(null);
       toast.success("Address saved");
-      await fetchAddresses()
     } catch {
       toast.error("Failed to save address");
     } finally {
@@ -137,25 +136,11 @@ export const AddAddressPage = () => {
     }
   };
 
-  const fetchAddresses = useCallback(async () => {
-    try {
-      setLoading(true);
-      const res = await api.get("/address", { withCredentials: true });
-      const payload = res?.data?.data ?? res?.data ?? [];
-      setAddresses(Array.isArray(payload) ? payload : []);
-    } catch {
-      toast.error("Failed to load addresses");
-    } finally {
-      setLoading(false);
-    }
-  },[])
-
   const handleDelete = async (id: string) => {
     try {
       setSettingDefault(true)
       setDeletingId(id);
-      await api.delete(`/address/${id}`, { withCredentials: true });
-      setAddresses((prev) => prev.filter((a) => a.id !== id));
+      await deleteAddress(id).unwrap()
       toast.success("Address deleted");
     } catch {
       toast.error("Failed to delete address");
@@ -168,17 +153,7 @@ export const AddAddressPage = () => {
   const handleSetDefault = async (id: string) => {
     try {
       setSettingDefault(true)
-      await api.put(
-        `/address/${id}`,
-        { isDefault: true },
-        { withCredentials: true },
-      );
-      setAddresses((prev) =>
-        prev.map((addr) => ({
-          ...addr,
-          isDefault: addr.id === id,
-        })),
-      );
+      await setDefaultAddress(id).unwrap()
       toast.success("Default address updated");
     } catch {
       toast.error("Unable to set default");
@@ -187,9 +162,6 @@ export const AddAddressPage = () => {
     }
   };
 
-  useEffect(() => {
-    fetchAddresses();
-  }, [fetchAddresses]);
 
   return (
     <div className="bg-muted/40 px-6 py-10">
@@ -422,7 +394,7 @@ export const AddAddressPage = () => {
             </Badge>
           </CardHeader>
           <CardContent className="space-y-3">
-            {loading ? (
+            {isLoading ? (
               <p className="text-sm text-muted-foreground">Loading...</p>
             ) : addresses.length === 0 ? (
               <p className="text-sm text-muted-foreground">
@@ -430,7 +402,7 @@ export const AddAddressPage = () => {
               </p>
             ) : (
               <RadioGroup
-                value={addresses.find((a) => a.isDefault)?.id}
+                value={addresses?.find((a) => a.isDefault)?.id}
                 onValueChange={(addressId) => handleSetDefault(addressId)}
                 className="space-y-3"
                 disabled={settingDefault}

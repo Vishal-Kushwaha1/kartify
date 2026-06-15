@@ -12,9 +12,8 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { Address } from "@/types/type";
 import { api } from "@/utils/Axios";
-import { useCallback, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import {
@@ -25,6 +24,7 @@ import {
   Banknote,
 } from "lucide-react";
 import { useGetCartItemQuery } from "@/redux/cart/cartApi";
+import { useGetAddressQuery } from "@/redux/address/addressApi";
 
 declare global {
   interface Window {
@@ -35,12 +35,11 @@ declare global {
 
 export const Checkout = () => {
   const navigate = useNavigate();
-  const [loadingAddress, setLoadingAddress] = useState<boolean>(false);
-  const [addresses, setAddresses] = useState<Address[]>([]);
   const [addressId, setAddressId] = useState<string | null>(null);
   const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
 
   const { data: cart, isLoading: ItemLoading } = useGetCartItemQuery();
+  const{data: addresses = [], isLoading:loadingAddress} = useGetAddressQuery()
 
   if (cart && cart?.length < 1) {
     navigate("/products");
@@ -57,28 +56,6 @@ export const Checkout = () => {
     });
   };
 
-  const fetchAddresses = useCallback(async () => {
-    try {
-      setLoadingAddress(true);
-      const res = await api.get("/address", { withCredentials: true });
-      const payload = res?.data?.data ?? res?.data ?? [];
-      setAddresses(Array.isArray(payload) ? payload : []);
-
-      // Auto-select default address
-      const defaultAddr = Array.isArray(payload)
-        ? payload.find((a: Address) => a.isDefault)
-        : null;
-      if (defaultAddr) setAddressId(defaultAddr.id);
-    } catch {
-      toast.error("Failed to load addresses");
-    } finally {
-      setLoadingAddress(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchAddresses();
-  }, [fetchAddresses]);
 
   const handleCOD = async () => {
     if (!addressId) {

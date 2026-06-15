@@ -11,7 +11,7 @@ export const cartApi = createApi({
   endpoints: (builder) => ({
     getCartItem: builder.query<CartData[] | null, void>({
       query: () => "/cart",
-      transformResponse: (response: { data: CartData[] }) => response.data,
+      transformResponse: (response: { data: CartData[] }) => response?.data ?? [],
       providesTags: ["Cart"],
     }),
     addToCart: builder.mutation({

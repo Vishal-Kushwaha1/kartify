@@ -1,24 +1,22 @@
-import { api } from "@/utils/Axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, Package, Search, ShoppingCart, Trash2 } from "lucide-react";
-import type { Product, Wishlist as WishlistType } from "@/types/type";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import {  useFetchWishlistQuery, useMoveToCartMutation, useRemoveItemFromWishlistMutation } from "@/redux/wishlist/wishlistApi";
 
-type WishlistItem = {
-  wishlist: WishlistType;
-  product: Product;
-};
 
 export const Wishlist = () => {
+  const {data: wishlistItems =[], isLoading} = useFetchWishlistQuery();
+  const [removeItemFromWishlist] = useRemoveItemFromWishlistMutation()
+  const[moveToCart] = useMoveToCartMutation()
   const [loading, setLoading] = useState<boolean>(false);
-  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [query, setQuery] = useState("");
+
   const totalValue = useMemo(() => {
     return wishlistItems.reduce((sum, item) => {
       const price = Number(item.product.price ?? 0);
@@ -26,45 +24,13 @@ export const Wishlist = () => {
     }, 0);
   }, [wishlistItems]);
 
-  const navigate= useNavigate()
-
-  // const fetchWishlist = async () => {
-  //   try {
-  //     const response = await api.get("/wishlist", {
-  //       withCredentials: true,
-  //     });
-  //     const payload = response?.data?.data ?? response?.data ?? [];
-  //     setWishlistItems(Array.isArray(payload) ? payload : []);
-  //   } catch (error) {
-  //     console.error("Error fetching wishlist:", error);
-  //   }
-  // };
-
-  // const handleAddToWishlist = async (productId: string) => {
-  //   try {
-  //     await api.post(
-  //       "/wishlist",
-  //       { productId },
-  //       { withCredentials: true },
-  //     );
-  //     toast.success("Item added to wishlist");
-  //     await fetchWishlist();
-  //   } catch (error) {
-  //     console.error("Error adding to wishlist:", error);
-  //     toast.error("Failed to add to wishlist");
-  //   }
-  // };
+  const navigate = useNavigate();
 
   const handleRemoveFromWishlist = async (productId: string) => {
     try {
       setLoading(true);
-      await api.delete(`/wishlist/${productId}`, {
-        withCredentials: true,
-      });
+      await removeItemFromWishlist(productId)
       toast.success("Item removed from wishlist");
-      setWishlistItems((prev) =>
-        prev.filter((item) => item.product.id !== productId),
-      );
     } catch (error) {
       console.error("Error removing from wishlist:", error);
     } finally {
@@ -75,39 +41,14 @@ export const Wishlist = () => {
   const handleMoveToCart = async (productId: string) => {
     try {
       setLoading(true);
-      await api.post(
-        "/wishlist/move-to-cart",
-        { productId },
-        { withCredentials: true },
-      );
+      await moveToCart(productId)
       toast.success("Item moved to cart");
-      setWishlistItems((prev) =>
-        prev.filter((item) => item.product.id !== productId),
-      );
     } catch (error) {
       console.error("Error moving to cart:", error);
     } finally {
       setLoading(false);
     }
   };
-  const fetchWishlist = useCallback(async () => {
-      setLoading(true);
-      try {
-        const response = await api.get("/wishlist", {
-          withCredentials: true,
-        });
-        const payload = response?.data?.data ?? response?.data ?? [];
-        setWishlistItems(Array.isArray(payload) ? payload : []);
-      } catch (error) {
-        console.error("Error fetching wishlist:", error);
-      } finally {
-        setLoading(false);
-      }
-    },[])
-
-  useEffect(() => {
-    fetchWishlist();
-  }, [fetchWishlist]);
 
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -166,7 +107,7 @@ export const Wishlist = () => {
           </div>
         </div>
 
-        {loading ? (
+        {(loading|| isLoading) ? (
           <div className="grid gap-4 md:grid-cols-2">
             {Array.from({ length: 4 }).map((_, index) => (
               <Card
@@ -200,7 +141,10 @@ export const Wishlist = () => {
                   Start exploring products and save items you want to buy later.
                 </p>
               </div>
-              <Button className="bg-primary text-white hover:bg-primary/90" onClick={()=>navigate("/products")}>
+              <Button
+                className="bg-primary text-white hover:bg-primary/90"
+                onClick={() => navigate("/products")}
+              >
                 Browse products
               </Button>
             </CardContent>

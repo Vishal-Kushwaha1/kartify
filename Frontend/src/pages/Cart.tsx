@@ -13,8 +13,6 @@ export const Cart = () => {
 
   const { data:cart, isLoading: itemLoading } =useGetCartItemQuery()
   
-  
-
   const { handleClearCart, actionLoading } = useCartActions();
 
   // loading
