@@ -8,6 +8,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import type { User } from "../utils/auth.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import Fuse from "fuse.js";
+import redis from "../db/redis.js";
 
 export const createProduct = asyncHandler(async (req, res) => {
   const user = req.user as User;
@@ -128,6 +129,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
   if (!updatedProduct[0]) {
     throw new ApiError(500, "Failed to update product");
   }
+  await redis.del(`product:${id}`);
   return res.json(
     new ApiResponse(201, updatedProduct[0], "Product updated successfully"),
   );
@@ -149,7 +151,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     if (!result) {
       return res.json(new ApiResponse(201, [], "No product found"));
     }
-    const products = result.map(r=> r.item)
+    const products = result.map((r) => r.item);
     const responseData = {
       products: products,
       totalPages: 1,
@@ -188,6 +190,15 @@ export const getProductById = asyncHandler(async (req, res) => {
   if (!id) {
     return res.json(new ApiError(400, "Product id is required"));
   }
+
+  const cacheKey = `product:${id}`;
+  const cachedData = await redis.get(cacheKey);
+  if (cachedData) {
+    return res.json(
+      new ApiResponse(200, JSON.parse(cachedData), "Product founded"),
+    );
+  }
+
   const productData = await db.select().from(product).where(eq(product.id, id));
   if (!productData.length) {
     return res.json(new ApiError(404, "Product not found"));
@@ -205,6 +216,8 @@ export const getProductById = asyncHandler(async (req, res) => {
   }
 
   const responseData = { ...productData[0], sellerStore };
+  await redis.set(cacheKey, JSON.stringify(responseData), "EX", 600);
+
   return res.json(new ApiResponse(200, responseData, "Product founded"));
 });
 
@@ -217,6 +230,8 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     .delete(product)
     .where(eq(product.id, id))
     .returning();
+
+  await redis.del(`product:${id}`);
   return res.json(
     new ApiResponse(200, deletedProduct[0], "Product deleted successfully"),
   );
@@ -236,7 +251,8 @@ export const toggleProduct = asyncHandler(async (req, res) => {
   if (!updated[0]) {
     throw new ApiError(500, "Failed to update product");
   }
-
+  const id = updated[0].id;
+  await redis.del(`product:${id}`);
   return res.json(
     new ApiResponse(
       200,
@@ -260,6 +276,7 @@ export const updateProductStock = asyncHandler(async (req, res) => {
     .set({ stock })
     .where(eq(product.id, id))
     .returning();
+  await redis.del(`product:${id}`);
   return res.json(new ApiResponse(200, updatedProduct[0], "Stock updated"));
 });
 
