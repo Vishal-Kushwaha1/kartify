@@ -1,11 +1,12 @@
 import { and, eq } from "drizzle-orm";
-import {db, dbPool} from "../db/db.js";
+import { db, dbPool } from "../db/db.js";
 import { cartItem } from "../models/cartItem.js";
 import type { CartType } from "../types/type.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { product } from "../models/product.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import redis from "../db/redis.js";
 
 export const getCart = asyncHandler(async (req, res) => {
   const cart = req.cart as CartType;
@@ -23,9 +24,11 @@ export const getCart = asyncHandler(async (req, res) => {
 });
 
 export const addToCart = asyncHandler(async (req, res) => {
+  const user = req.user;
   const cart = req.cart as CartType;
   const { productId } = req.body;
 
+  if (!user) throw new ApiError(401, "Unauthorized");
   if (!cart?.id) throw new ApiError(401, "Cart not found");
   if (!productId) throw new ApiError(400, "ProductId required");
 
@@ -75,13 +78,16 @@ export const addToCart = asyncHandler(async (req, res) => {
     .leftJoin(product, eq(product.id, cartItem.productId))
     .where(eq(cartItem.cartId, cart.id));
 
+  await redis.del(`cart:${user.id}`);
   return res.json(new ApiResponse(200, updatedCart, "Item added to cart"));
 });
 
 export const removeFromCart = asyncHandler(async (req, res) => {
+  const user = req.user;
   const cart = req.cart as CartType;
   const { productId } = req.body;
 
+  if (!user) throw new ApiError(401, "Unauthorized");
   if (!cart?.id) throw new ApiError(401, "Cart not found");
   if (!productId) throw new ApiError(400, "ProductId required");
 
@@ -109,15 +115,16 @@ export const removeFromCart = asyncHandler(async (req, res) => {
     .leftJoin(product, eq(product.id, cartItem.productId))
     .where(eq(cartItem.cartId, cart.id));
 
-  return res.json(
-    new ApiResponse(200, updatedCart, "Item removed from cart"),
-  );
+  await redis.del(`cart:${user.id}`);
+  return res.json(new ApiResponse(200, updatedCart, "Item removed from cart"));
 });
 
 export const updateQuantity = asyncHandler(async (req, res) => {
   const { productId, quantity } = req.body;
   const cart = req.cart as CartType;
+  const user = req.user;
 
+  if (!user) throw new ApiError(401, "Unauthorized");
   if (!cart?.id) throw new ApiError(401, "Cart not found");
   if (!productId) throw new ApiError(400, "ProductId required");
   if (!quantity || quantity < 1)
@@ -145,17 +152,17 @@ export const updateQuantity = asyncHandler(async (req, res) => {
     .from(cartItem)
     .leftJoin(product, eq(product.id, cartItem.productId))
     .where(eq(cartItem.cartId, cart.id));
-
-  return res.json(
-    new ApiResponse(200, updatedCart, "Quantity updated"),
-  );
+  await redis.del(`cart:${user.id}`);
+  return res.json(new ApiResponse(200, updatedCart, "Quantity updated"));
 });
 
 export const clearCart = asyncHandler(async (req, res) => {
+  const user = req.user;
   const cart = req.cart as CartType;
+  if (!user) throw new ApiError(401, "Unauthorized");
   if (!cart?.id) throw new ApiError(401, "Cart not found");
 
   await db.delete(cartItem).where(eq(cartItem.cartId, cart.id));
-
+  await redis.del(`cart:${user.id}`);
   return res.json(new ApiResponse(200, [], "Cart cleared"));
 });
