@@ -33,6 +33,7 @@
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
     "fuse.js": "^7.4.1",
+    "ioredis": "^5.11.1",
     "multer": "^2.1.1",
     "razorpay": "^2.9.6",
     "resend": "^6.12.0",

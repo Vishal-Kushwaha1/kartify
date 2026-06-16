@@ -65,6 +65,8 @@ app.use("/api/v1/review", reviewRouter)
 app.use("/api/v1/admin", adminRouter)
 
 
+
+
 const PORT = process.env.PORT as string
 const startServer = async () => {
   try {
@@ -80,4 +82,3 @@ const startServer = async () => {
 
 startServer();
 
-export default app;
