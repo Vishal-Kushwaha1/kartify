@@ -9,9 +9,16 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import redis from "../db/redis.js";
 
 export const getCart = asyncHandler(async (req, res) => {
+  const user = req.user;
   const cart = req.cart as CartType;
-  if (!cart?.id) {
-    throw new ApiError(401, "Cart not found");
+  
+  if (!user) throw new ApiError(401, "Unauthorized");
+  if (!cart?.id) throw new ApiError(401, "Cart not found");
+
+  const cacheKey = `cart:${user.id}`;
+  const cachedCart = await redis.get(cacheKey);
+  if (cachedCart) {
+    return res.json(new ApiResponse(200, JSON.parse(cachedCart), "Cart fetched from cache"));
   }
 
   const cartItemData = await db
@@ -20,6 +27,7 @@ export const getCart = asyncHandler(async (req, res) => {
     .leftJoin(product, eq(product.id, cartItem.productId))
     .where(eq(cartItem.cartId, cart.id));
 
+  await redis.set(cacheKey, JSON.stringify(cartItemData), "EX", 3600); // Cache for 1 hour
   return res.json(new ApiResponse(200, cartItemData, "Cart fetched"));
 });
 

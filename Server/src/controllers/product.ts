@@ -68,6 +68,10 @@ export const createProduct = asyncHandler(async (req, res) => {
     throw new ApiError(500, "DB error");
   }
 
+  const keys = await redis.keys("products:page:*");
+  if (keys.length > 0) {
+    await redis.del(...keys);
+  }
   return res
     .status(201)
     .json(new ApiResponse(201, newProduct[0], "Product created successfully"));
@@ -130,6 +134,10 @@ export const updateProduct = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to update product");
   }
   await redis.del(`product:${id}`);
+  const keys = await redis.keys("products:page:*");
+  if (keys.length > 0) {
+    await redis.del(...keys);
+  }
   return res.json(
     new ApiResponse(201, updatedProduct[0], "Product updated successfully"),
   );
@@ -160,6 +168,11 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     };
     return res.json(new ApiResponse(200, responseData, "Product fetched"));
   } else {
+    const cacheKey = `products:page:${page}`;
+    const cached = await redis.get(cacheKey)
+    if(cached){
+      return res.json(new ApiResponse(200, JSON.parse(cached),"Product Fetched"))
+    }
     const totalProducts = await db
       .select({ value: count(product.id) })
       .from(product);
@@ -181,6 +194,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
       currentPage: Number(page),
       totalProducts: totalCount,
     };
+    await redis.set(cacheKey, JSON.stringify(responseData), "EX",600)
     return res.json(new ApiResponse(200, responseData, "Product fetched"));
   }
 });
@@ -232,6 +246,10 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     .returning();
 
   await redis.del(`product:${id}`);
+  const keys = await redis.keys("products:page:*");
+  if (keys.length > 0) {
+    await redis.del(...keys);
+  }
   return res.json(
     new ApiResponse(200, deletedProduct[0], "Product deleted successfully"),
   );
@@ -338,11 +356,18 @@ export const getAllProductsOfSeller = asyncHandler(async (req, res) => {
   if (!user) {
     throw new ApiError(401, "Unauthorized");
   }
+  const cacheKey = `seller:products:all`
+  const cached =await redis.get(cacheKey)
+  if(cached){
+    res.json(new ApiResponse(200, JSON.parse(cached), "All products found"));
+  }
 
   const result = await db
     .select()
     .from(product)
     .where(eq(product.userId, user.id));
+
+    await redis.set(cacheKey, JSON.stringify(result),"EX",600)
 
   res.json(new ApiResponse(200, result, "All products found"));
 });
@@ -358,6 +383,12 @@ export const getSellerProductById = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Product id is required");
   }
 
+  const cacheKey = `seller:product:${id}`
+  const cached =await redis.get(cacheKey)
+  if(cached){
+    res.json(new ApiResponse(200, JSON.parse(cached), "Products found"));
+  }
+
   const result = await db
     .select()
     .from(product)
@@ -365,5 +396,6 @@ export const getSellerProductById = asyncHandler(async (req, res) => {
   if (!result[0]) {
     throw new ApiError(404, "Product not found");
   }
+  await redis.set(cacheKey, JSON.stringify(result[0]),"EX",600)
   res.json(new ApiResponse(200, result[0], "Product found"));
 });
