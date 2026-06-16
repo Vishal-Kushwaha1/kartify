@@ -1,575 +1,590 @@
-import {and, eq, sql, gte, desc} from "drizzle-orm";
-import {db, dbPool} from "../db/db.js";
-import {cart} from "../models/cart.js";
-import {cartItem} from "../models/cartItem.js";
-import {ApiError} from "../utils/ApiError.js";
-import {ApiResponse} from "../utils/ApiResponse.js";
-import {asyncHandler} from "../utils/asyncHandler.js";
-import {order} from "../models/order.js";
-import {orderItem} from "../models/orderItem.js";
-import {RazorpayInstance} from "../utils/razorpay.js";
-import {payment} from "../models/payment.js";
+import { and, eq, sql, gte, desc } from "drizzle-orm";
+import { db, dbPool } from "../db/db.js";
+import { cart } from "../models/cart.js";
+import { cartItem } from "../models/cartItem.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { order } from "../models/order.js";
+import { orderItem } from "../models/orderItem.js";
+import { RazorpayInstance } from "../utils/razorpay.js";
+import { payment } from "../models/payment.js";
 import crypto from "crypto";
 import Stripe from "stripe";
-import {product} from "../models/product.js";
-import {seller} from "../models/seller.js";
+import { product } from "../models/product.js";
+import { seller } from "../models/seller.js";
 
 const createOrderFromCart = async ({
-                                       trx,
-                                       userId,
-                                       addressId,
-                                   }: {
-    trx: any;
-    userId: string;
-    addressId: string;
+  trx,
+  userId,
+  addressId,
+}: {
+  trx: any;
+  userId: string;
+  addressId: string;
 }) => {
-    const userCart = await trx.select().from(cart).where(eq(cart.userId, userId));
+  const userCart = await trx.select().from(cart).where(eq(cart.userId, userId));
 
-    if (!userCart[0]) throw new ApiError(404, "Cart not found");
+  if (!userCart[0]) throw new ApiError(404, "Cart not found");
 
-    const cartItems = await trx
-        .select()
-        .from(cartItem)
-        .where(eq(cartItem.cartId, userCart[0].id));
+  const cartItems = await trx
+    .select()
+    .from(cartItem)
+    .where(eq(cartItem.cartId, userCart[0].id));
 
-    if (!cartItems[0]) throw new ApiError(402, "Cart is empty");
+  if (!cartItems[0]) throw new ApiError(402, "Cart is empty");
 
-    const amount = cartItems.reduce((sum: number, row: any) => {
-        return sum + Number(row.price) * row.quantity;
-    }, 0);
+  const amount = cartItems.reduce((sum: number, row: any) => {
+    return sum + Number(row.price) * row.quantity;
+  }, 0);
 
-    const subTotal = Number(amount.toFixed(2));
-    const deliveryFee = subTotal > 400 ? 0 : 60;
-    const gst = Number((subTotal * 0.18).toFixed(2));
-    const total = Number((subTotal + gst + deliveryFee).toFixed(2));
+  const subTotal = Number(amount.toFixed(2));
+  const deliveryFee = subTotal > 400 ? 0 : 60;
+  const gst = Number((subTotal * 0.18).toFixed(2));
+  const total = Number((subTotal + gst + deliveryFee).toFixed(2));
 
-    const orderData = await trx
-        .insert(order)
-        .values({
-            status: "pending",
-            totalAmount: String(total),
-            addressId,
-            userId,
-        })
-        .returning();
+  const orderData = await trx
+    .insert(order)
+    .values({
+      status: "pending",
+      totalAmount: String(total),
+      addressId,
+      userId,
+    })
+    .returning();
 
-    if (!orderData[0]) throw new ApiError(400, "Order not created");
+  if (!orderData[0]) throw new ApiError(400, "Order not created");
 
-    const createdOrder = orderData[0];
+  const createdOrder = orderData[0];
 
-    const orderItems = cartItems.map((row: any) => ({
-        orderId: createdOrder.id,
-        productId: row.productId,
-        quantity: row.quantity,
-        price: String(row.price),
-    }));
+  const orderItems = cartItems.map((row: any) => ({
+    orderId: createdOrder.id,
+    productId: row.productId,
+    quantity: row.quantity,
+    price: String(row.price),
+  }));
 
-    await trx.insert(orderItem).values(orderItems);
+  await trx.insert(orderItem).values(orderItems);
 
-    return {
-        createdOrder,
-        total,
-        cartId: userCart[0].id,
-    };
+  return {
+    createdOrder,
+    total,
+    cartId: userCart[0].id,
+  };
 };
 
 const insertPayment = async ({
-                                 trx,
-                                 provider,
-                                 providerPaymentId,
-                                 amount,
-                                 orderId,
-                                 userId,
-                                 currency = "INR",
-                             }: {
-    trx: any;
-    provider: "cash" | "razorpay" | "stripe";
-    providerPaymentId: string;
-    amount: number;
-    orderId: string;
-    userId: string;
-    currency?: string;
+  trx,
+  provider,
+  providerPaymentId,
+  amount,
+  orderId,
+  userId,
+  currency = "INR",
+}: {
+  trx: any;
+  provider: "cash" | "razorpay" | "stripe";
+  providerPaymentId: string;
+  amount: number;
+  orderId: string;
+  userId: string;
+  currency?: string;
 }) => {
-    await trx.insert(payment).values({
-        provider,
-        providerPaymentId,
-        amount: String(amount),
-        currency,
-        status: "pending",
-        orderId,
-        userId,
-    });
+  await trx.insert(payment).values({
+    provider,
+    providerPaymentId,
+    amount: String(amount),
+    currency,
+    status: "pending",
+    orderId,
+    userId,
+  });
 };
 
 const deductStock = async (trx: any, orderId: string) => {
-    const items = await trx
-        .select()
-        .from(orderItem)
-        .where(eq(orderItem.orderId, orderId));
+  const items = await trx
+    .select()
+    .from(orderItem)
+    .where(eq(orderItem.orderId, orderId));
 
-    if (!items.length) return;
+  if (!items.length) return;
 
-    await Promise.all(
-        items.map((item: any) =>
-            trx
-                .update(product)
-                .set({
-                    stock: sql`GREATEST(${product.stock} - ${item.quantity}, 0)`,
-                })
-                .where(
-                    and(
-                        eq(product.id, item.productId),
-                        gte(product.stock, item.quantity),
-                    ),
-                ),
+  await Promise.all(
+    items.map((item: any) =>
+      trx
+        .update(product)
+        .set({
+          stock: sql`GREATEST(${product.stock} - ${item.quantity}, 0)`,
+        })
+        .where(
+          and(
+            eq(product.id, item.productId),
+            gte(product.stock, item.quantity),
+          ),
         ),
-    );
+    ),
+  );
 };
 
 const confirmOrder = async ({
-                                trx,
-                                orderId,
-                                userId,
-                            }: {
-    trx: any;
-    orderId: string;
-    userId: string;
+  trx,
+  orderId,
+  userId,
+}: {
+  trx: any;
+  orderId: string;
+  userId: string;
 }) => {
-    await trx
-        .update(order)
-        .set({status: "confirmed"})
-        .where(eq(order.id, orderId));
+  await trx
+    .update(order)
+    .set({ status: "confirmed" })
+    .where(eq(order.id, orderId));
 
-    await deductStock(trx, orderId);
+  await deductStock(trx, orderId);
 
-    const userCart = await trx.select().from(cart).where(eq(cart.userId, userId));
-    if (userCart[0]) {
-        await trx.delete(cartItem).where(eq(cartItem.cartId, userCart[0].id));
-    }
+  const userCart = await trx.select().from(cart).where(eq(cart.userId, userId));
+  if (userCart[0]) {
+    await trx.delete(cartItem).where(eq(cartItem.cartId, userCart[0].id));
+  }
 };
 
 export const createCodOrder = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const {addressId} = req.body;
-    if (!addressId) throw new ApiError(400, "Please select any address");
+  const { addressId } = req.body;
+  if (!addressId) throw new ApiError(400, "Please select any address");
 
-    await dbPool.transaction(async (trx) => {
-        const {createdOrder, total} = await createOrderFromCart({
-            trx,
-            userId: user.id,
-            addressId,
-        });
-
-        await insertPayment({
-            trx,
-            provider: "cash",
-            providerPaymentId: `COD-${createdOrder.id}`,
-            amount: total,
-            orderId: createdOrder.id,
-            userId: user.id,
-        });
-
-        await confirmOrder({trx, orderId: createdOrder.id, userId: user.id});
+  await dbPool.transaction(async (trx) => {
+    const { createdOrder, total } = await createOrderFromCart({
+      trx,
+      userId: user.id,
+      addressId,
     });
 
-    res.json(new ApiResponse(201, null, "COD order created successfully"));
+    await insertPayment({
+      trx,
+      provider: "cash",
+      providerPaymentId: `COD-${createdOrder.id}`,
+      amount: total,
+      orderId: createdOrder.id,
+      userId: user.id,
+    });
+
+    await confirmOrder({ trx, orderId: createdOrder.id, userId: user.id });
+  });
+
+  res.json(new ApiResponse(201, null, "COD order created successfully"));
 });
 
 export const createRazorpayOrder = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const {addressId} = req.body;
-    if (!addressId) throw new ApiError(400, "Please select any address");
+  const { addressId } = req.body;
+  if (!addressId) throw new ApiError(400, "Please select any address");
 
-    const result = await dbPool.transaction(async (trx) => {
-        const {createdOrder, total} = await createOrderFromCart({
-            trx,
-            userId: user.id,
-            addressId,
-        });
-
-        const options = {
-            amount: Math.floor(total * 100),
-            currency: "INR",
-            receipt: `RAZORPAY-${Date.now()}`,
-        };
-
-        const razorpayOrder = await RazorpayInstance.orders.create(options);
-
-        await insertPayment({
-            trx,
-            provider: "razorpay",
-            providerPaymentId: razorpayOrder.id,
-            amount: total,
-            orderId: createdOrder.id,
-            userId: user.id,
-        });
-
-        return {
-            orderId: createdOrder.id,
-            razorpayOrderId: razorpayOrder.id,
-            amount: Math.floor(total * 100),
-            currency: "INR",
-        };
+  const result = await dbPool.transaction(async (trx) => {
+    const { createdOrder, total } = await createOrderFromCart({
+      trx,
+      userId: user.id,
+      addressId,
     });
-    res.json(new ApiResponse(201, result, "RazorPay order created"));
+
+    const options = {
+      amount: Math.floor(total * 100),
+      currency: "INR",
+      receipt: `RAZORPAY-${Date.now()}`,
+    };
+
+    const razorpayOrder = await RazorpayInstance.orders.create(options);
+
+    await insertPayment({
+      trx,
+      provider: "razorpay",
+      providerPaymentId: razorpayOrder.id,
+      amount: total,
+      orderId: createdOrder.id,
+      userId: user.id,
+    });
+
+    return {
+      orderId: createdOrder.id,
+      razorpayOrderId: razorpayOrder.id,
+      amount: Math.floor(total * 100),
+      currency: "INR",
+    };
+  });
+  res.json(new ApiResponse(201, result, "RazorPay order created"));
 });
 
 export const verifyRazorpayPayment = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const {
-        orderId,
-        razorpay_order_id,
-        razorpay_payment_id,
-        razorpay_signature,
-    } = req.body;
-    if (
-        !orderId ||
-        !razorpay_order_id ||
-        !razorpay_payment_id ||
-        !razorpay_signature
-    ) {
-        throw new ApiError(400, "All payment fields are required");
+  const {
+    orderId,
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+  } = req.body;
+  if (
+    !orderId ||
+    !razorpay_order_id ||
+    !razorpay_payment_id ||
+    !razorpay_signature
+  ) {
+    throw new ApiError(400, "All payment fields are required");
+  }
+
+  const body = razorpay_order_id + "|" + razorpay_payment_id;
+  const expectedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+    .update(body)
+    .digest("hex");
+  if (expectedSignature !== razorpay_signature) {
+    throw new ApiError(400, "Invalid payment signature");
+  }
+
+  await dbPool.transaction(async (trx) => {
+    const existingPayment = await trx
+      .select()
+      .from(payment)
+      .where(eq(payment.orderId, orderId));
+
+    if (existingPayment[0]?.status === "success") {
+      return;
     }
 
-    const body = razorpay_order_id + "|" + razorpay_payment_id;
-    const expectedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
-        .update(body)
-        .digest("hex");
-    if (expectedSignature !== razorpay_signature) {
-        throw new ApiError(400, "Invalid payment signature");
-    }
+    await trx
+      .update(payment)
+      .set({
+        status: "success",
+        providerPaymentId: razorpay_payment_id,
+      })
+      .where(eq(payment.orderId, orderId));
 
-    await dbPool.transaction(async (trx) => {
-        const existingPayment = await trx
-            .select()
-            .from(payment)
-            .where(eq(payment.orderId, orderId));
-
-        if (existingPayment[0]?.status === "success") {
-            return;
-        }
-
-        await trx
-            .update(payment)
-            .set({
-                status: "success",
-                providerPaymentId: razorpay_payment_id,
-            })
-            .where(eq(payment.orderId, orderId));
-
-        await confirmOrder({trx, orderId, userId: user.id});
-    });
-    res.json(new ApiResponse(200, {orderId}, "Payment verified"));
+    await confirmOrder({ trx, orderId, userId: user.id });
+  });
+  res.json(new ApiResponse(200, { orderId }, "Payment verified"));
 });
 
 export const cancelOrder = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const {orderId} = req.body;
-    if (!orderId) throw new ApiError(400, "Order ID is required");
+  const { orderId } = req.body;
+  if (!orderId) throw new ApiError(400, "Order ID is required");
 
-    await dbPool.transaction(async (trx) => {
-        const existingOrder = await trx
-            .select()
-            .from(order)
-            .where(eq(order.id, orderId));
-        if (!existingOrder[0] || existingOrder[0].userId !== user.id) {
-            throw new ApiError(404, "Order not found");
-        }
-        if (existingOrder[0].status === "pending") {
-            await trx
-                .update(order)
-                .set({status: "cancelled"})
-                .where(eq(order.id, orderId));
-            await trx
-                .update(payment)
-                .set({status: "failed"})
-                .where(eq(payment.orderId, orderId));
-        }
-    });
+  await dbPool.transaction(async (trx) => {
+    const existingOrder = await trx
+      .select()
+      .from(order)
+      .where(eq(order.id, orderId));
+    if (!existingOrder[0] || existingOrder[0].userId !== user.id) {
+      throw new ApiError(404, "Order not found");
+    }
+    if (existingOrder[0].status === "pending") {
+      await trx
+        .update(order)
+        .set({ status: "cancelled" })
+        .where(eq(order.id, orderId));
+      await trx
+        .update(payment)
+        .set({ status: "failed" })
+        .where(eq(payment.orderId, orderId));
+    }
+  });
 
-    res.json(new ApiResponse(200, null, "Order cancelled"));
+  res.json(new ApiResponse(200, null, "Order cancelled"));
 });
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export const createStripeOrder = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
-    const {addressId} = req.body;
-    if (!addressId) throw new ApiError(400, "AddressId is required");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
+  const { addressId } = req.body;
+  if (!addressId) throw new ApiError(400, "AddressId is required");
 
-    const result = await dbPool.transaction(async (trx) => {
-        const {createdOrder, total} = await createOrderFromCart({
-            trx,
-            userId: user.id,
-            addressId,
-        });
-
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card", "upi", "pay_by_bank", "amazon_pay"],
-            mode: "payment",
-            success_url: `${process.env.FRONTEND_URL}/order-success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.FRONTEND_URL}/checkout?stripe_cancelled=true&orderId=${createdOrder.id}`,
-            line_items: [
-                {
-                    price_data: {
-                        currency: "INR",
-                        product_data: {
-                            name: "Kartify Order",
-                        },
-                        unit_amount: Math.round(total * 100),
-                    },
-                    quantity: 1,
-                },
-            ],
-            metadata: {
-                orderId: createdOrder.id,
-            },
-        });
-
-        await insertPayment({
-            trx,
-            provider: "stripe",
-            providerPaymentId: session.id,
-            amount: total,
-            orderId: createdOrder.id,
-            userId: user.id,
-        });
-        return {url: session.url};
+  const result = await dbPool.transaction(async (trx) => {
+    const { createdOrder, total } = await createOrderFromCart({
+      trx,
+      userId: user.id,
+      addressId,
     });
-    res.json(new ApiResponse(201, result, "Stripe session created"));
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card", "upi", "pay_by_bank", "amazon_pay"],
+      mode: "payment",
+      success_url: `${process.env.FRONTEND_URL}/order-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/checkout?stripe_cancelled=true&orderId=${createdOrder.id}`,
+      line_items: [
+        {
+          price_data: {
+            currency: "INR",
+            product_data: {
+              name: "Kartify Order",
+            },
+            unit_amount: Math.round(total * 100),
+          },
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        orderId: createdOrder.id,
+      },
+    });
+
+    await insertPayment({
+      trx,
+      provider: "stripe",
+      providerPaymentId: session.id,
+      amount: total,
+      orderId: createdOrder.id,
+      userId: user.id,
+    });
+    return { url: session.url };
+  });
+  res.json(new ApiResponse(201, result, "Stripe session created"));
 });
 
 export const verifyStripe = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const {sessionId} = req.body;
-    if (!sessionId) throw new ApiError(400, "Session ID is required");
+  const { sessionId } = req.body;
+  if (!sessionId) throw new ApiError(400, "Session ID is required");
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    if (!session || session.payment_status !== "paid") {
-        throw new ApiError(400, "Payment verification failed");
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+  if (!session || session.payment_status !== "paid") {
+    throw new ApiError(400, "Payment verification failed");
+  }
+
+  const orderId = session.metadata?.orderId;
+  if (!orderId) {
+    throw new ApiError(400, "OrderId not found in stripe session");
+  }
+
+  await dbPool.transaction(async (trx) => {
+    const existingPayment = await trx
+      .select()
+      .from(payment)
+      .where(eq(payment.orderId, orderId));
+
+    if (existingPayment[0]?.status === "success") {
+      return;
     }
 
-    const orderId = session.metadata?.orderId;
-    if (!orderId) {
-        throw new ApiError(400, "OrderId not found in stripe session");
-    }
+    await trx
+      .update(payment)
+      .set({
+        status: "success",
+        providerPaymentId: (session.payment_intent as string) || sessionId,
+      })
+      .where(eq(payment.orderId, orderId));
+    await confirmOrder({ trx, orderId, userId: user.id });
+  });
 
-    await dbPool.transaction(async (trx) => {
-        const existingPayment = await trx
-            .select()
-            .from(payment)
-            .where(eq(payment.orderId, orderId));
-
-        if (existingPayment[0]?.status === "success") {
-            return;
-        }
-
-        await trx
-            .update(payment)
-            .set({
-                status: "success",
-                providerPaymentId: (session.payment_intent as string) || sessionId,
-            })
-            .where(eq(payment.orderId, orderId));
-        await confirmOrder({trx, orderId, userId: user.id});
-    });
-
-    res.json(new ApiResponse(200, {orderId}, "Payment verified successfully"));
+  res.json(new ApiResponse(200, { orderId }, "Payment verified successfully"));
 });
 
 export const getAllOrders = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const result = await db
-        .select()
-        .from(order)
-        .where(eq(order.userId, user.id))
-        .leftJoin(orderItem, eq(orderItem.orderId, order.id))
-        .leftJoin(product, eq(product.id, orderItem.productId))
-        .orderBy(desc(order.createdAt))
+  const result = await db
+    .select()
+    .from(order)
+    .where(eq(order.userId, user.id))
+    .leftJoin(orderItem, eq(orderItem.orderId, order.id))
+    .leftJoin(product, eq(product.id, orderItem.productId))
+    .orderBy(desc(order.createdAt));
 
-    if (!result.length) {
-        return res.json(new ApiResponse(200, [], "No order found"));
+  if (!result.length) {
+    return res.json(new ApiResponse(200, [], "No order found"));
+  }
+
+  const orderMap = new Map();
+
+  for (const row of result) {
+    const orderId = row.order.id;
+    if (!orderMap.has(orderId)) {
+      orderMap.set(orderId, {
+        ...row.order,
+        items: [],
+      });
     }
-
-    const orderMap = new Map();
-
-    for (const row of result) {
-        const orderId = row.order.id;
-        if (!orderMap.has(orderId)) {
-            orderMap.set(orderId, {
-                ...row.order,
-                items: [],
-            });
-        }
-        if (row.order_item) {
-            orderMap.get(orderId).items.push({
-                ...row.order_item,
-                product: row.product,
-            });
-        }
+    if (row.order_item) {
+      orderMap.get(orderId).items.push({
+        ...row.order_item,
+        product: row.product,
+      });
     }
-    const orders = Array.from(orderMap.values());
+  }
+  const orders = Array.from(orderMap.values());
 
-    res.json(new ApiResponse(200, orders, "Orders fetched"));
+  res.json(new ApiResponse(200, orders, "Orders fetched"));
 });
 
 export const getOrderById = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const {orderId} = req.params as { orderId: string };
-    if (!orderId) throw new ApiError(400, "Order Id is required");
+  const { orderId } = req.params as { orderId: string };
+  if (!orderId) throw new ApiError(400, "Order Id is required");
 
-    const result = await db
-        .select()
-        .from(order)
-        .where(and(eq(order.id, orderId), eq(order.userId, user.id)))
-        .leftJoin(orderItem, eq(orderItem.orderId, order.id))
-        .leftJoin(product, eq(product.id, orderItem.productId));
+  const result = await db
+    .select()
+    .from(order)
+    .where(and(eq(order.id, orderId), eq(order.userId, user.id)))
+    .leftJoin(orderItem, eq(orderItem.orderId, order.id))
+    .leftJoin(product, eq(product.id, orderItem.productId));
 
-    if (!result.length) {
-        throw new ApiError(404, "Order not found");
-    }
+  if (!result.length) {
+    throw new ApiError(404, "Order not found");
+  }
 
-    const firstRow = result[0];
-    const orderData = {
-        ...firstRow?.order,
-        items: result
-            .filter((row) => row.order_item)
-            .map((row) => ({
-                ...row.order_item,
-                product: row.product,
-            })),
-    };
-    res.json(new ApiResponse(200, orderData, "Order fetched"));
+  const firstRow = result[0];
+  const orderData = {
+    ...firstRow?.order,
+    items: result
+      .filter((row) => row.order_item)
+      .map((row) => ({
+        ...row.order_item,
+        product: row.product,
+      })),
+  };
+  res.json(new ApiResponse(200, orderData, "Order fetched"));
 });
 
-
 export const getAllSellerOrders = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const sellerData = await db.select().from(seller).where(eq(seller.userId, user.id));
+  const sellerData = await db
+    .select()
+    .from(seller)
+    .where(eq(seller.userId, user.id));
 
-    if (!sellerData[0]) {
-        throw new ApiError(401, "Seller does not exist");
+  if (!sellerData[0]) {
+    throw new ApiError(401, "Seller does not exist");
+  }
+
+  const result = await db
+    .select()
+    .from(orderItem)
+    .innerJoin(product, eq(orderItem.productId, product.id))
+    .innerJoin(order, eq(orderItem.orderId, order.id))
+    .where(eq(product.sellerId, sellerData[0].id))
+    .orderBy(desc(order.createdAt));
+
+  if (!result.length) {
+    return res.json(new ApiResponse(200, [], "No orders found"));
+  }
+
+  const orderMap = new Map();
+
+  for (const row of result) {
+    const orderId = row.order.id;
+    if (!orderMap.has(orderId)) {
+      orderMap.set(orderId, {
+        ...row.order,
+        items: [],
+      });
     }
-
-    const result = await db
-        .select()
-        .from(orderItem)
-        .innerJoin(product, eq(orderItem.productId, product.id))
-        .innerJoin(order, eq(orderItem.orderId, order.id))
-        .where(eq(product.sellerId, sellerData[0].id))
-        .orderBy(desc(order.createdAt));
-
-    if (!result.length) {
-        return res.json(new ApiResponse(200, [], "No orders found"));
+    if (row.order_item) {
+      orderMap.get(orderId).items.push({
+        ...row.order_item,
+        product: row.product,
+      });
     }
+  }
+  const orders = Array.from(orderMap.values());
 
-    const orderMap = new Map();
-
-    for (const row of result) {
-        const orderId = row.order.id;
-        if (!orderMap.has(orderId)) {
-            orderMap.set(orderId, {
-                ...row.order,
-                items: [],
-            });
-        }
-        if (row.order_item) {
-            orderMap.get(orderId).items.push({
-                ...row.order_item,
-                product: row.product,
-            });
-        }
-    }
-    const orders = Array.from(orderMap.values());
-
-    res.json(new ApiResponse(200, orders, "Seller orders fetched"));
+  res.json(new ApiResponse(200, orders, "Seller orders fetched"));
 });
 
 export const getSellerOrderById = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const { orderId } = req.params as { orderId: string };
-    if (!orderId) throw new ApiError(400, "Order ID is required");
+  const { orderId } = req.params as { orderId: string };
+  if (!orderId) throw new ApiError(400, "Order ID is required");
 
-    const sellerData = await db.select().from(seller).where(eq(seller.userId, user.id));
-    if (!sellerData[0]) {
-        throw new ApiError(401, "Seller does not exist");
-    }
+  const sellerData = await db
+    .select()
+    .from(seller)
+    .where(eq(seller.userId, user.id));
+  if (!sellerData[0]) {
+    throw new ApiError(401, "Seller does not exist");
+  }
 
-    const result = await db
-        .select()
-        .from(orderItem)
-        .innerJoin(product, eq(orderItem.productId, product.id))
-        .innerJoin(order, eq(orderItem.orderId, order.id))
-        .where(and(eq(order.id, orderId), eq(product.sellerId, sellerData[0].id)));
+  const result = await db
+    .select()
+    .from(orderItem)
+    .innerJoin(product, eq(orderItem.productId, product.id))
+    .innerJoin(order, eq(orderItem.orderId, order.id))
+    .where(and(eq(order.id, orderId), eq(product.sellerId, sellerData[0].id)));
 
-    if (!result.length) {
-        throw new ApiError(404, "Order not found or you don't have access to this order");
-    }
+  if (!result.length) {
+    throw new ApiError(
+      404,
+      "Order not found or you don't have access to this order",
+    );
+  }
 
-    const firstRow = result[0];
-    const orderData = {
-        ...firstRow?.order,
-        items: result.map((row) => ({
-            ...row.order_item,
-            product: row.product,
-        })),
-    };
+  const firstRow = result[0];
+  const orderData = {
+    ...firstRow?.order,
+    items: result.map((row) => ({
+      ...row.order_item,
+      product: row.product,
+    })),
+  };
 
-    res.json(new ApiResponse(200, orderData, "Seller order fetched"));
+  res.json(new ApiResponse(200, orderData, "Seller order fetched"));
 });
 
 export const updateSellerOrderStatus = asyncHandler(async (req, res) => {
-    const user = req.user;
-    if (!user) throw new ApiError(401, "Unauthorized");
+  const user = req.user;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
-    const { orderId } = req.params as {orderId: string};
-    const { status } = req.body;
-    
-    if (!orderId) throw new ApiError(400, "Order ID is required");
-    if (!status) throw new ApiError(400, "Status is required");
+  const { orderId } = req.params as { orderId: string };
+  const { status } = req.body;
 
-    const sellerData = await db.select().from(seller).where(eq(seller.userId, user.id));
-    if (!sellerData[0]) {
-        throw new ApiError(401, "Seller does not exist");
-    }
+  if (!orderId) throw new ApiError(400, "Order ID is required");
+  if (!status) throw new ApiError(400, "Status is required");
 
-    // Verify seller has access to this order before updating
-    const checkAccess = await db
-        .select({ id: order.id })
-        .from(orderItem)
-        .innerJoin(product, eq(orderItem.productId, product.id))
-        .innerJoin(order, eq(orderItem.orderId, order.id))
-        .where(and(eq(order.id, orderId), eq(product.sellerId, sellerData[0].id)))
-        .limit(1);
+  const sellerData = await db
+    .select()
+    .from(seller)
+    .where(eq(seller.userId, user.id));
+  if (!sellerData[0]) {
+    throw new ApiError(401, "Seller does not exist");
+  }
 
-    if (!checkAccess.length) {
-        throw new ApiError(404, "Order not found or you don't have access to update it");
-    }
+  // Verify seller has access to this order before updating
+  const checkAccess = await db
+    .select({ id: order.id })
+    .from(orderItem)
+    .innerJoin(product, eq(orderItem.productId, product.id))
+    .innerJoin(order, eq(orderItem.orderId, order.id))
+    .where(and(eq(order.id, orderId), eq(product.sellerId, sellerData[0].id)))
+    .limit(1);
 
-    const result = await db.update(order)
-        .set({ status, updatedAt: new Date() })
-        .where(eq(order.id, orderId))
-        .returning();
+  if (!checkAccess.length) {
+    throw new ApiError(
+      404,
+      "Order not found or you don't have access to update it",
+    );
+  }
 
-    res.json(new ApiResponse(200, result[0], "Order status updated"));
+  const result = await db
+    .update(order)
+    .set({ status, updatedAt: new Date() })
+    .where(eq(order.id, orderId))
+    .returning();
+
+  res.json(new ApiResponse(200, result[0], "Order status updated"));
 });
