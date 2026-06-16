@@ -27,7 +27,7 @@ export const getCart = asyncHandler(async (req, res) => {
     .leftJoin(product, eq(product.id, cartItem.productId))
     .where(eq(cartItem.cartId, cart.id));
 
-  await redis.set(cacheKey, JSON.stringify(cartItemData), "EX", 3600); // Cache for 1 hour
+  await redis.set(cacheKey, JSON.stringify(cartItemData), "EX", 3600);
   return res.json(new ApiResponse(200, cartItemData, "Cart fetched"));
 });
 

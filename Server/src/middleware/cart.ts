@@ -12,13 +12,6 @@ export const attachCart = asyncHandler(async (req, res, next) => {
   if (!user) {
     throw new ApiError(401, "Login required");
   }
-  const cartKey = `cart:${user.id}`;
-  const cached = await redis.get(cartKey);
-  if (cached) {
-    req.cart = JSON.parse(cached) as CartType;
-    return next();
-  }
-
   const cartData = await db
     .select()
     .from(cart)
@@ -32,8 +25,6 @@ export const attachCart = asyncHandler(async (req, res, next) => {
       .returning();
     userCart = newCart[0];
   }
-
-  await redis.set(cartKey, JSON.stringify(userCart), "EX", 600);
 
   req.cart = userCart as CartType;
   next();
