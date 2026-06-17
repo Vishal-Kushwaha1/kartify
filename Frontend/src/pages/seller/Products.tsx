@@ -170,7 +170,7 @@ const Products = () => {
                   {product.name}
                 </h3>
                 <span className="font-bold text-lg text-primary shrink-0">
-                  ${product.price?.toFixed(2)}
+                  {product.price?.toFixed(2)}
                 </span>
               </div>
 

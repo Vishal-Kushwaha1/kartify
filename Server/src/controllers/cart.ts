@@ -17,6 +17,7 @@ export const getCart = asyncHandler(async (req, res) => {
 
   const cacheKey = `cart:${user.id}`;
   const cachedCart = await redis.get(cacheKey);
+  
   if (cachedCart) {
     return res.json(new ApiResponse(200, JSON.parse(cachedCart), "Cart fetched from cache"));
   }
@@ -79,15 +80,8 @@ export const addToCart = asyncHandler(async (req, res) => {
     }
   });
 
-  // Return full updated cart
-  const updatedCart = await db
-    .select()
-    .from(cartItem)
-    .leftJoin(product, eq(product.id, cartItem.productId))
-    .where(eq(cartItem.cartId, cart.id));
-
   await redis.del(`cart:${user.id}`);
-  return res.json(new ApiResponse(200, updatedCart, "Item added to cart"));
+  return res.json(new ApiResponse(200, null, "Item added to cart"));
 });
 
 export const removeFromCart = asyncHandler(async (req, res) => {

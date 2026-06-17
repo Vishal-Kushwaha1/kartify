@@ -13,6 +13,7 @@ import crypto from "crypto";
 import Stripe from "stripe";
 import { product } from "../models/product.js";
 import { seller } from "../models/seller.js";
+import redis from "../db/redis.js";
 
 const createOrderFromCart = async ({
   trx,
@@ -145,6 +146,7 @@ const confirmOrder = async ({
   const userCart = await trx.select().from(cart).where(eq(cart.userId, userId));
   if (userCart[0]) {
     await trx.delete(cartItem).where(eq(cartItem.cartId, userCart[0].id));
+    await redis.del(`cart:${userId}`);
   }
 };
 

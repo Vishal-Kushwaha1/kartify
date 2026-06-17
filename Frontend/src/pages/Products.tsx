@@ -73,23 +73,7 @@ export const Products = () => {
     fetchProducts(currentPage);
   }, [currentPage, fetchProducts]);
 
-  useEffect(() => {
-    const data = localStorage.getItem("kartify_recommendation");
-    if (data) {
-      setRecommendations(JSON.parse(data));
-    }
-  }, []);
-
   const fetchRecommendations = useCallback(async () => {
-    const cached = localStorage.getItem("kartify_recommendation")
-    if(cached){
-      const {data, timeStamp} = JSON.parse(cached)
-      const oneHour = 60*60*1000
-      if(Date.now()-timeStamp < oneHour){
-        setRecommendations(JSON.parse(data))
-      }
-      return
-    }
     try {
       const response = await api.get(`/recommendation`, {
         withCredentials: true,
@@ -97,7 +81,6 @@ export const Products = () => {
       const data = response?.data?.data ?? response?.data;
       if (Array.isArray(data)) {
         setRecommendations(data);
-        localStorage.setItem("kartify_recommendation", JSON.stringify({data, timeStamp: Date.now()}))
       }
     } catch (error) {
       console.error("Recommendation error", error);
@@ -105,6 +88,7 @@ export const Products = () => {
   },[])
 
   useEffect(() => {
+    
     if (user) {
       fetchRecommendations();
     }

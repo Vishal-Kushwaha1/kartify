@@ -47,8 +47,7 @@ export const Navbar = () => {
   const handleLogout = async () => {
     try {
       await clearUser().unwrap()
-      localStorage.removeItem("kartify_recommendation")
-      localStorage.removeItem("kartify_role")
+      sessionStorage.removeItem("kartify_role")
       navigate("/login");
     } catch (error) {
       console.error("Logout failed", error);

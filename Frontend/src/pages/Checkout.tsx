@@ -23,8 +23,9 @@ import {
   Wallet,
   Banknote,
 } from "lucide-react";
-import { useGetCartItemQuery } from "@/redux/cart/cartApi";
+import { useGetCartItemQuery, cartApi } from "@/redux/cart/cartApi";
 import { useGetAddressQuery } from "@/redux/address/addressApi";
+import { useDispatch } from "react-redux";
 
 declare global {
   interface Window {
@@ -37,6 +38,7 @@ export const Checkout = () => {
   const navigate = useNavigate();
   const [addressId, setAddressId] = useState<string | null>(null);
   const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const { data: cart, isLoading: ItemLoading } = useGetCartItemQuery();
   const{data: addresses = [], isLoading:loadingAddress} = useGetAddressQuery()
@@ -65,7 +67,7 @@ export const Checkout = () => {
     try {
       setLoadingPayment(true);
       await api.post("/order/cash", { addressId }, { withCredentials: true });
-
+      dispatch(cartApi.util.invalidateTags(["Cart"]));
       toast.success("Order Placed successfully");
       navigate("/order-success");
     } catch (error) {
@@ -118,6 +120,7 @@ export const Checkout = () => {
             order_id: orderId,
           });
           setLoadingPayment(false);
+          dispatch(cartApi.util.invalidateTags(["Cart"]));
           navigate(`/order-success?${params.toString()}`);
         },
         modal: {

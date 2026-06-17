@@ -52,7 +52,7 @@ export const SellerSidebar = () => {
   const handleSignOut = async () => {
     try {
       await clearUser().unwrap()
-      localStorage.removeItem("kartify_role")
+      sessionStorage.removeItem("kartify_role")
       toast.success("User logged out");
       navigate("/login");
     } catch {

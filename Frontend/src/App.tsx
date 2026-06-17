@@ -55,7 +55,7 @@ const RootRedirect = () => {
         </div>
     );
     if (user) {
-        localStorage.setItem("kartify_role", user.role);
+        sessionStorage.setItem("kartify_role", user.role);
         if (user.role === "admin") return <Navigate to="/admin" replace/>;
         if (user.role === "seller") return <Navigate to="/seller" replace/>;
         if (user.role === "user") return <Navigate to="/products" replace/>;

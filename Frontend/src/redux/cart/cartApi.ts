@@ -18,7 +18,7 @@ export const cartApi = createApi({
       query: (productId) => ({
         url: "/cart/add",
         method: "POST",
-        body: productId,
+        body: {productId},
       }),
       invalidatesTags: ["Cart"],
     }),
@@ -26,7 +26,7 @@ export const cartApi = createApi({
       query: (productId) => ({
         url: "/cart/remove",
         method: "POST",
-        body: productId,
+        body: {productId},
       }),
       invalidatesTags: ["Cart"],
     }),

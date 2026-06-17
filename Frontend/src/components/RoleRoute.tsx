@@ -7,24 +7,16 @@ interface RoleRouteProps {
 }
 
 const RoleRoute = ({ allowedRole }: RoleRouteProps) => {
-  const roleData = localStorage.getItem("kartify_role");
+  const roleData = sessionStorage.getItem("kartify_role");
   
-  // Parse the role - it might be JSON stringified or plain string
-  let role = roleData;
-  try {
-    role = JSON.parse(roleData || "");
-  } catch {
-    role = roleData;
-  }
 
-  // Not logged in
-  if (!role) {
+  if (!roleData) {
     return <Navigate to="/login" replace />;
   }
 
   // Logged in but wrong role
-  if (role && role !== allowedRole) {
-    return <Navigate to={getDashboardPath(role as UserRoleEnum)} replace />;
+  if (roleData !== allowedRole) {
+    return <Navigate to={getDashboardPath(roleData as UserRoleEnum)} replace />;
   }
 
   return <Outlet />;
