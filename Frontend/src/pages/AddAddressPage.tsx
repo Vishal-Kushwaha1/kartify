@@ -6,7 +6,7 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { LucideLocateFixed, MapPin } from "lucide-react";
-import { api } from "@/utils/Axios";
 import { type NewAddressProps, newAddressSchema } from "@/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";

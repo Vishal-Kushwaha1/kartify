@@ -7,7 +7,6 @@ import { useGetUserQuery } from "./redux/user/userApi";
 import RootRedirect from "./components/RootRedirect";
 
 // Unprotected
-const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Products = lazy(() => import("@/pages/Products"));
 const ProductDetailPage = lazy(() => import("@/pages/ProductDetailPage"));
 
