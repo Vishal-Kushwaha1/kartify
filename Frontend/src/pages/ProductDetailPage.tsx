@@ -29,7 +29,10 @@ import { Review } from "@/components/Review";
 import { toast } from "sonner";
 import { useWishlistActions } from "@/hooks/useWishlistActions.ts";
 import { useGetUserQuery } from "@/redux/user/userApi";
-import { useAddToCartMutation, useGetCartItemQuery } from "@/redux/cart/cartApi";
+import {
+  useAddToCartMutation,
+  useGetCartItemQuery,
+} from "@/redux/cart/cartApi";
 
 type ReviewPropsData = { review: ReviewProps; user: User };
 
@@ -42,8 +45,8 @@ export const ProductDetailPage = () => {
   const navigate = useNavigate();
 
   const { data: user } = useGetUserQuery();
-  const { data:cart } = useGetCartItemQuery()
-  const [addToCart] = useAddToCartMutation()
+  const { data: cart } = useGetCartItemQuery();
+  const [addToCart] = useAddToCartMutation();
   const { id } = useParams();
 
   const isInCart = cart?.some(
@@ -57,7 +60,7 @@ export const ProductDetailPage = () => {
     } else {
       try {
         setCartLoading(true);
-        await addToCart({productId: product?.id}).unwrap()
+        await addToCart({ productId: product?.id }).unwrap();
         toast.success("Item added to cart");
       } catch (error) {
         toast.error("Failed to add item");
@@ -117,18 +120,18 @@ export const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-muted/40 px-6 py-10 text-foreground">
+      <div className="bg-muted/40 text-foreground min-h-screen px-6 py-10">
         <div className="mx-auto max-w-6xl space-y-6">
           <div className="flex items-center justify-between">
             <Skeleton className="h-9 w-32" />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-            <Card className="rounded-xl border bg-background p-6 shadow-none">
+            <Card className="bg-background rounded-xl border p-6 shadow-none">
               <Skeleton className="aspect-square w-full rounded-xl" />
             </Card>
 
-            <Card className="rounded-xl border bg-background p-6 shadow-none">
+            <Card className="bg-background rounded-xl border p-6 shadow-none">
               <div className="space-y-5">
                 <Skeleton className="h-5 w-24" />
                 <Skeleton className="h-8 w-3/4" />
@@ -145,19 +148,19 @@ export const ProductDetailPage = () => {
 
   if (!product) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/40 px-6 py-10 text-foreground">
-        <Card className="w-full max-w-md rounded-xl border bg-background p-6 text-center shadow-none">
-          <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full border bg-muted/40">
-            <Package className="size-5 text-muted-foreground" />
+      <div className="bg-muted/40 text-foreground flex min-h-screen items-center justify-center px-6 py-10">
+        <Card className="bg-background w-full max-w-md rounded-xl border p-6 text-center shadow-none">
+          <div className="bg-muted/40 mx-auto mb-4 flex size-12 items-center justify-center rounded-full border">
+            <Package className="text-muted-foreground size-5" />
           </div>
           <h2 className="text-xl font-medium tracking-tight">
             Product does not exist
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="text-muted-foreground mt-2 text-sm">
             The product you are looking for may have been removed.
           </p>
           <Button
-            className="mt-6 bg-primary text-white hover:bg-primary/90"
+            className="bg-primary hover:bg-primary/90 mt-6 text-white"
             onClick={() => navigate(-1)}
           >
             <ArrowLeft className="mr-2 size-4" />
@@ -169,7 +172,7 @@ export const ProductDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-muted/40 px-6 py-10 text-foreground">
+    <div className="bg-muted/40 text-foreground min-h-screen px-6 py-10">
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Button
@@ -183,7 +186,7 @@ export const ProductDetailPage = () => {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <Card className="rounded-xl border bg-background p-6 shadow-none">
+          <Card className="bg-background rounded-xl border p-6 shadow-none">
             {images?.length > 0 ? (
               <Carousel
                 className="w-full"
@@ -192,7 +195,7 @@ export const ProductDetailPage = () => {
                 <CarouselContent>
                   {images.map((img, index) => (
                     <CarouselItem key={index}>
-                      <Card className="overflow-hidden rounded-xl border bg-background shadow-none">
+                      <Card className="bg-background overflow-hidden rounded-xl border shadow-none">
                         <CardContent className="flex aspect-square items-center justify-center p-6">
                           <img
                             src={img}
@@ -213,10 +216,10 @@ export const ProductDetailPage = () => {
                 )}
               </Carousel>
             ) : (
-              <div className="flex aspect-square items-center justify-center rounded-xl border bg-muted/40">
+              <div className="bg-muted/40 flex aspect-square items-center justify-center rounded-xl border">
                 <div className="text-center">
-                  <Package className="mx-auto size-8 text-muted-foreground" />
-                  <p className="mt-3 text-sm text-muted-foreground">
+                  <Package className="text-muted-foreground mx-auto size-8" />
+                  <p className="text-muted-foreground mt-3 text-sm">
                     No image found
                   </p>
                 </div>
@@ -224,13 +227,13 @@ export const ProductDetailPage = () => {
             )}
           </Card>
 
-          <Card className="rounded-xl border bg-background p-6 shadow-none">
+          <Card className="bg-background rounded-xl border p-6 shadow-none">
             <div className="space-y-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">Product ID</p>
+                  <p className="text-muted-foreground text-xs">Product ID</p>
                   <div className="mt-1 flex items-center gap-2">
-                    <Hash className="size-4 text-muted-foreground" />
+                    <Hash className="text-muted-foreground size-4" />
                     <span className="text-sm">{product.id.slice(-8)}</span>
                   </div>
                 </div>
@@ -252,14 +255,14 @@ export const ProductDetailPage = () => {
                 <h1 className="text-2xl font-medium tracking-tight">
                   {product.name || "Product Name"}
                 </h1>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                <p className="text-muted-foreground mt-3 text-sm leading-6">
                   {product.description || "No description available."}
                 </p>
               </div>
 
               {categories?.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground">Categories</p>
+                  <p className="text-muted-foreground text-xs">Categories</p>
                   <div className="flex flex-wrap gap-2">
                     {categories?.map((cat, index) => (
                       <Badge key={index} variant="secondary">
@@ -271,8 +274,8 @@ export const ProductDetailPage = () => {
               )}
 
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl border bg-background p-4">
-                  <p className="text-xs text-muted-foreground">Seller</p>
+                <div className="bg-background rounded-xl border p-4">
+                  <p className="text-muted-foreground text-xs">Seller</p>
                   <div className="mt-3 flex items-center gap-3">
                     <Avatar className="size-9">
                       <AvatarFallback>
@@ -285,10 +288,10 @@ export const ProductDetailPage = () => {
                   </div>
                 </div>
 
-                <div className="rounded-xl border bg-background p-4">
+                <div className="bg-background rounded-xl border p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         Stock Status
                       </p>
 
@@ -296,7 +299,7 @@ export const ProductDetailPage = () => {
                         <span
                           className={`size-2.5 rounded-full ${stockDotClass}`}
                         />
-                        <p className="text-sm font-medium text-foreground">
+                        <p className="text-foreground text-sm font-medium">
                           {stockStatus}
                         </p>
                       </div>
@@ -310,7 +313,7 @@ export const ProductDetailPage = () => {
                     </Badge>
                   </div>
 
-                  <p className="mt-3 text-xs text-muted-foreground">
+                  <p className="text-muted-foreground mt-3 text-xs">
                     {stock > 0
                       ? "Inventory is available for this product."
                       : "This product is currently unavailable."}
@@ -320,17 +323,17 @@ export const ProductDetailPage = () => {
 
               <div className="grid gap-3 border-t pt-6 sm:grid-cols-2">
                 <div>
-                  <p className="text-xs text-muted-foreground">Created At</p>
+                  <p className="text-muted-foreground text-xs">Created At</p>
                   <div className="mt-1 flex items-center gap-2 text-sm">
-                    <Calendar className="size-4 text-muted-foreground" />
+                    <Calendar className="text-muted-foreground size-4" />
                     {new Date(product.createdAt).toLocaleDateString()}
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">Updated At</p>
+                  <p className="text-muted-foreground text-xs">Updated At</p>
                   <div className="mt-1 flex items-center gap-2 text-sm">
-                    <Calendar className="size-4 text-muted-foreground" />
+                    <Calendar className="text-muted-foreground size-4" />
                     {new Date(product.updatedAt).toLocaleDateString()}
                   </div>
                 </div>
@@ -383,7 +386,7 @@ export const ProductDetailPage = () => {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium text-foreground">
+                  <span className="text-foreground text-sm font-medium">
                     {(
                       reviews.reduce(
                         (sum: number, r: ReviewPropsData) =>
@@ -392,7 +395,7 @@ export const ProductDetailPage = () => {
                       ) / reviews.length
                     ).toFixed(1)}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground text-xs">
                     ({reviews.length} review{reviews.length !== 1 ? "s" : ""})
                   </span>
                 </div>
@@ -405,7 +408,7 @@ export const ProductDetailPage = () => {
                   {Array.from({ length: 2 }).map((_, i) => (
                     <div
                       key={i}
-                      className="rounded-xl border bg-background p-4 space-y-3"
+                      className="bg-background space-y-3 rounded-xl border p-4"
                     >
                       <div className="flex items-center gap-3">
                         <Skeleton className="h-9 w-9 rounded-full" />
@@ -416,8 +419,8 @@ export const ProductDetailPage = () => {
                   ))}
                 </div>
               ) : reviews.length === 0 ? (
-                <div className="flex items-center justify-center py-8 rounded-xl border border-dashed bg-muted/40">
-                  <p className="text-sm text-muted-foreground">
+                <div className="bg-muted/40 flex items-center justify-center rounded-xl border border-dashed py-8">
+                  <p className="text-muted-foreground text-sm">
                     No reviews yet. Be the first to review!
                   </p>
                 </div>

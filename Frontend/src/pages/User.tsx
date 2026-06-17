@@ -12,31 +12,33 @@ import {
   XCircle,
   Briefcase,
   IdCard,
-} from "lucide-react"
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useGetUserQuery } from "@/redux/user/userApi";
 
 export const User = () => {
-  const {data:user , isLoading} = useGetUserQuery()
-  const navigate = useNavigate()
+  const { data: user, isLoading } = useGetUserQuery();
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/40">
-        <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+      <div className="bg-muted/40 flex min-h-screen items-center justify-center">
+        <div className="border-primary h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/40">
-        <div className="text-center space-y-4">
-          <div className="h-16 w-16 mx-auto bg-muted rounded-full flex items-center justify-center">
-            <UserIcon className="h-8 w-8 text-muted-foreground" />
+      <div className="bg-muted/40 flex min-h-screen items-center justify-center">
+        <div className="space-y-4 text-center">
+          <div className="bg-muted mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+            <UserIcon className="text-muted-foreground h-8 w-8" />
           </div>
-          <p className="text-muted-foreground font-medium">No active session found. Please log in.</p>
+          <p className="text-muted-foreground font-medium">
+            No active session found. Please log in.
+          </p>
         </div>
       </div>
     );
@@ -63,89 +65,113 @@ export const User = () => {
   };
 
   return (
-    <div className="min-h-screen bg-muted/20 py-12 px-4 sm:px-6">
-      <div className="max-w-4xl mx-auto space-y-8">
-        
+    <div className="bg-muted/20 min-h-screen px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-4xl space-y-8">
         {/* Profile Header Card */}
-        <Card className="overflow-hidden border-border/50 shadow-lg bg-background/60 backdrop-blur-xl">
+        <Card className="border-border/50 bg-background/60 overflow-hidden shadow-lg backdrop-blur-xl">
           {/* Banner */}
-          <div className="h-32 sm:h-48 w-full bg-linear-to-r from-primary/80 via-primary to-primary/60 relative">
+          <div className="from-primary/80 via-primary to-primary/60 relative h-32 w-full bg-linear-to-r sm:h-48">
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
           </div>
-          
-          <CardContent className="relative px-6 sm:px-10 pb-8">
-            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6 -mt-16 sm:-mt-20 mb-6">
-              <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
-                <AvatarImage src={user.image || "/default.png"} alt={user.name} className="object-cover" />
-                <AvatarFallback className="text-4xl font-bold bg-muted text-muted-foreground">
+
+          <CardContent className="relative px-6 pb-8 sm:px-10">
+            <div className="-mt-16 mb-6 flex flex-col items-center gap-6 sm:-mt-20 sm:flex-row sm:items-end">
+              <Avatar className="border-background h-32 w-32 border-4 shadow-xl">
+                <AvatarImage
+                  src={user.image || "/default.png"}
+                  alt={user.name}
+                  className="object-cover"
+                />
+                <AvatarFallback className="bg-muted text-muted-foreground text-4xl font-bold">
                   {user.name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
 
-              <div className="flex-1 text-center sm:text-left space-y-1.5 pb-2">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground">{user.name}</h1>
-                  <Badge className={`px-3 py-1 text-xs uppercase tracking-wider font-semibold text-white ${getRoleColor(user.role)}`}>
+              <div className="flex-1 space-y-1.5 pb-2 text-center sm:text-left">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <h1 className="text-foreground text-3xl font-bold tracking-tight">
+                    {user.name}
+                  </h1>
+                  <Badge
+                    className={`px-3 py-1 text-xs font-semibold tracking-wider text-white uppercase ${getRoleColor(user.role)}`}
+                  >
                     {user.role}
                   </Badge>
                 </div>
-                <div className="flex items-center justify-center sm:justify-start text-muted-foreground gap-2 text-sm font-medium">
+                <div className="text-muted-foreground flex items-center justify-center gap-2 text-sm font-medium sm:justify-start">
                   <Mail className="h-4 w-4" />
                   {user.email}
                   {user.emailVerified ? (
                     <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                   ) : (
-                    <XCircle className="h-4 w-4 text-destructive" />
+                    <XCircle className="text-destructive h-4 w-4" />
                   )}
                 </div>
               </div>
 
-            <Button onClick={()=> navigate("/add-address")}>Add Address</Button>
+              <Button onClick={() => navigate("/add-address")}>
+                Add Address
+              </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Details Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Account Information */}
-          <Card className="border-border/50 shadow-md bg-background/50 backdrop-blur-sm">
+          <Card className="border-border/50 bg-background/50 shadow-md backdrop-blur-sm">
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                <IdCard className="h-5 w-5 text-primary" />
+              <h3 className="mb-6 flex items-center gap-2 text-lg font-semibold">
+                <IdCard className="text-primary h-5 w-5" />
                 Account Information
               </h3>
-              
+
               <div className="space-y-5">
-                <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <div className="hover:bg-muted/50 flex items-start gap-4 rounded-xl p-3 transition-colors">
+                  <div className="bg-primary/10 text-primary rounded-lg p-2">
                     <UserIcon className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">User ID</p>
-                    <p className="text-sm font-mono text-foreground break-all">{user.id}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                    <Phone className="h-5 w-5" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Phone Number</p>
-                    <p className="text-sm font-medium text-foreground">
-                      {user.phone ? user.phone : <span className="text-muted-foreground italic">Not provided</span>}
+                    <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                      User ID
+                    </p>
+                    <p className="text-foreground font-mono text-sm break-all">
+                      {user.id}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <div className="hover:bg-muted/50 flex items-start gap-4 rounded-xl p-3 transition-colors">
+                  <div className="bg-primary/10 text-primary rounded-lg p-2">
+                    <Phone className="h-5 w-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                      Phone Number
+                    </p>
+                    <p className="text-foreground text-sm font-medium">
+                      {user.phone ? (
+                        user.phone
+                      ) : (
+                        <span className="text-muted-foreground italic">
+                          Not provided
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="hover:bg-muted/50 flex items-start gap-4 rounded-xl p-3 transition-colors">
+                  <div className="bg-primary/10 text-primary rounded-lg p-2">
                     <Briefcase className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Account Role</p>
-                    <p className="text-sm font-medium text-foreground capitalize">{user.role}</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                      Account Role
+                    </p>
+                    <p className="text-foreground text-sm font-medium capitalize">
+                      {user.role}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -153,46 +179,61 @@ export const User = () => {
           </Card>
 
           {/* System Details */}
-          <Card className="border-border/50 shadow-md bg-background/50 backdrop-blur-sm">
+          <Card className="border-border/50 bg-background/50 shadow-md backdrop-blur-sm">
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                <ShieldCheck className="h-5 w-5 text-primary" />
+              <h3 className="mb-6 flex items-center gap-2 text-lg font-semibold">
+                <ShieldCheck className="text-primary h-5 w-5" />
                 System Details
               </h3>
-              
+
               <div className="space-y-5">
-                <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <div className="hover:bg-muted/50 flex items-start gap-4 rounded-xl p-3 transition-colors">
+                  <div className="bg-primary/10 text-primary rounded-lg p-2">
                     <ShieldCheck className="h-5 w-5" />
                   </div>
-                  <div className="flex-1 flex items-center justify-between">
+                  <div className="flex flex-1 items-center justify-between">
                     <div className="space-y-1">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</p>
-                      <p className="text-sm font-medium text-foreground">Account Active</p>
+                      <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                        Status
+                      </p>
+                      <p className="text-foreground text-sm font-medium">
+                        Account Active
+                      </p>
                     </div>
-                    <Badge variant={user.isActive ? "default" : "destructive"} className="shadow-sm">
+                    <Badge
+                      variant={user.isActive ? "default" : "destructive"}
+                      className="shadow-sm"
+                    >
                       {user.isActive ? "Active" : "Inactive"}
                     </Badge>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <div className="hover:bg-muted/50 flex items-start gap-4 rounded-xl p-3 transition-colors">
+                  <div className="bg-primary/10 text-primary rounded-lg p-2">
                     <Calendar className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Member Since</p>
-                    <p className="text-sm font-medium text-foreground">{formatDate(user.createdAt)}</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                      Member Since
+                    </p>
+                    <p className="text-foreground text-sm font-medium">
+                      {formatDate(user.createdAt)}
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <div className="hover:bg-muted/50 flex items-start gap-4 rounded-xl p-3 transition-colors">
+                  <div className="bg-primary/10 text-primary rounded-lg p-2">
                     <Clock className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Last Updated</p>
-                    <p className="text-sm font-medium text-foreground">{formatDate(user.updatedAt)}</p>
+                    <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                      Last Updated
+                    </p>
+                    <p className="text-foreground text-sm font-medium">
+                      {formatDate(user.updatedAt)}
+                    </p>
                   </div>
                 </div>
               </div>

@@ -10,10 +10,7 @@ import { useState } from "react";
 import { LoadingPage } from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterProps } from "../types/schema";
@@ -36,7 +33,6 @@ export const Signup = () => {
     resolver: zodResolver(registerSchema),
   });
 
-
   const handleRegister = async (formData: RegisterProps) => {
     const { email, password, fullName } = formData;
     try {
@@ -55,7 +51,7 @@ export const Signup = () => {
         {
           email,
           type: "email-verification",
-        }
+        },
       );
       if (otpError)
         return toast.error("OTP send failed", {
@@ -82,7 +78,7 @@ export const Signup = () => {
       });
       if (error) return toast.error(error.message || "Invalid OTP");
       toast.success("Email verified!");
-      navigate("/");
+      navigate("/products");
     } catch {
       toast.error("Something went wrong.");
     } finally {
@@ -116,7 +112,7 @@ export const Signup = () => {
         return toast.error("Google login failed", {
           description: error.message,
         });
-      navigate("/");
+      navigate("/products");
     } catch {
       toast.error("Something went wrong.");
     } finally {
@@ -127,59 +123,65 @@ export const Signup = () => {
   if (loading && step === "form") return <LoadingPage />;
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="bg-background flex min-h-screen">
       {/* Left Column - Image/Graphic */}
-      <div className="hidden lg:flex flex-1 relative bg-muted items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-primary/10 mix-blend-multiply z-10" />
-        <img 
-          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop" 
-          alt="Abstract Background" 
-          className="absolute inset-0 w-full h-full object-cover opacity-80"
+      <div className="bg-muted relative hidden flex-1 items-center justify-center overflow-hidden lg:flex">
+        <div className="bg-primary/10 absolute inset-0 z-10 mix-blend-multiply" />
+        <img
+          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop"
+          alt="Abstract Background"
+          className="absolute inset-0 h-full w-full object-cover opacity-80"
         />
-        <div className="relative z-20 flex flex-col items-start justify-end h-full w-full p-16 bg-linear-to-t from-background/90 to-transparent">
-          <div className="h-12 w-12 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center font-bold text-2xl mb-6 shadow-xl">
+        <div className="from-background/90 relative z-20 flex h-full w-full flex-col items-start justify-end bg-linear-to-t to-transparent p-16">
+          <div className="bg-primary text-primary-foreground mb-6 flex h-12 w-12 items-center justify-center rounded-2xl text-2xl font-bold shadow-xl">
             K
           </div>
-          <h2 className="text-4xl font-bold text-foreground mb-4 leading-tight">
-            Join the Kartify <br />Community
+          <h2 className="text-foreground mb-4 text-4xl leading-tight font-bold">
+            Join the Kartify <br />
+            Community
           </h2>
-          <p className="text-lg text-muted-foreground max-w-md">
-            Unlock exclusive deals, track your orders in real-time, and experience the future of premium online shopping.
+          <p className="text-muted-foreground max-w-md text-lg">
+            Unlock exclusive deals, track your orders in real-time, and
+            experience the future of premium online shopping.
           </p>
         </div>
       </div>
 
       {/* Right Column - Form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-muted/20 py-12">
+      <div className="bg-muted/20 flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-sm space-y-6">
-          
           {step === "form" && (
             <>
-              <div className="flex flex-col space-y-2 text-center lg:text-left mb-8">
-                <div className="flex items-center justify-center lg:justify-start gap-2 mb-2 lg:hidden">
-                  <div className="h-8 w-8 bg-primary text-primary-foreground rounded-lg flex items-center justify-center font-bold text-lg">
+              <div className="mb-8 flex flex-col space-y-2 text-center lg:text-left">
+                <div className="mb-2 flex items-center justify-center gap-2 lg:hidden lg:justify-start">
+                  <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg text-lg font-bold">
                     K
                   </div>
-                  <span className="font-bold text-xl">Kartify</span>
+                  <span className="text-xl font-bold">Kartify</span>
                 </div>
-                <h1 className="text-3xl font-bold tracking-tight">Create account</h1>
-                <p className="text-sm text-muted-foreground">
+                <h1 className="text-3xl font-bold tracking-tight">
+                  Create account
+                </h1>
+                <p className="text-muted-foreground text-sm">
                   Sign up to get started with your premium experience.
                 </p>
               </div>
 
-              <Card className="border-border/50 shadow-lg bg-background/60 backdrop-blur-xl rounded-2xl overflow-hidden">
-                <CardContent className="p-6 sm:p-8 space-y-6">
-                  <form onSubmit={handleSubmit(handleRegister)} className="space-y-4">
+              <Card className="border-border/50 bg-background/60 overflow-hidden rounded-2xl shadow-lg backdrop-blur-xl">
+                <CardContent className="space-y-6 p-6 sm:p-8">
+                  <form
+                    onSubmit={handleSubmit(handleRegister)}
+                    className="space-y-4"
+                  >
                     <div className="space-y-2">
                       <Input
                         placeholder="Full Name"
                         autoComplete="name"
-                        className="h-11 rounded-xl bg-background border-border/50 focus-visible:ring-primary/20"
+                        className="bg-background border-border/50 focus-visible:ring-primary/20 h-11 rounded-xl"
                         {...register("fullName")}
                       />
                       {errors.fullName && (
-                        <p className="text-xs text-destructive font-medium pl-1">
+                        <p className="text-destructive pl-1 text-xs font-medium">
                           {errors.fullName.message}
                         </p>
                       )}
@@ -188,11 +190,11 @@ export const Signup = () => {
                       <Input
                         type="email"
                         placeholder="name@example.com"
-                        className="h-11 rounded-xl bg-background border-border/50 focus-visible:ring-primary/20"
+                        className="bg-background border-border/50 focus-visible:ring-primary/20 h-11 rounded-xl"
                         {...register("email")}
                       />
                       {errors.email && (
-                        <p className="text-xs text-destructive font-medium pl-1">
+                        <p className="text-destructive pl-1 text-xs font-medium">
                           {errors.email.message}
                         </p>
                       )}
@@ -201,28 +203,34 @@ export const Signup = () => {
                       <Input
                         type="password"
                         placeholder="Create Password"
-                        className="h-11 rounded-xl bg-background border-border/50 focus-visible:ring-primary/20"
+                        className="bg-background border-border/50 focus-visible:ring-primary/20 h-11 rounded-xl"
                         {...register("password")}
                       />
                       {errors.password && (
-                        <p className="text-xs text-destructive font-medium pl-1">
+                        <p className="text-destructive pl-1 text-xs font-medium">
                           {errors.password.message}
                         </p>
                       )}
                     </div>
-                    
-                    <Button className="w-full h-11 rounded-xl font-medium shadow-md hover:shadow-lg transition-all mt-2" type="submit" disabled={loading}>
-                      {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+
+                    <Button
+                      className="mt-2 h-11 w-full rounded-xl font-medium shadow-md transition-all hover:shadow-lg"
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : null}
                       Sign Up
                     </Button>
                   </form>
 
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-border/50" />
+                      <span className="border-border/50 w-full border-t" />
                     </div>
-                    <div className="relative flex justify-center text-xs uppercase font-medium tracking-wider">
-                      <span className="bg-background px-3 text-muted-foreground rounded-full border border-border/50">
+                    <div className="relative flex justify-center text-xs font-medium tracking-wider uppercase">
+                      <span className="bg-background text-muted-foreground border-border/50 rounded-full border px-3">
                         Or continue with
                       </span>
                     </div>
@@ -230,7 +238,7 @@ export const Signup = () => {
 
                   <Button
                     variant="outline"
-                    className="w-full h-11 rounded-xl bg-background hover:bg-muted/50 border-border/50 font-medium"
+                    className="bg-background hover:bg-muted/50 border-border/50 h-11 w-full rounded-xl font-medium"
                     onClick={handleGoogleLogin}
                     disabled={loading}
                   >
@@ -257,9 +265,12 @@ export const Signup = () => {
                 </CardContent>
               </Card>
 
-              <p className="text-center text-sm text-muted-foreground mt-6">
+              <p className="text-muted-foreground mt-6 text-center text-sm">
                 Already have an account?{" "}
-                <Link to="/login" className="font-semibold text-primary hover:underline">
+                <Link
+                  to="/login"
+                  className="text-primary font-semibold hover:underline"
+                >
                   Sign in
                 </Link>
               </p>
@@ -268,19 +279,24 @@ export const Signup = () => {
 
           {step === "otp" && verifiedEmail && (
             <>
-              <div className="flex flex-col space-y-2 text-center lg:text-left mb-8">
-                <div className="h-12 w-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto lg:mx-0 mb-4">
+              <div className="mb-8 flex flex-col space-y-2 text-center lg:text-left">
+                <div className="bg-primary/10 text-primary mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl lg:mx-0">
                   <MailCheck className="h-6 w-6" />
                 </div>
-                <h1 className="text-3xl font-bold tracking-tight">Check your email</h1>
-                <p className="text-sm text-muted-foreground">
-                  We've sent a 6-digit verification code to <br className="hidden lg:block"/>
-                  <span className="font-medium text-foreground">{verifiedEmail}</span>
+                <h1 className="text-3xl font-bold tracking-tight">
+                  Check your email
+                </h1>
+                <p className="text-muted-foreground text-sm">
+                  We've sent a 6-digit verification code to{" "}
+                  <br className="hidden lg:block" />
+                  <span className="text-foreground font-medium">
+                    {verifiedEmail}
+                  </span>
                 </p>
               </div>
 
-              <Card className="border-border/50 shadow-lg bg-background/60 backdrop-blur-xl rounded-2xl overflow-hidden">
-                <CardContent className="p-6 sm:p-8 space-y-6 flex flex-col items-center">
+              <Card className="border-border/50 bg-background/60 overflow-hidden rounded-2xl shadow-lg backdrop-blur-xl">
+                <CardContent className="flex flex-col items-center space-y-6 p-6 sm:p-8">
                   <InputOTP
                     maxLength={6}
                     value={otp}
@@ -291,24 +307,30 @@ export const Signup = () => {
                   >
                     <InputOTPGroup className="gap-2">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
-                        <InputOTPSlot key={i} index={i} className="h-12 w-12 text-lg rounded-xl border-border/50 bg-background" />
+                        <InputOTPSlot
+                          key={i}
+                          index={i}
+                          className="border-border/50 bg-background h-12 w-12 rounded-xl text-lg"
+                        />
                       ))}
                     </InputOTPGroup>
                   </InputOTP>
 
-                  {loading && <Loader2 className="h-6 w-6 animate-spin text-primary mt-2" />}
+                  {loading && (
+                    <Loader2 className="text-primary mt-2 h-6 w-6 animate-spin" />
+                  )}
 
-                  <div className="flex flex-col items-center gap-4 mt-6 w-full">
+                  <div className="mt-6 flex w-full flex-col items-center gap-4">
                     <Button
                       variant="ghost"
-                      className="text-sm font-medium hover:text-primary transition-colors h-9"
+                      className="hover:text-primary h-9 text-sm font-medium transition-colors"
                       onClick={handleResendOtp}
                       disabled={loading}
                     >
                       Didn't receive a code? Resend
                     </Button>
                     <button
-                      className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+                      className="text-muted-foreground hover:text-foreground text-xs underline underline-offset-4 transition-colors"
                       onClick={() => setStep("form")}
                       disabled={loading}
                     >

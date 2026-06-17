@@ -8,7 +8,7 @@ export const shipmentStatusEnum = t.pgEnum("shipment_status", [
   "in_transit",
   "out_for_delivery",
   "delivered",
-  "failed"
+  "failed",
 ]);
 
 export const shipment = pgTable("shipment", {

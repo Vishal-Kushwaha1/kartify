@@ -2,7 +2,11 @@ import { LoadingPage } from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { type NewProductProps, type NewProductInputProps, newProductSchema } from "@/types/schema";
+import {
+  type NewProductProps,
+  type NewProductInputProps,
+  newProductSchema,
+} from "@/types/schema";
 import type { Product } from "@/types/type";
 import { api } from "@/utils/Axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +31,7 @@ const EditProduct = () => {
     handleSubmit,
     reset,
     setValue,
-    formState: {  dirtyFields, errors },
+    formState: { dirtyFields, errors },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = useForm<NewProductInputProps, any, NewProductProps>({
     resolver: zodResolver(newProductSchema),
@@ -132,7 +136,7 @@ const EditProduct = () => {
   }
   if (!product) return null;
   return (
-    <div className="min-h-screen bg-muted/40 px-6 py-10">
+    <div className="bg-muted/40 min-h-screen px-6 py-10">
       <div className="mx-auto max-w-2xl">
         <Button
           variant="outline"
@@ -148,10 +152,10 @@ const EditProduct = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Name */}
             <div className="grid gap-2">
-              <label className="text-xs text-muted-foreground">Name</label>
+              <label className="text-muted-foreground text-xs">Name</label>
               <Input {...register("name")} />
               {errors.name && (
-                <p className="text-sm text-destructive">
+                <p className="text-destructive text-sm">
                   {errors.name.message}
                 </p>
               )}
@@ -159,12 +163,12 @@ const EditProduct = () => {
 
             {/* Description */}
             <div className="grid gap-2">
-              <label className="text-xs text-muted-foreground">
+              <label className="text-muted-foreground text-xs">
                 Description
               </label>
               <Input {...register("description")} />
               {errors.description && (
-                <p className="text-sm text-destructive">
+                <p className="text-destructive text-sm">
                   {errors.description.message}
                 </p>
               )}
@@ -173,21 +177,21 @@ const EditProduct = () => {
             {/* Price & Stock */}
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <label className="text-xs text-muted-foreground">
+                <label className="text-muted-foreground text-xs">
                   Price (₹)
                 </label>
                 <Input type="number" step="0.01" {...register("price")} />
                 {errors.price && (
-                  <p className="text-sm text-destructive">
+                  <p className="text-destructive text-sm">
                     {errors.price.message}
                   </p>
                 )}
               </div>
               <div className="grid gap-2">
-                <label className="text-xs text-muted-foreground">Stock</label>
+                <label className="text-muted-foreground text-xs">Stock</label>
                 <Input type="number" {...register("stock")} />
                 {errors.stock && (
-                  <p className="text-sm text-destructive">
+                  <p className="text-destructive text-sm">
                     {errors.stock.message}
                   </p>
                 )}
@@ -196,17 +200,17 @@ const EditProduct = () => {
 
             {/* Category */}
             <div className="grid gap-2">
-              <label className="text-xs text-muted-foreground">Category</label>
+              <label className="text-muted-foreground text-xs">Category</label>
               {categories.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {categories.map((cat, index) => (
                     <span
                       key={index}
-                      className="flex items-center gap-1 bg-muted text-xs px-2 py-1 rounded-md"
+                      className="bg-muted flex items-center gap-1 rounded-md px-2 py-1 text-xs"
                     >
                       {cat}
                       <X
-                        className="h-3 w-3 cursor-pointer hover:text-destructive"
+                        className="hover:text-destructive h-3 w-3 cursor-pointer"
                         onClick={() => removeCategory(index)}
                       />
                     </span>
@@ -228,18 +232,18 @@ const EditProduct = () => {
 
             {/* Image */}
             <div className="grid gap-2">
-              <label className="text-xs text-muted-foreground">
+              <label className="text-muted-foreground text-xs">
                 Product Images (existing images replace hongi)
               </label>
               {/* Existing images preview */}
               {product.image?.length && product.image?.length > 0 && (
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex flex-wrap gap-2">
                   {product.image.map((img, i) => (
                     <img
                       key={i}
                       src={img}
                       alt={"product_image"}
-                      className="h-16 w-16 rounded-md object-cover border"
+                      className="h-16 w-16 rounded-md border object-cover"
                     />
                   ))}
                 </div>
@@ -252,7 +256,7 @@ const EditProduct = () => {
                 className="file:text-sm"
               />
               {errors.image && (
-                <p className="text-sm text-destructive">
+                <p className="text-destructive text-sm">
                   {String(errors.image.message)}
                 </p>
               )}
@@ -261,7 +265,7 @@ const EditProduct = () => {
             <Button
               type="submit"
               disabled={submitting}
-              className="w-full bg-primary text-white hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 w-full text-white"
             >
               {submitting ? "Saving..." : "Save Changes"}
             </Button>
@@ -272,4 +276,4 @@ const EditProduct = () => {
   );
 };
 
-export default EditProduct
+export default EditProduct;

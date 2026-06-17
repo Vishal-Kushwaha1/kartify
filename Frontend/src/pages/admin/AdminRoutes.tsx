@@ -17,12 +17,12 @@ const OrderPage = lazy(() => import("@/pages/admin/OrderPage.tsx"));
 
 const AdminLayout = () => {
   return (
-    <div className="flex min-h-screen bg-muted/20">
+    <div className="bg-muted/20 flex min-h-screen">
       {/* Sidebar for desktop/tablet */}
       <AdminSidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
+      <div className="flex h-screen min-w-0 flex-1 flex-col overflow-y-auto">
         <Outlet />
       </div>
     </div>

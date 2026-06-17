@@ -4,7 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { newProductSchema, type NewProductProps, type NewProductInputProps } from "@/types/schema";
+import {
+  newProductSchema,
+  type NewProductProps,
+  type NewProductInputProps,
+} from "@/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -12,11 +16,11 @@ import { Upload, X } from "lucide-react";
 import { api } from "@/utils/Axios";
 import { useNavigate } from "react-router-dom";
 
-const  AddProduct = () => {
+const AddProduct = () => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<string[]>([]);
   const [categoryInput, setCategoryInput] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const {
     register,
@@ -26,7 +30,8 @@ const  AddProduct = () => {
     watch,
     formState: { errors },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = useForm<NewProductInputProps, any, NewProductProps>({ // <NewProductInputProps,any, NewProductProps>
+  } = useForm<NewProductInputProps, any, NewProductProps>({
+    // <NewProductInputProps,any, NewProductProps>
     resolver: zodResolver(newProductSchema),
   });
 
@@ -93,8 +98,8 @@ const  AddProduct = () => {
 
   return (
     <div className="bg-muted/40 min-h-screen px-6 py-10">
-      <div className="max-w-2xl mx-auto">
-        <Card className="rounded-xl border bg-background">
+      <div className="mx-auto max-w-2xl">
+        <Card className="bg-background rounded-xl border">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-2xl font-medium tracking-tight">
@@ -110,20 +115,22 @@ const  AddProduct = () => {
             <form onSubmit={handleSubmit(createProduct)} className="grid gap-5">
               {/* Product Name */}
               <div className="grid gap-2">
-                <label className="text-xs text-muted-foreground">
+                <label className="text-muted-foreground text-xs">
                   Product Name
                 </label>
                 <Input {...register("name")} placeholder="Enter product name" />
                 {errors.name && (
-                  <p className="text-sm text-destructive">
-                    {typeof errors.name.message === "string" ? errors.name.message : "Invalid name"}
+                  <p className="text-destructive text-sm">
+                    {typeof errors.name.message === "string"
+                      ? errors.name.message
+                      : "Invalid name"}
                   </p>
                 )}
               </div>
 
               {/* Description */}
               <div className="grid gap-2">
-                <label className="text-xs text-muted-foreground">
+                <label className="text-muted-foreground text-xs">
                   Description
                 </label>
                 <Textarea
@@ -132,8 +139,10 @@ const  AddProduct = () => {
                   rows={3}
                 />
                 {errors.description && (
-                  <p className="text-sm text-destructive">
-                    {typeof errors.description.message === "string" ? errors.description.message : "Invalid description"}
+                  <p className="text-destructive text-sm">
+                    {typeof errors.description.message === "string"
+                      ? errors.description.message
+                      : "Invalid description"}
                   </p>
                 )}
               </div>
@@ -141,7 +150,7 @@ const  AddProduct = () => {
               {/* Price & Stock */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     Price (₹)
                   </label>
                   <Input
@@ -152,14 +161,16 @@ const  AddProduct = () => {
                     placeholder="0.00"
                   />
                   {errors.price && (
-                    <p className="text-sm text-destructive">
-                      {typeof errors.price.message === "string" ? errors.price.message : "Invalid price"}
+                    <p className="text-destructive text-sm">
+                      {typeof errors.price.message === "string"
+                        ? errors.price.message
+                        : "Invalid price"}
                     </p>
                   )}
                 </div>
 
                 <div className="grid gap-2">
-                  <label className="text-xs text-muted-foreground">Stock</label>
+                  <label className="text-muted-foreground text-xs">Stock</label>
                   <Input
                     type="number"
                     step="1"
@@ -168,8 +179,10 @@ const  AddProduct = () => {
                     placeholder="Available units"
                   />
                   {errors.stock && (
-                    <p className="text-sm text-destructive">
-                      {typeof errors.stock.message === "string" ? errors.stock.message : "Invalid stock"}
+                    <p className="text-destructive text-sm">
+                      {typeof errors.stock.message === "string"
+                        ? errors.stock.message
+                        : "Invalid stock"}
                     </p>
                   )}
                 </div>
@@ -177,7 +190,7 @@ const  AddProduct = () => {
 
               {/* Category */}
               <div className="grid gap-2">
-                <label className="text-xs text-muted-foreground">
+                <label className="text-muted-foreground text-xs">
                   Category
                 </label>
                 <Input
@@ -191,11 +204,11 @@ const  AddProduct = () => {
                     {categories.map((cat, index) => (
                       <span
                         key={index}
-                        className="flex items-center gap-1 bg-muted text-xs px-2 py-1 rounded-md"
+                        className="bg-muted flex items-center gap-1 rounded-md px-2 py-1 text-xs"
                       >
                         {cat}
                         <X
-                          className="h-3 w-3 cursor-pointer hover:text-destructive"
+                          className="hover:text-destructive h-3 w-3 cursor-pointer"
                           onClick={() => removeCategory(index)}
                         />
                       </span>
@@ -203,14 +216,14 @@ const  AddProduct = () => {
                   </div>
                 )}
                 {errors.category && (
-                  <p className="text-sm text-destructive">
+                  <p className="text-destructive text-sm">
                     {String(errors.category.message)}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs text-muted-foreground">
+                <label className="text-muted-foreground text-xs">
                   Product Image
                 </label>
                 <div className="flex items-center gap-2">
@@ -221,15 +234,15 @@ const  AddProduct = () => {
                     {...register("image")}
                     className="file:text-sm"
                   />
-                  <Upload className="h-4 w-4 text-muted-foreground" />
+                  <Upload className="text-muted-foreground h-4 w-4" />
                 </div>
-                {(watch("image")?.length ??0) > 0 && (
-                  <p className="text-xs text-muted-foreground">
+                {(watch("image")?.length ?? 0) > 0 && (
+                  <p className="text-muted-foreground text-xs">
                     {watch("image")?.length} / 5 images selected
                   </p>
                 )}
                 {errors.image && (
-                  <p className="text-sm text-destructive">
+                  <p className="text-destructive text-sm">
                     {String(errors.image.message)}
                   </p>
                 )}
@@ -239,7 +252,7 @@ const  AddProduct = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-primary hover:bg-primary/90 text-white"
+                  className="bg-primary hover:bg-primary/90 w-full text-white"
                 >
                   {loading ? "Adding..." : "Add Product"}
                 </Button>
@@ -252,4 +265,4 @@ const  AddProduct = () => {
   );
 };
 
-export default AddProduct
+export default AddProduct;

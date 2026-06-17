@@ -11,15 +11,17 @@ import redis from "../db/redis.js";
 export const getCart = asyncHandler(async (req, res) => {
   const user = req.user;
   const cart = req.cart as CartType;
-  
+
   if (!user) throw new ApiError(401, "Unauthorized");
   if (!cart?.id) throw new ApiError(401, "Cart not found");
 
   const cacheKey = `cart:${user.id}`;
   const cachedCart = await redis.get(cacheKey);
-  
+
   if (cachedCart) {
-    return res.json(new ApiResponse(200, JSON.parse(cachedCart), "Cart fetched from cache"));
+    return res.json(
+      new ApiResponse(200, JSON.parse(cachedCart), "Cart fetched from cache"),
+    );
   }
 
   const cartItemData = await db

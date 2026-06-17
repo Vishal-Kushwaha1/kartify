@@ -11,14 +11,15 @@ export const cartApi = createApi({
   endpoints: (builder) => ({
     getCartItem: builder.query<CartData[] | null, void>({
       query: () => "/cart",
-      transformResponse: (response: { data: CartData[] }) => response?.data ?? [],
+      transformResponse: (response: { data: CartData[] }) =>
+        response?.data ?? [],
       providesTags: ["Cart"],
     }),
     addToCart: builder.mutation({
       query: (productId) => ({
         url: "/cart/add",
         method: "POST",
-        body: {productId},
+        body: { productId },
       }),
       invalidatesTags: ["Cart"],
     }),
@@ -26,7 +27,7 @@ export const cartApi = createApi({
       query: (productId) => ({
         url: "/cart/remove",
         method: "POST",
-        body: {productId},
+        body: { productId },
       }),
       invalidatesTags: ["Cart"],
     }),
@@ -34,7 +35,7 @@ export const cartApi = createApi({
       query: ({ productId, quantity }) => ({
         url: "/cart/update",
         method: "PUT",
-        body: {productId, quantity},
+        body: { productId, quantity },
       }),
       invalidatesTags: ["Cart"],
     }),

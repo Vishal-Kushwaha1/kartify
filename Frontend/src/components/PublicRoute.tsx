@@ -3,7 +3,7 @@ import { getDashboardPath } from "@/utils/authUtils";
 import { useGetUserQuery } from "@/redux/user/userApi";
 
 export const PublicRoute = () => {
-  const { data:user, isLoading:loading } = useGetUserQuery()
+  const { data: user, isLoading: loading } = useGetUserQuery();
 
   if (loading) {
     return (

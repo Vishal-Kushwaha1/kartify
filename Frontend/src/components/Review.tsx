@@ -5,12 +5,12 @@ type ReviewPropsData = { review: ReviewProps; user: User };
 
 export const Review = ({ feedback }: { feedback: ReviewPropsData }) => {
   return (
-    <div className="rounded-xl border bg-background p-4 space-y-3">
+    <div className="bg-background space-y-3 rounded-xl border p-4">
       {/* User Info */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* Avatar */}
-          <div className="h-9 w-9 rounded-full bg-primary/15 text-primary flex items-center justify-center font-semibold text-sm">
+          <div className="bg-primary/15 text-primary flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold">
             {feedback.user.name[0].toUpperCase()}
           </div>
 
@@ -19,11 +19,11 @@ export const Review = ({ feedback }: { feedback: ReviewPropsData }) => {
               <p className="text-sm font-medium">{feedback.user.name}</p>
               {/* Verified Badge */}
               {feedback.user.emailVerified && (
-                <BadgeCheck className="size-4 text-primary" />
+                <BadgeCheck className="text-primary size-4" />
               )}
             </div>
             {/* Date */}
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               {new Date(feedback.review.createdAt).toLocaleString()}
             </p>
           </div>
@@ -46,7 +46,7 @@ export const Review = ({ feedback }: { feedback: ReviewPropsData }) => {
 
       {/* Comment */}
       {feedback.review.comment && (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           {feedback.review.comment}
         </p>
       )}

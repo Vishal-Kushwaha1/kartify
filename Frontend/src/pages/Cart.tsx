@@ -11,8 +11,8 @@ import { useGetCartItemQuery } from "@/redux/cart/cartApi";
 export const Cart = () => {
   const navigate = useNavigate();
 
-  const { data:cart, isLoading: itemLoading } =useGetCartItemQuery()
-  
+  const { data: cart, isLoading: itemLoading } = useGetCartItemQuery();
+
   const { handleClearCart, actionLoading } = useCartActions();
 
   // loading
@@ -23,22 +23,25 @@ export const Cart = () => {
   // empty cart
   if (!cart || cart.length === 0) {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center bg-muted/20 pb-20 px-4">
-        <Card className="space-y-6 p-12 text-center rounded-3xl border-dashed border-border/60 shadow-sm bg-background/50 backdrop-blur-sm max-w-md w-full">
-          <div className="h-20 w-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-            <ShoppingBag className="h-10 w-10 text-muted-foreground opacity-50" />
+      <div className="bg-muted/20 flex min-h-[70vh] items-center justify-center px-4 pb-20">
+        <Card className="border-border/60 bg-background/50 w-full max-w-md space-y-6 rounded-3xl border-dashed p-12 text-center shadow-sm backdrop-blur-sm">
+          <div className="bg-muted mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+            <ShoppingBag className="text-muted-foreground h-10 w-10 opacity-50" />
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold tracking-tight mb-2">Your Cart is Empty</h2>
+            <h2 className="mb-2 text-2xl font-bold tracking-tight">
+              Your Cart is Empty
+            </h2>
             <p className="text-muted-foreground text-sm">
-              Looks like you haven't added anything yet. Discover our premium collection.
+              Looks like you haven't added anything yet. Discover our premium
+              collection.
             </p>
           </div>
 
-          <Button 
+          <Button
             onClick={() => navigate("/products")}
-            className="w-full h-12 rounded-xl text-base mt-4 shadow-md hover:shadow-lg transition-all"
+            className="mt-4 h-12 w-full rounded-xl text-base shadow-md transition-all hover:shadow-lg"
           >
             Start Shopping
           </Button>
@@ -48,24 +51,27 @@ export const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-muted/20 pb-20">
-      
+    <div className="bg-muted/20 min-h-screen pb-20">
       {/* Page Header */}
-      <div className="bg-background border-b border-border/50 px-6 py-12 mb-10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="bg-background border-border/50 mb-10 border-b px-6 py-12">
+        <div className="mx-auto flex max-w-6xl flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2 flex items-center gap-2">
-              Shopping Cart <Sparkles className="h-6 w-6 text-primary" />
+            <h1 className="text-foreground mb-2 flex items-center gap-2 text-4xl font-bold tracking-tight">
+              Shopping Cart <Sparkles className="text-primary h-6 w-6" />
             </h1>
             <p className="text-muted-foreground text-lg">
-              You have <span className="font-semibold text-foreground">{cart.length}</span> item{cart.length !== 1 ? "s" : ""} in your cart.
+              You have{" "}
+              <span className="text-foreground font-semibold">
+                {cart.length}
+              </span>{" "}
+              item{cart.length !== 1 ? "s" : ""} in your cart.
             </p>
           </div>
           <Button
             variant="ghost"
             disabled={actionLoading}
             onClick={handleClearCart}
-            className="text-destructive hover:bg-destructive/10 hover:text-destructive h-10 px-4 rounded-xl font-medium shrink-0 w-fit"
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive h-10 w-fit shrink-0 rounded-xl px-4 font-medium"
           >
             Clear Cart
           </Button>
@@ -85,11 +91,11 @@ export const Cart = () => {
           <div className="relative">
             <div className="sticky top-24 space-y-4">
               <PaymentSummary cart={cart} />
-              
+
               <div className="space-y-3 pt-2">
                 <Button
                   onClick={() => navigate("/checkout")}
-                  className="w-full h-14 text-lg rounded-2xl shadow-md hover:shadow-xl transition-all"
+                  className="h-14 w-full rounded-2xl text-lg shadow-md transition-all hover:shadow-xl"
                 >
                   Proceed to Checkout
                 </Button>
@@ -97,7 +103,7 @@ export const Cart = () => {
                 <Button
                   onClick={() => navigate("/products")}
                   variant="outline"
-                  className="w-full h-12 rounded-2xl border-border/50 bg-background/50 backdrop-blur font-medium hover:bg-muted transition-colors"
+                  className="border-border/50 bg-background/50 hover:bg-muted h-12 w-full rounded-2xl font-medium backdrop-blur transition-colors"
                 >
                   Continue Shopping
                 </Button>

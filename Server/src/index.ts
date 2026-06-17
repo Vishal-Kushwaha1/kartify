@@ -8,22 +8,27 @@ import { auth } from "./utils/auth.js";
 import { db } from "./db/db.js";
 import { ApiResponse } from "./utils/ApiResponse.js";
 import { ApiError } from "./utils/ApiError.js";
-import userRouter from "./routes/user.js"
-import productRouter from "./routes/product.js"
-import cartRouter from "./routes/cart.js"
-import recommendationRouter from "./routes/recommendation.js"
-import wishlistRouter from "./routes/wishlist.js"
-import addressRouter from "./routes/address.js"
-import orderRouter from "./routes/order.js"
-import reviewRouter from "./routes/review.js"
-import adminRouter from "./routes/admin.js"
+import userRouter from "./routes/user.js";
+import productRouter from "./routes/product.js";
+import cartRouter from "./routes/cart.js";
+import recommendationRouter from "./routes/recommendation.js";
+import wishlistRouter from "./routes/wishlist.js";
+import addressRouter from "./routes/address.js";
+import orderRouter from "./routes/order.js";
+import reviewRouter from "./routes/review.js";
+import adminRouter from "./routes/admin.js";
 
 const app = express();
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow Vercel domains, localhost, and explicit FRONTEND_URL
-      if (!origin || origin.includes("vercel.app") || origin.includes("localhost") || origin === process.env.FRONTEND_URL) {
+      if (
+        !origin ||
+        origin.includes("vercel.app") ||
+        origin.includes("localhost") ||
+        origin === process.env.FRONTEND_URL
+      ) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
@@ -33,7 +38,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie", "Accept"],
     exposedHeaders: ["Set-Cookie"],
-  })
+  }),
 );
 
 app.all("/api/auth/*any", toNodeHandler(auth));
@@ -48,26 +53,23 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/me", async (req, res) => {
- 	const session = await auth.api.getSession({
-      headers: fromNodeHeaders(req.headers),
-    });
-	return res.json(session);
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(req.headers),
+  });
+  return res.json(session);
 });
 
-app.use("/api/v1/user", userRouter)
-app.use("/api/v1/products", productRouter)
-app.use("/api/v1/cart", cartRouter)
-app.use("/api/v1/recommendation", recommendationRouter)
-app.use("/api/v1/wishlist", wishlistRouter)
-app.use("/api/v1/address", addressRouter)
-app.use("/api/v1/order", orderRouter)
-app.use("/api/v1/review", reviewRouter)
-app.use("/api/v1/admin", adminRouter)
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/products", productRouter);
+app.use("/api/v1/cart", cartRouter);
+app.use("/api/v1/recommendation", recommendationRouter);
+app.use("/api/v1/wishlist", wishlistRouter);
+app.use("/api/v1/address", addressRouter);
+app.use("/api/v1/order", orderRouter);
+app.use("/api/v1/review", reviewRouter);
+app.use("/api/v1/admin", adminRouter);
 
-
-
-
-const PORT = process.env.PORT as string
+const PORT = process.env.PORT as string;
 const startServer = async () => {
   try {
     await db.execute("SELECT 1"); // test query
@@ -81,4 +83,3 @@ const startServer = async () => {
 };
 
 startServer();
-

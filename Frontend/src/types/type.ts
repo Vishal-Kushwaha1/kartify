@@ -9,8 +9,8 @@ export interface User {
   phone?: string | null;
   role: UserRoleEnum;
   isActive: boolean;
-  createdAt: Date| string;
-  updatedAt: Date| string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 export type businessTypeEnum =
@@ -215,4 +215,4 @@ export interface Wishlist {
 export interface WishlistItem {
   wishlist: Wishlist;
   product: Product;
-};
+}

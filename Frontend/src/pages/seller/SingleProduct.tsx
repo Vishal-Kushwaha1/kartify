@@ -36,7 +36,9 @@ const SingleProduct = () => {
       try {
         setLoading(true);
 
-        const result = await api.get(`/products/seller/${id}`,{withCredentials: true});
+        const result = await api.get(`/products/seller/${id}`, {
+          withCredentials: true,
+        });
 
         const product = result?.data?.data;
         if (!product) {
@@ -95,7 +97,7 @@ const SingleProduct = () => {
   if (!product) return null;
 
   return (
-    <div className="min-h-screen bg-muted/40 px-6 py-10">
+    <div className="bg-muted/40 min-h-screen px-6 py-10">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex items-center justify-between">
           <Button
@@ -119,9 +121,9 @@ const SingleProduct = () => {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="rounded-xl border bg-background p-6">
+          <Card className="bg-background rounded-xl border p-6">
             <div className="space-y-4">
-              <div className="overflow-hidden rounded-xl border bg-muted/30">
+              <div className="bg-muted/30 overflow-hidden rounded-xl border">
                 <img
                   src={activeImage || "https://placehold.co/800x800/png"}
                   alt={product.name}
@@ -154,20 +156,20 @@ const SingleProduct = () => {
           </Card>
 
           <div className="space-y-6">
-            <Card className="rounded-xl border bg-background p-6">
+            <Card className="bg-background rounded-xl border p-6">
               <div className="space-y-6">
                 <div>
-                  <p className="mb-2 text-xs text-muted-foreground">
+                  <p className="text-muted-foreground mb-2 text-xs">
                     Product Name
                   </p>
 
-                  <h1 className="text-2xl font-medium tracking-tight text-foreground">
+                  <h1 className="text-foreground text-2xl font-medium tracking-tight">
                     {product.name}
                   </h1>
                 </div>
 
-                <div className="flex items-center gap-2 text-foreground">
-                  <IndianRupee className="h-5 w-5 text-primary" />
+                <div className="text-foreground flex items-center gap-2">
+                  <IndianRupee className="text-primary h-5 w-5" />
 
                   <span className="text-2xl font-medium tracking-tight">
                     {product.price}
@@ -175,31 +177,31 @@ const SingleProduct = () => {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-xl border bg-muted/20 p-4">
-                    <div className="mb-2 flex items-center gap-2 text-muted-foreground">
+                  <div className="bg-muted/20 rounded-xl border p-4">
+                    <div className="text-muted-foreground mb-2 flex items-center gap-2">
                       <Boxes className="h-4 w-4" />
                       <p className="text-xs">Stock</p>
                     </div>
 
-                    <p className="text-sm text-foreground">
+                    <p className="text-foreground text-sm">
                       {product.stock} available
                     </p>
                   </div>
 
-                  <div className="rounded-xl border bg-muted/20 p-4">
-                    <div className="mb-2 flex items-center gap-2 text-muted-foreground">
+                  <div className="bg-muted/20 rounded-xl border p-4">
+                    <div className="text-muted-foreground mb-2 flex items-center gap-2">
                       <CalendarDays className="h-4 w-4" />
                       <p className="text-xs">Created</p>
                     </div>
 
-                    <p className="text-sm text-foreground">
+                    <p className="text-foreground text-sm">
                       {new Date(product.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="mb-3 text-xs text-muted-foreground">
+                  <p className="text-muted-foreground mb-3 text-xs">
                     Categories
                   </p>
 
@@ -215,7 +217,7 @@ const SingleProduct = () => {
                         </Badge>
                       ))
                     ) : (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         No categories added
                       </p>
                     )}
@@ -224,23 +226,23 @@ const SingleProduct = () => {
               </div>
             </Card>
 
-            <Card className="rounded-xl border bg-background p-6">
+            <Card className="bg-background rounded-xl border p-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <Package className="h-4 w-4 text-muted-foreground" />
+                  <Package className="text-muted-foreground h-4 w-4" />
 
-                  <p className="text-xs text-muted-foreground">Description</p>
+                  <p className="text-muted-foreground text-xs">Description</p>
                 </div>
 
-                <p className="text-sm leading-7 text-muted-foreground">
+                <p className="text-muted-foreground text-sm leading-7">
                   {product.description || "No description available"}
                 </p>
               </div>
             </Card>
 
-            <div className="flex items-center justify-between gap-4 rounded-xl border bg-muted/20 p-4">
+            <div className="bg-muted/20 flex items-center justify-between gap-4 rounded-xl border p-4">
               <div className="space-y-1">
-                <p className="text-xs text-muted-foreground">Product Status</p>
+                <p className="text-muted-foreground text-xs">Product Status</p>
 
                 <Badge
                   variant="outline"
@@ -273,7 +275,7 @@ const SingleProduct = () => {
             <div className="flex gap-3">
               <Button
                 onClick={() => navigate(`/seller/product/${id}/edit`)}
-                className="bg-primary text-white hover:bg-primary/90"
+                className="bg-primary hover:bg-primary/90 text-white"
               >
                 Edit Product
               </Button>
@@ -300,4 +302,4 @@ const SingleProduct = () => {
   );
 };
 
-export default SingleProduct
+export default SingleProduct;

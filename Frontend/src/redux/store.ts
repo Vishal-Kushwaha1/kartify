@@ -10,10 +10,15 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
-    [addressApi.reducerPath]: addressApi.reducer 
+    [addressApi.reducerPath]: addressApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware, cartApi.middleware, wishlistApi.middleware, addressApi.middleware),
+    getDefaultMiddleware().concat(
+      userApi.middleware,
+      cartApi.middleware,
+      wishlistApi.middleware,
+      addressApi.middleware,
+    ),
 });
 
 setupListeners(store.dispatch);

@@ -24,9 +24,9 @@ export const auth = betterAuth({
   ],
   baseURL: process.env.BETTER_AUTH_URL || process.env.VITE_BETTER_AUTH_URL,
   emailAndPassword: { enabled: true },
-  account:{
+  account: {
     skipStateCookieCheck: true,
-    storage: "database"
+    storage: "database",
   },
   socialProviders: {
     google: {
@@ -84,21 +84,21 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
-      httpOnly: true
+      httpOnly: true,
     },
     cookiePrefix: "Kartify",
-    useSecureCookies : true
+    useSecureCookies: true,
   },
   rateLimit: {
     enabled: true,
     window: 60,
     max: 60,
   },
-  session:{
-    cookieCache:{
+  session: {
+    cookieCache: {
       enabled: true,
-      maxAge: 10*60
-    }
+      maxAge: 10 * 60,
+    },
   },
   user: {
     additionalFields: {

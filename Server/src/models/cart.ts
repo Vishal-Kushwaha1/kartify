@@ -4,5 +4,8 @@ import { user } from "./user.js";
 
 export const cart = pgTable("cart", {
   id: t.uuid("id").primaryKey().defaultRandom(),
-  userId: t.text("user_id").notNull().references(() => user.id, { onDelete: "cascade" })
+  userId: t
+    .text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
 });

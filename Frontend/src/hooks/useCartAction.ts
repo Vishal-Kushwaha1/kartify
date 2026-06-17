@@ -47,9 +47,9 @@ export const useCartActions = () => {
       }
 
       await updateCartItem({
-          productId,
-          quantity: currentQty - 1,
-        }).unwrap();
+        productId,
+        quantity: currentQty - 1,
+      }).unwrap();
       toast.success("Quantity updated");
     } catch (error) {
       toast.error("Failed");
@@ -63,9 +63,9 @@ export const useCartActions = () => {
     try {
       setLoadingId(productId);
       await updateCartItem({
-          productId,
-          quantity,
-        }).unwrap();
+        productId,
+        quantity,
+      }).unwrap();
       toast.success("Cart updated");
     } catch (error) {
       toast.error("Failed");

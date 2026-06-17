@@ -9,8 +9,10 @@ import { attachUserSession, isEmailVerified } from "../middleware/auth.js";
 import {
   createProduct,
   deleteProduct,
-  getAllProducts, getAllProductsOfSeller,
-  getProductById, getSellerProductById,
+  getAllProducts,
+  getAllProductsOfSeller,
+  getProductById,
+  getSellerProductById,
   searchProducts,
   toggleProduct,
   updateProduct,
@@ -25,7 +27,13 @@ router.get("/search", searchProducts);
 // Seller routes MUST come before the dynamic /:id route
 const sellerAuth = [attachUserSession, isEmailVerified, isSeller];
 router.get("/seller", sellerAuth, getAllProductsOfSeller);
-router.get("/seller/:id", sellerAuth, attachProduct, isProductOwner, getSellerProductById);
+router.get(
+  "/seller/:id",
+  sellerAuth,
+  attachProduct,
+  isProductOwner,
+  getSellerProductById,
+);
 
 // Public dynamic route
 router.get("/:id", attachProduct, getProductById);
@@ -39,7 +47,13 @@ router.post(
   validateProductInput,
   createProduct,
 );
-router.patch("/:id",upload.fields([{ name: "image", maxCount: 5 }]), attachProduct, isProductOwner, updateProduct);
+router.patch(
+  "/:id",
+  upload.fields([{ name: "image", maxCount: 5 }]),
+  attachProduct,
+  isProductOwner,
+  updateProduct,
+);
 router.patch("/:id/toggle", attachProduct, isProductOwner, toggleProduct);
 router.delete("/:id", attachProduct, isProductOwner, deleteProduct);
 

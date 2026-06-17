@@ -8,7 +8,6 @@ interface RoleRouteProps {
 
 const RoleRoute = ({ allowedRole }: RoleRouteProps) => {
   const roleData = sessionStorage.getItem("kartify_role");
-  
 
   if (!roleData) {
     return <Navigate to="/login" replace />;

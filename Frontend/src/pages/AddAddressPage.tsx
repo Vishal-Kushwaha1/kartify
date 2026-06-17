@@ -19,7 +19,12 @@ import { type NewAddressProps, newAddressSchema } from "@/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { useAddAddressMutation, useDeleteAddressMutation, useGetAddressQuery, useSetDefaultAddressMutation } from "@/redux/address/addressApi";
+import {
+  useAddAddressMutation,
+  useDeleteAddressMutation,
+  useGetAddressQuery,
+  useSetDefaultAddressMutation,
+} from "@/redux/address/addressApi";
 
 const LocationPicker = ({
   onPick,
@@ -64,7 +69,7 @@ const LocateMeButton = ({
   };
 
   return (
-    <div className="absolute right-3 top-3 z-1000 pointer-events-auto">
+    <div className="pointer-events-auto absolute top-3 right-3 z-1000">
       <Button onClick={handleLocate} variant="outline" size="sm">
         <LucideLocateFixed className="mr-2 h-4 w-4" />
         Use current location
@@ -76,17 +81,17 @@ const LocateMeButton = ({
 export const AddAddressPage = () => {
   const [adding, setAdding] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [settingDefault, setSettingDefault] = useState(false)
+  const [settingDefault, setSettingDefault] = useState(false);
   const [pinned, setPinned] = useState<{
     lat: number;
     lng: number;
     address: string;
   } | null>(null);
 
-  const {data: addresses=[], isLoading} = useGetAddressQuery()
-  const [addAddress] = useAddAddressMutation()
-  const [deleteAddress] = useDeleteAddressMutation()
-  const [setDefaultAddress] = useSetDefaultAddressMutation()
+  const { data: addresses = [], isLoading } = useGetAddressQuery();
+  const [addAddress] = useAddAddressMutation();
+  const [deleteAddress] = useDeleteAddressMutation();
+  const [setDefaultAddress] = useSetDefaultAddressMutation();
 
   const {
     register,
@@ -125,7 +130,7 @@ export const AddAddressPage = () => {
   const onSubmit = async (values: NewAddressProps) => {
     try {
       setAdding(true);
-      await addAddress(values).unwrap()
+      await addAddress(values).unwrap();
       reset();
       setPinned(null);
       toast.success("Address saved");
@@ -138,30 +143,29 @@ export const AddAddressPage = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      setSettingDefault(true)
+      setSettingDefault(true);
       setDeletingId(id);
-      await deleteAddress(id).unwrap()
+      await deleteAddress(id).unwrap();
       toast.success("Address deleted");
     } catch {
       toast.error("Failed to delete address");
     } finally {
       setDeletingId(null);
-      setSettingDefault(false)
+      setSettingDefault(false);
     }
   };
 
   const handleSetDefault = async (id: string) => {
     try {
-      setSettingDefault(true)
-      await setDefaultAddress(id).unwrap()
+      setSettingDefault(true);
+      await setDefaultAddress(id).unwrap();
       toast.success("Default address updated");
     } catch {
       toast.error("Unable to set default");
-    }finally{
-      setSettingDefault(false)
+    } finally {
+      setSettingDefault(false);
     }
   };
-
 
   return (
     <div className="bg-muted/40 px-6 py-10">
@@ -170,13 +174,13 @@ export const AddAddressPage = () => {
           <h1 className="text-2xl font-medium tracking-tight">
             Add new address
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Save delivery details and pin a location for faster checkout.
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <Card className="rounded-xl border bg-background">
+          <Card className="bg-background rounded-xl border">
             <CardHeader>
               <CardTitle className="text-xl font-medium tracking-tight">
                 Pin location
@@ -205,15 +209,15 @@ export const AddAddressPage = () => {
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="text-muted-foreground flex items-center gap-2 text-sm">
                   <MapPin className="h-4 w-4" />
                   {pinned?.address || "Click on the map to select a location"}
                 </div>
               </div>
 
-              <div className="rounded-xl border bg-background px-4 py-3 text-sm text-muted-foreground">
+              <div className="bg-background text-muted-foreground rounded-xl border px-4 py-3 text-sm">
                 {pinned ? (
-                  <div className=" flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <div className="flex gap-4">
                       <span>Lat: {pinned.lat.toFixed(5)}</span>
                       <span>Lng: {pinned.lng.toFixed(5)}</span>
@@ -233,7 +237,7 @@ export const AddAddressPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="rounded-xl border bg-background">
+          <Card className="bg-background rounded-xl border">
             <CardHeader>
               <CardTitle className="text-xl font-medium tracking-tight">
                 Address details
@@ -243,18 +247,18 @@ export const AddAddressPage = () => {
               <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">
+                    <label className="text-muted-foreground text-xs">
                       Address label
                     </label>
                     <Input placeholder="Home" {...register("name")} />
                     {errors.name && (
-                      <p className="text-xs text-primary">
+                      <p className="text-primary text-xs">
                         {errors.name.message}
                       </p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">
+                    <label className="text-muted-foreground text-xs">
                       Recipient name
                     </label>
                     <Input
@@ -262,7 +266,7 @@ export const AddAddressPage = () => {
                       {...register("recipientName")}
                     />
                     {errors.recipientName && (
-                      <p className="text-xs text-primary">
+                      <p className="text-primary text-xs">
                         {errors.recipientName.message}
                       </p>
                     )}
@@ -271,23 +275,23 @@ export const AddAddressPage = () => {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">
+                    <label className="text-muted-foreground text-xs">
                       Phone
                     </label>
                     <Input placeholder="Phone number" {...register("phone")} />
                     {errors.phone && (
-                      <p className="text-xs text-primary">
+                      <p className="text-primary text-xs">
                         {errors.phone.message}
                       </p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">
+                    <label className="text-muted-foreground text-xs">
                       Country
                     </label>
                     <Input placeholder="Country" {...register("country")} />
                     {errors.country && (
-                      <p className="text-xs text-primary">
+                      <p className="text-primary text-xs">
                         {errors.country.message}
                       </p>
                     )}
@@ -295,7 +299,7 @@ export const AddAddressPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     Address
                   </label>
                   <Input
@@ -303,7 +307,7 @@ export const AddAddressPage = () => {
                     {...register("address")}
                   />
                   {errors.address && (
-                    <p className="text-xs text-primary">
+                    <p className="text-primary text-xs">
                       {errors.address.message}
                     </p>
                   )}
@@ -311,29 +315,29 @@ export const AddAddressPage = () => {
 
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">
+                    <label className="text-muted-foreground text-xs">
                       City
                     </label>
                     <Input placeholder="City" {...register("city")} />
                     {errors.city && (
-                      <p className="text-xs text-primary">
+                      <p className="text-primary text-xs">
                         {errors.city.message}
                       </p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">
+                    <label className="text-muted-foreground text-xs">
                       State
                     </label>
                     <Input placeholder="State" {...register("state")} />
                     {errors.state && (
-                      <p className="text-xs text-primary">
+                      <p className="text-primary text-xs">
                         {errors.state.message}
                       </p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs text-muted-foreground">
+                    <label className="text-muted-foreground text-xs">
                       Postal code
                     </label>
                     <Input
@@ -341,14 +345,14 @@ export const AddAddressPage = () => {
                       {...register("postalCode")}
                     />
                     {errors.postalCode && (
-                      <p className="text-xs text-primary">
+                      <p className="text-primary text-xs">
                         {errors.postalCode.message}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                <label className="text-muted-foreground flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
                     className="h-4 w-4 rounded border"
@@ -360,7 +364,7 @@ export const AddAddressPage = () => {
                 <div className="flex flex-wrap items-center gap-3">
                   <Button
                     type="submit"
-                    className="bg-primary text-white hover:bg-primary/90"
+                    className="bg-primary hover:bg-primary/90 text-white"
                     disabled={adding}
                   >
                     {adding ? "Saving..." : "Save address"}
@@ -381,13 +385,13 @@ export const AddAddressPage = () => {
           </Card>
         </div>
 
-        <Card className="rounded-xl border bg-background">
+        <Card className="bg-background rounded-xl border">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-xl font-medium tracking-tight">
               Saved addresses
             </CardTitle>
             <Badge
-              className="border bg-background text-foreground"
+              className="bg-background text-foreground border"
               variant="outline"
             >
               {addresses.length} total
@@ -395,9 +399,9 @@ export const AddAddressPage = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             {isLoading ? (
-              <p className="text-sm text-muted-foreground">Loading...</p>
+              <p className="text-muted-foreground text-sm">Loading...</p>
             ) : addresses.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 No saved addresses yet.
               </p>
             ) : (
@@ -436,7 +440,7 @@ export const AddAddressPage = () => {
                             {item.recipientName} · {item.phone}
                           </p>
 
-                          <p className="text-xs text-muted-foreground">
+                          <p className="text-muted-foreground text-xs">
                             {item.address}, {item.city}, {item.state}{" "}
                             {item.postalCode}
                           </p>
@@ -447,8 +451,8 @@ export const AddAddressPage = () => {
                     {/* Right Section */}
                     <Button
                       variant="outline"
-                      className="bg-primary text-white hover:bg-primary/90"
-                      disabled={settingDefault || deletingId === item.id }
+                      className="bg-primary hover:bg-primary/90 text-white"
+                      disabled={settingDefault || deletingId === item.id}
                       onClick={() => handleDelete(item.id)}
                     >
                       {deletingId === item.id ? "Deleting..." : "Delete"}

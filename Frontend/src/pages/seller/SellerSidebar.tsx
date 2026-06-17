@@ -47,12 +47,12 @@ export const SellerSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const [clearUser] = useClearUserMutation()
+  const [clearUser] = useClearUserMutation();
 
   const handleSignOut = async () => {
     try {
-      await clearUser().unwrap()
-      sessionStorage.removeItem("kartify_role")
+      await clearUser().unwrap();
+      sessionStorage.removeItem("kartify_role");
       toast.success("User logged out");
       navigate("/login");
     } catch {
@@ -63,17 +63,17 @@ export const SellerSidebar = () => {
   };
 
   return (
-    <aside className="w-64 border-r bg-background hidden md:flex flex-col min-h-screen">
+    <aside className="bg-background hidden min-h-screen w-64 flex-col border-r md:flex">
       <div className="p-6">
-        <h2 className="text-xl font-bold tracking-tight text-primary">
+        <h2 className="text-primary text-xl font-bold tracking-tight">
           Seller Center
         </h2>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-1 text-xs">
           Manage your business
         </p>
       </div>
 
-      <nav className="flex-1 px-4 space-y-1">
+      <nav className="flex-1 space-y-1 px-4">
         {sidebarLinks.map((item) => {
           // Check active state
           // e.g. if href is /seller, it should strictly match or else /seller/products would make it active
@@ -107,25 +107,25 @@ export const SellerSidebar = () => {
       </nav>
 
       {/* A small help card at the bottom */}
-      <div className="p-4 mt-auto space-y-4">
-        <div className="rounded-xl bg-primary/10 dark:bg-primary/10 p-4 border border-primary/10 dark:border-primary/20">
-          <h4 className="text-sm font-semibold text-primary dark:text-primary">
+      <div className="mt-auto space-y-4 p-4">
+        <div className="bg-primary/10 dark:bg-primary/10 border-primary/10 dark:border-primary/20 rounded-xl border p-4">
+          <h4 className="text-primary dark:text-primary text-sm font-semibold">
             Need Help?
           </h4>
-          <p className="text-xs text-primary/80 dark:text-primary/80 mt-1 mb-3">
+          <p className="text-primary/80 dark:text-primary/80 mt-1 mb-3 text-xs">
             Check our seller guidelines or contact support.
           </p>
-          <button className="text-xs w-full bg-background border shadow-sm py-1.5 rounded-md font-medium text-foreground hover:bg-muted transition-colors">
+          <button className="bg-background text-foreground hover:bg-muted w-full rounded-md border py-1.5 text-xs font-medium shadow-sm transition-colors">
             Seller Support
           </button>
         </div>
 
         <Button
           variant="ghost"
-          className="w-full justify-start gap-3 rounded-lg px-1 py-6 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground w-full justify-start gap-3 rounded-lg px-1 py-6 text-sm font-medium transition-all duration-200"
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div className="bg-primary/10 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
             {theme === "dark" ? (
               <Moon className="h-4 w-4" />
             ) : (
@@ -135,16 +135,15 @@ export const SellerSidebar = () => {
 
           <div className="flex flex-col items-start leading-none">
             <span>Theme</span>
-            <span className="mt-1 text-xs font-normal text-muted-foreground capitalize">
+            <span className="text-muted-foreground mt-1 text-xs font-normal capitalize">
               {theme || "system"} mode
             </span>
           </div>
         </Button>
-        
 
         <Button
           variant="ghost"
-          className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full justify-start"
           onClick={handleSignOut}
         >
           <LogOut className="mr-2 h-4 w-4" />

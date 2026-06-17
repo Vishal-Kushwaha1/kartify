@@ -22,6 +22,6 @@ router.post(
   applyForSeller,
 );
 
-router.get("/store",attachUserSession, isSeller ,getSellerById)
+router.get("/store", attachUserSession, isSeller, getSellerById);
 
 export default router;

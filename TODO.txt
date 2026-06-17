@@ -1,12 +1,15 @@
-1.search implement krona hai
+1.search implement krona hai ✅
 2.product sorting
-3.product recommendation using AI
-4.After payment from stripe user redirect to home page not on order-success page
+3.product recommendation using AI ✅
+4.After payment from stripe user redirect to home page not on order-success page ✅
 5.User Support and seller support option create
 6.Compare 2 product 
 7. Discount Coupon
-8. Ai search
+8. Smart search ✅
 9. Ai chatbot for user
 
 
 backend url https://kartify-28ia.onrender.com
+
+
+jab product/:id page load ho rha hai to db pr 2 baar call ja rha hai check kro and jab get session fuilfill ho ja rha to fir se 2 baar product call ho rha hai

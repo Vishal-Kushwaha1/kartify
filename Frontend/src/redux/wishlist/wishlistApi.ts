@@ -17,7 +17,7 @@ export const wishlistApi = createApi({
       query: (productId) => ({
         url: "/wishlist",
         method: "POST",
-        body: {productId},
+        body: { productId },
       }),
       invalidatesTags: ["Wishlist"],
     }),
@@ -25,7 +25,7 @@ export const wishlistApi = createApi({
       query: (productId) => ({
         url: `/wishlist/${productId}`,
         method: "DELETE",
-        body: {productId},
+        body: { productId },
       }),
       invalidatesTags: ["Wishlist"],
     }),
@@ -33,7 +33,7 @@ export const wishlistApi = createApi({
       query: (productId) => ({
         url: "/wishlist/move-to-cart",
         method: "POST",
-        body: {productId},
+        body: { productId },
       }),
       invalidatesTags: ["Wishlist"],
     }),

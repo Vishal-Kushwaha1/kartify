@@ -7,13 +7,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, Package, Search, ShoppingCart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import {  useFetchWishlistQuery, useMoveToCartMutation, useRemoveItemFromWishlistMutation } from "@/redux/wishlist/wishlistApi";
-
+import {
+  useFetchWishlistQuery,
+  useMoveToCartMutation,
+  useRemoveItemFromWishlistMutation,
+} from "@/redux/wishlist/wishlistApi";
 
 export const Wishlist = () => {
-  const {data: wishlistItems =[], isLoading} = useFetchWishlistQuery();
-  const [removeItemFromWishlist] = useRemoveItemFromWishlistMutation()
-  const[moveToCart] = useMoveToCartMutation()
+  const { data: wishlistItems = [], isLoading } = useFetchWishlistQuery();
+  const [removeItemFromWishlist] = useRemoveItemFromWishlistMutation();
+  const [moveToCart] = useMoveToCartMutation();
   const [loading, setLoading] = useState<boolean>(false);
   const [query, setQuery] = useState("");
 
@@ -29,7 +32,7 @@ export const Wishlist = () => {
   const handleRemoveFromWishlist = async (productId: string) => {
     try {
       setLoading(true);
-      await removeItemFromWishlist(productId)
+      await removeItemFromWishlist(productId);
       toast.success("Item removed from wishlist");
     } catch (error) {
       console.error("Error removing from wishlist:", error);
@@ -41,7 +44,7 @@ export const Wishlist = () => {
   const handleMoveToCart = async (productId: string) => {
     try {
       setLoading(true);
-      await moveToCart(productId)
+      await moveToCart(productId);
       toast.success("Item moved to cart");
     } catch (error) {
       console.error("Error moving to cart:", error);
@@ -63,26 +66,26 @@ export const Wishlist = () => {
   return (
     <div className="bg-muted/40 px-6 py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
-        <div className="flex flex-col gap-6 rounded-xl border bg-background p-6">
+        <div className="bg-background flex flex-col gap-6 rounded-xl border p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
-              <h1 className="text-2xl font-medium tracking-tight text-foreground">
+              <h1 className="text-foreground text-2xl font-medium tracking-tight">
                 Wishlist
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Save your favorite items and move them to cart when you are
                 ready.
               </p>
             </div>
             <div className="flex items-center gap-2">
               <Badge
-                className="border bg-background text-foreground"
+                className="bg-background text-foreground border"
                 variant="outline"
               >
                 {wishlistItems.length} items
               </Badge>
               <Badge
-                className="border bg-background text-foreground"
+                className="bg-background text-foreground border"
                 variant="outline"
               >
                 Value: ₹{totalValue.toFixed(2)}
@@ -91,7 +94,7 @@ export const Wishlist = () => {
           </div>
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="relative w-full md:max-w-sm">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
               <Input
                 className="pl-9"
                 placeholder="Search wishlist"
@@ -107,20 +110,20 @@ export const Wishlist = () => {
           </div>
         </div>
 
-        {(loading|| isLoading) ? (
+        {loading || isLoading ? (
           <div className="grid gap-4 md:grid-cols-2">
             {Array.from({ length: 4 }).map((_, index) => (
               <Card
-                className="rounded-xl border bg-background"
+                className="bg-background rounded-xl border"
                 key={`skeleton-${index}`}
               >
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="h-20 w-20 animate-pulse rounded-xl bg-muted" />
+                    <div className="bg-muted h-20 w-20 animate-pulse rounded-xl" />
                     <div className="flex-1 space-y-3">
-                      <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
-                      <div className="h-3 w-1/3 animate-pulse rounded bg-muted" />
-                      <div className="h-8 w-full animate-pulse rounded bg-muted" />
+                      <div className="bg-muted h-4 w-3/4 animate-pulse rounded" />
+                      <div className="bg-muted h-3 w-1/3 animate-pulse rounded" />
+                      <div className="bg-muted h-8 w-full animate-pulse rounded" />
                     </div>
                   </div>
                 </CardContent>
@@ -128,21 +131,21 @@ export const Wishlist = () => {
             ))}
           </div>
         ) : filteredItems.length === 0 ? (
-          <Card className="rounded-xl border bg-background">
+          <Card className="bg-background rounded-xl border">
             <CardContent className="flex flex-col items-center gap-3 p-10 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full border">
-                <Heart className="h-5 w-5 text-muted-foreground" />
+                <Heart className="text-muted-foreground h-5 w-5" />
               </div>
               <div>
-                <h2 className="text-xl font-medium tracking-tight text-foreground">
+                <h2 className="text-foreground text-xl font-medium tracking-tight">
                   Your wishlist is empty
                 </h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Start exploring products and save items you want to buy later.
                 </p>
               </div>
               <Button
-                className="bg-primary text-white hover:bg-primary/90"
+                className="bg-primary hover:bg-primary/90 text-white"
                 onClick={() => navigate("/products")}
               >
                 Browse products
@@ -153,12 +156,12 @@ export const Wishlist = () => {
           <div className="grid gap-4 md:grid-cols-2">
             {filteredItems.map((item) => (
               <Card
-                className="group rounded-2xl border bg-background transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                className="group bg-background rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 key={item.wishlist.id}
               >
                 <CardHeader className="flex flex-col gap-5 p-6 md:flex-row md:items-start md:justify-between">
                   <div className="flex items-start gap-4">
-                    <Avatar className="h-24 w-24 rounded-2xl border bg-muted md:h-28 md:w-28">
+                    <Avatar className="bg-muted h-24 w-24 rounded-2xl border md:h-28 md:w-28">
                       {item.product.image && (
                         <AvatarImage
                           className="object-cover"
@@ -168,17 +171,17 @@ export const Wishlist = () => {
                       )}
 
                       <AvatarFallback className="rounded-2xl">
-                        <Package className="h-6 w-6 text-muted-foreground" />
+                        <Package className="text-muted-foreground h-6 w-6" />
                       </AvatarFallback>
                     </Avatar>
 
                     <div className="space-y-3">
                       <div className="space-y-1">
-                        <CardTitle className="text-lg font-semibold tracking-tight text-foreground">
+                        <CardTitle className="text-foreground text-lg font-semibold tracking-tight">
                           {item.product.name ?? "Wishlist item"}
                         </CardTitle>
 
-                        <p className="line-clamp-2 text-sm text-muted-foreground">
+                        <p className="text-muted-foreground line-clamp-2 text-sm">
                           {item.product.description ??
                             "Fresh pick for your wishlist."}
                         </p>
@@ -191,7 +194,7 @@ export const Wishlist = () => {
                             <Badge
                               key={`${item.product.id}-${tag}`}
                               variant="outline"
-                              className="rounded-md border bg-background px-2 py-0.5 text-xs"
+                              className="bg-background rounded-md border px-2 py-0.5 text-xs"
                             >
                               {tag}
                             </Badge>
@@ -219,21 +222,21 @@ export const Wishlist = () => {
                 <CardContent className="flex flex-col gap-5 p-6 pt-0">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted-foreground">Price</p>
+                      <p className="text-muted-foreground text-xs">Price</p>
 
                       <div className="flex items-center gap-2">
-                        <p className="text-lg font-semibold text-foreground">
+                        <p className="text-foreground text-lg font-semibold">
                           {item.product.price ? `₹${item.product.price}` : "—"}
                         </p>
                       </div>
                     </div>
 
                     <div className="text-right">
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         Availability
                       </p>
 
-                      <p className="text-sm font-medium text-foreground">
+                      <p className="text-foreground text-sm font-medium">
                         {item.product.stock && item.product.stock > 0
                           ? "Ready to ship"
                           : "Out of stock"}
@@ -248,7 +251,7 @@ export const Wishlist = () => {
                           item.wishlist.productId || item.product.id,
                         )
                       }
-                      className="bg-primary text-white hover:bg-primary/90"
+                      className="bg-primary hover:bg-primary/90 text-white"
                     >
                       <ShoppingCart className="mr-2 h-4 w-4" />
                       Move to cart

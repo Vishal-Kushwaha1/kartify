@@ -14,7 +14,7 @@ import { useGetUserQuery } from "@/redux/user/userApi";
 export const ReviewForm = () => {
   const [rating, setRating] = useState(0);
 
-  const {data:user} = useGetUserQuery()
+  const { data: user } = useGetUserQuery();
 
   const { id } = useParams();
 
@@ -49,12 +49,12 @@ export const ReviewForm = () => {
   };
 
   return (
-    <div className="rounded-xl border bg-background p-6">
+    <div className="bg-background rounded-xl border p-6">
       <div className="mb-6">
-        <h2 className="text-xl font-medium tracking-tight text-foreground">
+        <h2 className="text-foreground text-xl font-medium tracking-tight">
           Share your experience
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-sm">
           Tell others what you think about this product.
         </p>
       </div>
@@ -63,14 +63,14 @@ export const ReviewForm = () => {
         <input type="hidden" {...register("rating", { valueAsNumber: true })} />
 
         <div className="space-y-2">
-          <p className="text-xs text-muted-foreground">Give rating</p>
+          <p className="text-muted-foreground text-xs">Give rating</p>
 
           <div className="flex items-center gap-1">
             {[1, 2, 3, 4, 5].map((value) => (
               <button
                 key={value}
                 type="button"
-                className="rounded-md p-1 transition hover:bg-muted"
+                className="hover:bg-muted rounded-md p-1 transition"
                 onClick={() => {
                   setRating(value);
                   setValue("rating", value, { shouldValidate: true });
@@ -88,12 +88,12 @@ export const ReviewForm = () => {
           </div>
 
           {errors.rating && (
-            <p className="text-xs text-primary">{errors.rating.message}</p>
+            <p className="text-primary text-xs">{errors.rating.message}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs text-muted-foreground">Comment</p>
+          <p className="text-muted-foreground text-xs">Comment</p>
 
           <Textarea
             placeholder="Write your review..."
@@ -102,7 +102,7 @@ export const ReviewForm = () => {
           />
 
           {errors.comment && (
-            <p className="text-xs text-primary">{errors.comment.message}</p>
+            <p className="text-primary text-xs">{errors.comment.message}</p>
           )}
         </div>
 
@@ -110,7 +110,7 @@ export const ReviewForm = () => {
           <Button
             type="submit"
             disabled={!user || isSubmitting}
-            className="bg-primary text-white hover:bg-primary/90"
+            className="bg-primary hover:bg-primary/90 text-white"
           >
             {isSubmitting ? "Submitting..." : "Submit Review"}
           </Button>

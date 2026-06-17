@@ -104,7 +104,7 @@ export const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/40 px-4">
+    <div className="bg-muted/40 flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-md">
         {/* Step 1 — Email */}
         {step === "email" && (
@@ -130,7 +130,7 @@ export const ForgotPassword = () => {
                     type="email"
                   />
                   {errors.email && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.email.message}
                     </p>
                   )}
@@ -165,10 +165,10 @@ export const ForgotPassword = () => {
                 </InputOTPGroup>
               </InputOTP>
               {loading && (
-                <p className="text-sm text-muted-foreground">Verifying...</p>
+                <p className="text-muted-foreground text-sm">Verifying...</p>
               )}
               <button
-                className="text-sm text-muted-foreground underline"
+                className="text-muted-foreground text-sm underline"
                 onClick={() => setStep("email")}
               >
                 Wrong email? Go back
@@ -200,7 +200,7 @@ export const ForgotPassword = () => {
                     placeholder="Min. 8 characters"
                   />
                   {errors.newPassword && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.newPassword.message}
                     </p>
                   )}
@@ -213,7 +213,7 @@ export const ForgotPassword = () => {
                     placeholder="Repeat password"
                   />
                   {errors.confirmPassword && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.confirmPassword.message}
                     </p>
                   )}

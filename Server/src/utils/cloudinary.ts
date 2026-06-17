@@ -15,7 +15,7 @@ export const uploadOnCloudinary = async (localFilePath: string) => {
     const result = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "image",
     });
-    return result
+    return result;
   } catch (error: any) {
     throw new ApiError(500, "Cloudinary upload failed", [error]);
   } finally {

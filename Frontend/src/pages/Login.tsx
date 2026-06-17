@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  Card,
-  CardContent
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -12,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingPage } from "@/components/LoadingPage";
 import { authClient } from "@/lib/authClient";
 import { toast } from "sonner";
-import {  Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -29,14 +26,25 @@ export const Login = () => {
   const handleLogin = async (formData: LoginProps) => {
     try {
       setLoading(true);
-      const { error } = await authClient.signIn.email({
+      const { data, error } = await authClient.signIn.email({
         email: formData.email,
         password: formData.password,
       });
       if (error)
         return toast.error("Login failed", { description: error.message });
       toast.success("Login successful");
-      navigate("/products");
+
+      const role =
+        data && "user" in data
+          ? (data.user as { role?: string })?.role
+          : undefined;
+      if (role === "seller") {
+        navigate("/seller");
+      } else if (role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/products");
+      }
     } catch {
       toast.error("Something went wrong.");
     } finally {
@@ -47,7 +55,7 @@ export const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-      const { error } = await authClient.signIn.social({
+      const { data, error } = await authClient.signIn.social({
         provider: "google",
         callbackURL: `${import.meta.env.VITE_FRONTEND_URL}/products`,
       });
@@ -56,7 +64,18 @@ export const Login = () => {
           description: error.message,
         });
       toast.success("Login successful");
-      navigate("/")
+
+      const role =
+        data && "user" in data
+          ? (data.user as { role?: string })?.role
+          : undefined;
+      if (role === "seller") {
+        navigate("/seller");
+      } else if (role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/products");
+      }
     } catch {
       toast.error("Something went wrong.");
     } finally {
@@ -67,57 +86,58 @@ export const Login = () => {
   if (loading) return <LoadingPage />;
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="bg-background flex min-h-screen">
       {/* Left Column - Image/Graphic */}
-      <div className="hidden lg:flex flex-1 relative bg-muted items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-primary/10 mix-blend-multiply z-10" />
-        <img 
-          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop" 
-          alt="Abstract Background" 
-          className="absolute inset-0 w-full h-full object-cover opacity-80"
+      <div className="bg-muted relative hidden flex-1 items-center justify-center overflow-hidden lg:flex">
+        <div className="bg-primary/10 absolute inset-0 z-10 mix-blend-multiply" />
+        <img
+          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop"
+          alt="Abstract Background"
+          className="absolute inset-0 h-full w-full object-cover opacity-80"
         />
-        <div className="relative z-20 flex flex-col items-start justify-end h-full w-full p-16 bg-linear-to-t from-background/90 to-transparent">
-          <div className="h-12 w-12 bg-primary text-primary-foreground rounded-2xl flex items-center justify-center font-bold text-2xl mb-6 shadow-xl">
+        <div className="from-background/90 relative z-20 flex h-full w-full flex-col items-start justify-end bg-linear-to-t to-transparent p-16">
+          <div className="bg-primary text-primary-foreground mb-6 flex h-12 w-12 items-center justify-center rounded-2xl text-2xl font-bold shadow-xl">
             K
           </div>
-          <h2 className="text-4xl font-bold text-foreground mb-4 leading-tight">
-            Welcome back to <br />Kartify
+          <h2 className="text-foreground mb-4 text-4xl leading-tight font-bold">
+            Welcome back to <br />
+            Kartify
           </h2>
-          <p className="text-lg text-muted-foreground max-w-md">
-            Your premium destination for the finest products. Sign in to access your saved items, track orders, and discover new deals.
+          <p className="text-muted-foreground max-w-md text-lg">
+            Your premium destination for the finest products. Sign in to access
+            your saved items, track orders, and discover new deals.
           </p>
         </div>
       </div>
 
       {/* Right Column - Form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-muted/20">
+      <div className="bg-muted/20 flex flex-1 items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-sm space-y-6">
-          
-          <div className="flex flex-col space-y-2 text-center lg:text-left mb-8">
-            <div className="flex items-center justify-center lg:justify-start gap-2 mb-2 lg:hidden">
-              <div className="h-8 w-8 bg-primary text-primary-foreground rounded-lg flex items-center justify-center font-bold text-lg">
+          <div className="mb-8 flex flex-col space-y-2 text-center lg:text-left">
+            <div className="mb-2 flex items-center justify-center gap-2 lg:hidden lg:justify-start">
+              <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg text-lg font-bold">
                 K
               </div>
-              <span className="font-bold text-xl">Kartify</span>
+              <span className="text-xl font-bold">Kartify</span>
             </div>
             <h1 className="text-3xl font-bold tracking-tight">Sign in</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Enter your email and password to access your account.
             </p>
           </div>
 
-          <Card className="border-border/50 shadow-lg bg-background/60 backdrop-blur-xl rounded-2xl overflow-hidden">
-            <CardContent className="p-6 sm:p-8 space-y-6">
+          <Card className="border-border/50 bg-background/60 overflow-hidden rounded-2xl shadow-lg backdrop-blur-xl">
+            <CardContent className="space-y-6 p-6 sm:p-8">
               <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
                 <div className="space-y-2">
-                  <Input 
-                    type="email" 
-                    placeholder="name@example.com" 
-                    className="h-11 rounded-xl bg-background border-border/50 focus-visible:ring-primary/20"
-                    {...register("email")} 
+                  <Input
+                    type="email"
+                    placeholder="name@example.com"
+                    className="bg-background border-border/50 focus-visible:ring-primary/20 h-11 rounded-xl"
+                    {...register("email")}
                   />
                   {errors.email && (
-                    <p className="text-xs text-destructive font-medium pl-1">
+                    <p className="text-destructive pl-1 text-xs font-medium">
                       {errors.email.message}
                     </p>
                   )}
@@ -126,11 +146,11 @@ export const Login = () => {
                   <Input
                     type="password"
                     placeholder="Password"
-                    className="h-11 rounded-xl bg-background border-border/50 focus-visible:ring-primary/20"
+                    className="bg-background border-border/50 focus-visible:ring-primary/20 h-11 rounded-xl"
                     {...register("password")}
                   />
                   {errors.password && (
-                    <p className="text-xs text-destructive font-medium pl-1">
+                    <p className="text-destructive pl-1 text-xs font-medium">
                       {errors.password.message}
                     </p>
                   )}
@@ -139,24 +159,30 @@ export const Login = () => {
                 <div className="flex items-center justify-end">
                   <Link
                     to="/forgot-password"
-                    className="text-sm font-medium text-primary hover:underline"
+                    className="text-primary text-sm font-medium hover:underline"
                   >
                     Forgot password?
                   </Link>
                 </div>
 
-                <Button className="w-full h-11 rounded-xl font-medium shadow-md hover:shadow-lg transition-all" type="submit" disabled={loading}>
-                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                <Button
+                  className="h-11 w-full rounded-xl font-medium shadow-md transition-all hover:shadow-lg"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
                   Sign in
                 </Button>
               </form>
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border/50" />
+                  <span className="border-border/50 w-full border-t" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase font-medium tracking-wider">
-                  <span className="bg-background px-3 text-muted-foreground rounded-full border border-border/50">
+                <div className="relative flex justify-center text-xs font-medium tracking-wider uppercase">
+                  <span className="bg-background text-muted-foreground border-border/50 rounded-full border px-3">
                     Or continue with
                   </span>
                 </div>
@@ -164,7 +190,7 @@ export const Login = () => {
 
               <Button
                 variant="outline"
-                className="w-full h-11 rounded-xl bg-background hover:bg-muted/50 border-border/50 font-medium"
+                className="bg-background hover:bg-muted/50 border-border/50 h-11 w-full rounded-xl font-medium"
                 onClick={handleGoogleLogin}
                 disabled={loading}
               >
@@ -191,9 +217,12 @@ export const Login = () => {
             </CardContent>
           </Card>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-center text-sm">
             Don't have an account?{" "}
-            <Link to="/signup" className="font-semibold text-primary hover:underline">
+            <Link
+              to="/signup"
+              className="text-primary font-semibold hover:underline"
+            >
               Create one now
             </Link>
           </p>

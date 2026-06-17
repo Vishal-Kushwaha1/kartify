@@ -85,10 +85,9 @@ export const Products = () => {
     } catch (error) {
       console.error("Recommendation error", error);
     }
-  },[])
+  }, []);
 
   useEffect(() => {
-    
     if (user) {
       fetchRecommendations();
     }
@@ -129,24 +128,24 @@ export const Products = () => {
   );
 
   return (
-    <div className="min-h-screen bg-muted/20 pb-20">
+    <div className="bg-muted/20 min-h-screen pb-20">
       {/* Page Header */}
-      <div className="bg-background border-b border-border/50 px-6 py-12 mb-10 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4 flex items-center justify-center gap-2">
-          Explore Products <Sparkles className="h-6 w-6 text-primary" />
+      <div className="bg-background border-border/50 mb-10 border-b px-6 py-12 text-center">
+        <h1 className="text-foreground mb-4 flex items-center justify-center gap-2 text-4xl font-bold tracking-tight">
+          Explore Products <Sparkles className="text-primary h-6 w-6" />
         </h1>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+        <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
           Discover our curated collection of premium products, designed to
           elevate your everyday lifestyle.
         </p>
       </div>
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="mx-auto max-w-7xl px-6">
         {!query && recommendations.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-foreground">
-              <Sparkles className="h-6 w-6 text-primary" /> Recommended for You
+            <h2 className="text-foreground mb-6 flex items-center gap-2 text-2xl font-bold">
+              <Sparkles className="text-primary h-6 w-6" /> Recommended for You
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {recommendations.map((item) => (
                 <ProductCard
                   key={`reco-${item.id}`}
@@ -163,35 +162,35 @@ export const Products = () => {
         )}
 
         {recommendations.length > 0 && (
-          <h2 className="text-2xl font-bold mb-6 text-foreground">
+          <h2 className="text-foreground mb-6 text-2xl font-bold">
             All Products
           </h2>
         )}
 
         {pageLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
               <div key={n} className="flex flex-col gap-4">
-                <div className="h-64 w-full rounded-2xl bg-muted/50 animate-pulse"></div>
+                <div className="bg-muted/50 h-64 w-full animate-pulse rounded-2xl"></div>
                 <div className="space-y-2">
-                  <div className="h-4 w-3/4 bg-muted/50 rounded animate-pulse"></div>
-                  <div className="h-4 w-1/2 bg-muted/50 rounded animate-pulse"></div>
+                  <div className="bg-muted/50 h-4 w-3/4 animate-pulse rounded"></div>
+                  <div className="bg-muted/50 h-4 w-1/2 animate-pulse rounded"></div>
                 </div>
-                <div className="h-10 w-full bg-muted/50 rounded-full animate-pulse mt-4"></div>
+                <div className="bg-muted/50 mt-4 h-10 w-full animate-pulse rounded-full"></div>
               </div>
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32 text-center bg-background rounded-3xl border border-dashed border-border">
-            <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4 opacity-50" />
-            <h2 className="text-2xl font-semibold mb-2">No products found</h2>
+          <div className="bg-background border-border flex flex-col items-center justify-center rounded-3xl border border-dashed py-32 text-center">
+            <ShoppingCart className="text-muted-foreground mb-4 h-16 w-16 opacity-50" />
+            <h2 className="mb-2 text-2xl font-semibold">No products found</h2>
             <p className="text-muted-foreground">
               Check back later for new arrivals.
             </p>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-10">
+            <div className="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {products.map((item) => (
                 <ProductCard
                   key={item.id}

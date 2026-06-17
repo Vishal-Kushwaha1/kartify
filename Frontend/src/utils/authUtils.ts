@@ -1,7 +1,5 @@
 import type { UserRoleEnum } from "@/types/type";
 
-
-
 export const getDashboardPath = (role?: UserRoleEnum | null) => {
   if (!role) return "/login";
   switch (role) {

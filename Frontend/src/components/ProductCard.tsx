@@ -45,37 +45,37 @@ const ProductCard = ({
   return (
     <Card
       onClick={() => navigate(`/products/${item.id}`)}
-      className="group flex flex-col border-none bg-background shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl overflow-hidden cursor-pointer"
+      className="group bg-background flex cursor-pointer flex-col overflow-hidden rounded-3xl border-none shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
       {/* Image Container */}
-      <div className="relative w-full h-64 bg-muted/30 overflow-hidden">
+      <div className="bg-muted/30 relative h-64 w-full overflow-hidden">
         {images.length > 0 ? (
           <Carousel
-            className="w-full h-full"
+            className="h-full w-full"
             opts={{ align: "start", loop: true }}
           >
             <CarouselContent>
               {images.map((img, idx) => (
                 <CarouselItem key={idx}>
-                  <div className="w-full h-64 flex items-center justify-center">
+                  <div className="flex h-64 w-full items-center justify-center">
                     <img
                       src={img}
                       alt={item.name}
-                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                      className="h-full w-full transform object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
             {images.length > 1 && (
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <CarouselPrevious className="left-2 bg-background/50 backdrop-blur border-none hover:bg-background h-8 w-8" />
-                <CarouselNext className="right-2 bg-background/50 backdrop-blur border-none hover:bg-background h-8 w-8" />
+              <div className="opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <CarouselPrevious className="bg-background/50 hover:bg-background left-2 h-8 w-8 border-none backdrop-blur" />
+                <CarouselNext className="bg-background/50 hover:bg-background right-2 h-8 w-8 border-none backdrop-blur" />
               </div>
             )}
           </Carousel>
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-muted/50">
+          <div className="text-muted-foreground bg-muted/50 flex h-full w-full items-center justify-center">
             No image available
           </div>
         )}
@@ -83,7 +83,7 @@ const ProductCard = ({
         {user && (
           <button
             onClick={(e) => onWishlistToggle(e, item.id)}
-            className="absolute top-4 right-4 z-10 p-2.5 rounded-full bg-background/60 backdrop-blur-md border border-border/50 hover:bg-background transition-colors shadow-sm"
+            className="bg-background/60 border-border/50 hover:bg-background absolute top-4 right-4 z-10 rounded-full border p-2.5 shadow-sm backdrop-blur-md transition-colors"
           >
             <Heart
               className={`h-4 w-4 transition-colors ${
@@ -99,44 +99,44 @@ const ProductCard = ({
           {!inStock && (
             <Badge
               variant="destructive"
-              className="shadow-sm font-semibold text-[10px] uppercase tracking-wider"
+              className="text-[10px] font-semibold tracking-wider uppercase shadow-sm"
             >
               Sold Out
             </Badge>
           )}
           {item.stock !== undefined && inStock && item.stock < 10 && (
-            <Badge className="bg-amber-500 text-white shadow-sm font-semibold text-[10px] uppercase tracking-wider hover:bg-amber-600">
+            <Badge className="bg-amber-500 text-[10px] font-semibold tracking-wider text-white uppercase shadow-sm hover:bg-amber-600">
               Low Stock
             </Badge>
           )}
         </div>
       </div>
       {/* Content Container */}
-      <div className="flex flex-col flex-1 p-5">
-        <div className="flex flex-wrap gap-1.5 mb-3">
+      <div className="flex flex-1 flex-col p-5">
+        <div className="mb-3 flex flex-wrap gap-1.5">
           {item.category?.map((cat) => (
             <span
               key={cat}
-              className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full"
+              className="text-muted-foreground bg-muted rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase"
             >
               {cat}
             </span>
           ))}
         </div>
-        <h3 className="font-semibold text-base text-foreground line-clamp-1 mb-1 group-hover:text-primary transition-colors">
+        <h3 className="text-foreground group-hover:text-primary mb-1 line-clamp-1 text-base font-semibold transition-colors">
           {item.name}
         </h3>
         {item.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
+          <p className="text-muted-foreground mb-4 line-clamp-2 flex-1 text-sm">
             {item.description}
           </p>
         )}
-        <div className="flex items-end justify-between mt-auto pt-4 border-t border-border/50">
+        <div className="border-border/50 mt-auto flex items-end justify-between border-t pt-4">
           <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-medium mb-0.5">
+            <span className="text-muted-foreground mb-0.5 text-xs font-medium">
               Price
             </span>
-            <span className="text-xl font-bold text-foreground tracking-tight">
+            <span className="text-foreground text-xl font-bold tracking-tight">
               ₹{item.price?.toLocaleString("en-IN") ?? "0"}
             </span>
           </div>
@@ -145,12 +145,12 @@ const ProductCard = ({
               onClick={(e) => onAddToCart(e, item.id)}
               disabled={actionLoading === item.id || !inStock}
               size="icon"
-              className="rounded-full h-10 w-10 bg-primary hover:bg-primary/90 shadow-sm hover:shadow-md transition-all group-hover:scale-110"
+              className="bg-primary hover:bg-primary/90 h-10 w-10 rounded-full shadow-sm transition-all group-hover:scale-110 hover:shadow-md"
             >
               {actionLoading === item.id ? (
-                <Loader2 className="h-4 w-4 animate-spin text-primary-foreground" />
+                <Loader2 className="text-primary-foreground h-4 w-4 animate-spin" />
               ) : (
-                <ShoppingCart className="h-4 w-4 text-primary-foreground" />
+                <ShoppingCart className="text-primary-foreground h-4 w-4" />
               )}
             </Button>
           )}

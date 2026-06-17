@@ -9,10 +9,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useState } from "react";
 import { api } from "@/utils/Axios";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const ApplyForSeller = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const {
     register,
@@ -24,9 +24,7 @@ export const ApplyForSeller = () => {
     mode: "onChange",
   });
 
-  const submitSellerForm: SubmitHandler<SellerProps> = async (
-    data,
-  ) => {
+  const submitSellerForm: SubmitHandler<SellerProps> = async (data) => {
     try {
       setLoading(true);
       if (!data.gstCertificate?.[0] || !data.shopImage?.[0]) {
@@ -42,13 +40,15 @@ export const ApplyForSeller = () => {
       formData.append("gstCertificate", data.gstCertificate[0]);
       formData.append("shopImage", data.shopImage[0]);
 
-      const result = await api.post("/user/applyForSeller", formData,{withCredentials: true});
+      const result = await api.post("/user/applyForSeller", formData, {
+        withCredentials: true,
+      });
       if (result.status !== 200) {
         return toast.error("Something went wrong");
       }
-      reset()
+      reset();
       toast.success("applied for seller. wait for response on your email");
-      navigate("/products")
+      navigate("/products");
     } catch (error: unknown) {
       return toast.error("Something went wrong");
     } finally {
@@ -57,12 +57,12 @@ export const ApplyForSeller = () => {
   };
   return (
     <div className="bg-muted/40 min-h-screen px-6 py-10">
-      <div className="max-w-6xl mx-auto">
-        <div className="max-w-xl mx-auto">
-          <Card className="rounded-xl border bg-background p-6">
-            <CardHeader className="p-0 mb-6">
-              <div className="flex items-center gap-2 mb-2">
-                <Store className="h-5 w-5 text-muted-foreground" />
+      <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-xl">
+          <Card className="bg-background rounded-xl border p-6">
+            <CardHeader className="mb-6 p-0">
+              <div className="mb-2 flex items-center gap-2">
+                <Store className="text-muted-foreground h-5 w-5" />
                 <Badge variant="outline" className="text-xs">
                   Seller Onboarding
                 </Badge>
@@ -70,7 +70,7 @@ export const ApplyForSeller = () => {
               <CardTitle className="text-2xl font-medium tracking-tight">
                 Apply as a Seller
               </CardTitle>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Fill in your business details to start selling
               </p>
             </CardHeader>
@@ -81,7 +81,7 @@ export const ApplyForSeller = () => {
                 className="flex flex-col gap-5"
               >
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     Store Name
                   </label>
                   <Input
@@ -89,14 +89,14 @@ export const ApplyForSeller = () => {
                     {...register("storeName")}
                   />
                   {errors.storeName && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.storeName.message}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     Store Description
                   </label>
                   <Input
@@ -104,14 +104,14 @@ export const ApplyForSeller = () => {
                     {...register("storeDescription")}
                   />
                   {errors.storeDescription && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.storeDescription.message}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     Store Location
                   </label>
                   <Input
@@ -119,13 +119,13 @@ export const ApplyForSeller = () => {
                     {...register("storeLocation")}
                   />
                   {errors.storeLocation && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.storeLocation.message}
                     </p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     PAN Number
                   </label>
                   <Input
@@ -133,14 +133,14 @@ export const ApplyForSeller = () => {
                     {...register("panNumber")}
                   />
                   {errors.panNumber && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.panNumber.message}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     Aadhar Number
                   </label>
                   <Input
@@ -148,14 +148,14 @@ export const ApplyForSeller = () => {
                     {...register("aadharNumber")}
                   />
                   {errors.aadharNumber && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.aadharNumber.message}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     GST Number
                   </label>
                   <Input
@@ -163,14 +163,14 @@ export const ApplyForSeller = () => {
                     {...register("gstNumber")}
                   />
                   {errors.gstNumber && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {errors.gstNumber.message}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     GST Certificate
                   </label>
                   <div className="flex items-center gap-2">
@@ -180,17 +180,17 @@ export const ApplyForSeller = () => {
                       className="file:text-sm"
                     />
 
-                    <Upload className="h-4 w-4 text-muted-foreground" />
+                    <Upload className="text-muted-foreground h-4 w-4" />
                   </div>
                   {errors.gstCertificate && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {String(errors.gstCertificate.message)}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs text-muted-foreground">
+                  <label className="text-muted-foreground text-xs">
                     Shop Image
                   </label>
                   <div className="flex items-center gap-2">
@@ -199,10 +199,10 @@ export const ApplyForSeller = () => {
                       {...register("shopImage")}
                       className="file:text-sm"
                     />
-                    <Upload className="h-4 w-4 text-muted-foreground" />
+                    <Upload className="text-muted-foreground h-4 w-4" />
                   </div>
                   {errors.shopImage && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-destructive text-sm">
                       {String(errors.shopImage.message)}
                     </p>
                   )}
@@ -211,7 +211,7 @@ export const ApplyForSeller = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="mt-4 bg-primary hover:bg-primary/90 text-white"
+                  className="bg-primary hover:bg-primary/90 mt-4 text-white"
                 >
                   Apply
                 </Button>

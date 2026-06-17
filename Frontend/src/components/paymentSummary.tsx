@@ -27,50 +27,60 @@ export const PaymentSummary = ({ cart }: Props) => {
   const total = Number((subTotal + gst + deliveryFee).toFixed(2));
 
   return (
-    <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm p-6 overflow-hidden relative">
+    <Card className="bg-background/80 relative overflow-hidden rounded-3xl border-none p-6 shadow-sm backdrop-blur-sm">
       <div className="absolute top-0 right-0 p-4 opacity-5">
-        <Receipt className="w-32 h-32" />
+        <Receipt className="h-32 w-32" />
       </div>
-      
+
       {/* Header */}
-      <div className="space-y-1 mb-6 relative z-10">
-        <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+      <div className="relative z-10 mb-6 space-y-1">
+        <h2 className="text-foreground flex items-center gap-2 text-xl font-bold tracking-tight">
           Order Summary
         </h2>
-        <p className="text-sm text-muted-foreground font-medium">
+        <p className="text-muted-foreground text-sm font-medium">
           {cart.length} item{cart.length !== 1 ? "s" : ""}
         </p>
       </div>
 
       {/* Breakdown */}
-      <div className="space-y-4 text-sm relative z-10">
-        <div className="flex justify-between items-center bg-muted/30 p-3 rounded-xl">
+      <div className="relative z-10 space-y-4 text-sm">
+        <div className="bg-muted/30 flex items-center justify-between rounded-xl p-3">
           <span className="text-muted-foreground font-medium">Subtotal</span>
-          <span className="font-bold text-foreground">₹{subTotal.toLocaleString('en-IN')}</span>
+          <span className="text-foreground font-bold">
+            ₹{subTotal.toLocaleString("en-IN")}
+          </span>
         </div>
-        <div className="flex justify-between items-center bg-muted/30 p-3 rounded-xl">
+        <div className="bg-muted/30 flex items-center justify-between rounded-xl p-3">
           <span className="text-muted-foreground font-medium">GST (18%)</span>
-          <span className="font-bold text-foreground">₹{gst.toLocaleString('en-IN')}</span>
+          <span className="text-foreground font-bold">
+            ₹{gst.toLocaleString("en-IN")}
+          </span>
         </div>
-        <div className="flex justify-between items-center bg-muted/30 p-3 rounded-xl">
+        <div className="bg-muted/30 flex items-center justify-between rounded-xl p-3">
           <span className="text-muted-foreground font-medium">Delivery</span>
-          <span className={`font-bold ${deliveryFee === 0 ? 'text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded' : 'text-foreground'}`}>
-            {deliveryFee === 0 ? 'Free' : `₹${deliveryFee.toLocaleString('en-IN')}`}
+          <span
+            className={`font-bold ${deliveryFee === 0 ? "rounded bg-emerald-500/10 px-2 py-0.5 text-emerald-600" : "text-foreground"}`}
+          >
+            {deliveryFee === 0
+              ? "Free"
+              : `₹${deliveryFee.toLocaleString("en-IN")}`}
           </span>
         </div>
       </div>
 
       {/* Divider */}
-      <div className="my-6 border-t border-dashed border-border/80 relative z-10">
-        <div className="absolute -left-8 -top-3 w-6 h-6 rounded-full bg-muted/20"></div>
-        <div className="absolute -right-8 -top-3 w-6 h-6 rounded-full bg-muted/20"></div>
+      <div className="border-border/80 relative z-10 my-6 border-t border-dashed">
+        <div className="bg-muted/20 absolute -top-3 -left-8 h-6 w-6 rounded-full"></div>
+        <div className="bg-muted/20 absolute -top-3 -right-8 h-6 w-6 rounded-full"></div>
       </div>
 
       {/* Total */}
-      <div className="space-y-1 relative z-10">
-        <div className="flex justify-between items-end">
-          <span className="text-base font-bold text-foreground">Total</span>
-          <span className="text-3xl font-black text-primary tracking-tight">₹{total.toLocaleString('en-IN')}</span>
+      <div className="relative z-10 space-y-1">
+        <div className="flex items-end justify-between">
+          <span className="text-foreground text-base font-bold">Total</span>
+          <span className="text-primary text-3xl font-black tracking-tight">
+            ₹{total.toLocaleString("en-IN")}
+          </span>
         </div>
       </div>
     </Card>

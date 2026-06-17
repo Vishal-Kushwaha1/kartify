@@ -6,7 +6,9 @@ import { product } from "./product.js";
 export const cartItem = pgTable("cart_item", {
   id: t.uuid("id").primaryKey().defaultRandom(),
   quantity: t.integer("quantity").notNull().default(1),
-  price: t.numeric("price", { precision: 10, scale: 2, mode: "number" }).notNull(),
+  price: t
+    .numeric("price", { precision: 10, scale: 2, mode: "number" })
+    .notNull(),
   cartId: t
     .uuid("cart_id")
     .notNull()

@@ -21,7 +21,6 @@ export const productSchema = z.object({
     }),
 });
 
-
 export const newAddressSchema = z.object({
   name: z.string().trim().min(1),
   recipientName: z.string().trim().min(2),
@@ -32,15 +31,17 @@ export const newAddressSchema = z.object({
   address: z.string().trim().min(5),
   city: z.string().trim().min(2),
   state: z.string().trim().min(2),
-  postalCode: z.string().trim().regex(/^\d{6}$/, "Enter valid postal code"),
+  postalCode: z
+    .string()
+    .trim()
+    .regex(/^\d{6}$/, "Enter valid postal code"),
   country: z.string().trim().min(2),
   latitude: z.coerce.number(),
   longitude: z.coerce.number(),
   isDefault: z.boolean(),
 });
 
-
 export const reviewSchema = z.object({
   rating: z.number().min(1, "Please select a rating"),
-  comment: z.string().nullable().optional()
-})
+  comment: z.string().nullable().optional(),
+});

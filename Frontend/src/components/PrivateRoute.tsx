@@ -2,7 +2,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useGetUserQuery } from "@/redux/user/userApi";
 
 export const PrivateRoute = () => {
-  const { data:user, isLoading:loading } = useGetUserQuery()
+  const { data: user, isLoading: loading } = useGetUserQuery();
   const location = useLocation();
 
   if (loading) {

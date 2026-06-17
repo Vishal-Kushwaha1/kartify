@@ -7,26 +7,30 @@ import {
   createStripeOrder,
   cancelOrder,
   getAllOrders,
-  getOrderById, getAllSellerOrders, getSellerOrderById, updateSellerOrderStatus} from "../controllers/order.js";
+  getOrderById,
+  getAllSellerOrders,
+  getSellerOrderById,
+  updateSellerOrderStatus,
+} from "../controllers/order.js";
 import {
   attachUserSession,
   isEmailVerified,
   isUserActive,
 } from "../middleware/auth.js";
-import {isSeller} from "../middleware/role.js";
+import { isSeller } from "../middleware/role.js";
 
 const router = express.Router();
 
 router.use(attachUserSession);
 
-router.get("/",getAllOrders)
-router.get("/:orderId",getOrderById)
+router.get("/", getAllOrders);
+router.get("/:orderId", getOrderById);
 
-router.use(isUserActive, isEmailVerified)
+router.use(isUserActive, isEmailVerified);
 
-router.get("/seller/order",isSeller, getAllSellerOrders)
-router.get("/seller/order/:orderId",isSeller, getSellerOrderById)
-router.put("/seller/order/:orderId/status",isSeller, updateSellerOrderStatus)
+router.get("/seller/order", isSeller, getAllSellerOrders);
+router.get("/seller/order/:orderId", isSeller, getSellerOrderById);
+router.put("/seller/order/:orderId/status", isSeller, updateSellerOrderStatus);
 
 router.post("/cash", createCodOrder);
 

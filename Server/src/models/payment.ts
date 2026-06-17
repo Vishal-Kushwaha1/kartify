@@ -13,7 +13,7 @@ export const paymentStatusEnum = t.pgEnum("payment_status", [
   "success",
   "failed",
   "cancelled",
-  "refunded"
+  "refunded",
 ]);
 
 export const payment = pgTable("payment", {
@@ -38,5 +38,6 @@ export const payment = pgTable("payment", {
   updatedAt: t
     .timestamp("updated_at", { precision: 6, withTimezone: true })
     .notNull()
-    .defaultNow().$onUpdate(()=> new Date()),
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });

@@ -16,7 +16,7 @@ export type ProductType =
       category?: string[] | null;
       image?: string[] | null;
       isActive: boolean;
-    userId:string
+      userId: string;
       sellerId: string;
       createdAt: Date;
       updatedAt: Date;
@@ -32,12 +32,12 @@ export type CartType =
     }
   | undefined;
 
-export type actionEnum  = "view"|"cart"|"wishlist"
+export type actionEnum = "view" | "cart" | "wishlist";
 
-export type actionType ={
-    id: string;
-    userId: string;
-    productId: string;
-    actionType: actionEnum,
-    createdAt: Date;
-}
+export type actionType = {
+  id: string;
+  userId: string;
+  productId: string;
+  actionType: actionEnum;
+  createdAt: Date;
+};

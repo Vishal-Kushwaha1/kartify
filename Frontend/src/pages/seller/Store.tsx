@@ -26,20 +26,20 @@ const Store = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchSeller = useCallback(async () => {
-      try {
-        setLoading(true);
+    try {
+      setLoading(true);
 
-        const response = await api.get("/user/store", {
-          withCredentials: true,
-        });
+      const response = await api.get("/user/store", {
+        withCredentials: true,
+      });
 
-        setSeller(response.data.data || response.data);
-      } catch (error) {
-        console.error("Error fetching seller:", error);
-      } finally {
-        setLoading(false);
-      }
-    },[])
+      setSeller(response.data.data || response.data);
+    } catch (error) {
+      console.error("Error fetching seller:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchSeller();
@@ -49,18 +49,18 @@ const Store = () => {
 
   if (!seller) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+      <div className="bg-background text-foreground flex min-h-screen items-center justify-center">
         Seller not found
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <div className="mx-auto max-w-7xl p-4 md:p-8">
         {/* Banner */}
         <div className="relative mb-24">
-          <div className="h-87.5 overflow-hidden rounded-3xl border bg-card shadow-lg">
+          <div className="bg-card h-87.5 overflow-hidden rounded-3xl border shadow-lg">
             {seller.shopImage ? (
               <img
                 src={seller.shopImage}
@@ -68,8 +68,8 @@ const Store = () => {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-linear-to-r from-primary/20 to-primary/5">
-                <Package className="h-20 w-20 text-muted-foreground" />
+              <div className="from-primary/20 to-primary/5 flex h-full w-full items-center justify-center bg-linear-to-r">
+                <Package className="text-muted-foreground h-20 w-20" />
               </div>
             )}
           </div>
@@ -80,21 +80,21 @@ const Store = () => {
               <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <StoreIcon className="h-8 w-8 text-primary" />
+                    <StoreIcon className="text-primary h-8 w-8" />
 
-                    <h1 className="text-3xl font-bold text-foreground md:text-4xl">
+                    <h1 className="text-foreground text-3xl font-bold md:text-4xl">
                       {seller.storeName}
                     </h1>
                   </div>
 
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="text-muted-foreground flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     <span>
                       {seller.storeLocation || "Location not provided"}
                     </span>
                   </div>
 
-                  <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
+                  <p className="text-muted-foreground max-w-3xl text-sm leading-7">
                     {seller.storeDescription ||
                       "No store description available."}
                   </p>
@@ -111,12 +111,8 @@ const Store = () => {
                     {seller.isActive ? "Active" : "Inactive"}
                   </Badge>
 
-                  <Badge
-                    variant={seller.isVerified ? "default" : "secondary"}
-                  >
-                    {seller.isVerified
-                      ? "Verified"
-                      : "Verification Pending"}
+                  <Badge variant={seller.isVerified ? "default" : "secondary"}>
+                    {seller.isVerified ? "Verified" : "Verification Pending"}
                   </Badge>
                 </div>
               </div>
@@ -138,11 +134,11 @@ const Store = () => {
 
               <CardContent className="space-y-5">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                     Store ID
                   </p>
 
-                  <div className="mt-2 rounded-md bg-muted p-3 font-mono text-sm">
+                  <div className="bg-muted mt-2 rounded-md p-3 font-mono text-sm">
                     {seller.id}
                   </div>
                 </div>
@@ -150,11 +146,11 @@ const Store = () => {
                 <Separator />
 
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                     Owner ID
                   </p>
 
-                  <div className="mt-2 rounded-md bg-muted p-3 font-mono text-sm">
+                  <div className="bg-muted mt-2 rounded-md p-3 font-mono text-sm">
                     {seller.userId}
                   </div>
                 </div>
@@ -162,7 +158,7 @@ const Store = () => {
                 <Separator />
 
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
                     Member Since
                   </p>
 
@@ -201,7 +197,7 @@ const Store = () => {
                           P
                         </div>
 
-                        <span className="text-xs font-medium uppercase text-muted-foreground">
+                        <span className="text-muted-foreground text-xs font-medium uppercase">
                           PAN Number
                         </span>
                       </div>
@@ -220,7 +216,7 @@ const Store = () => {
                           A
                         </div>
 
-                        <span className="text-xs font-medium uppercase text-muted-foreground">
+                        <span className="text-muted-foreground text-xs font-medium uppercase">
                           Aadhaar Number
                         </span>
                       </div>
@@ -239,7 +235,7 @@ const Store = () => {
                           G
                         </div>
 
-                        <span className="text-xs font-medium uppercase text-muted-foreground">
+                        <span className="text-muted-foreground text-xs font-medium uppercase">
                           GST Number
                         </span>
                       </div>
@@ -253,12 +249,12 @@ const Store = () => {
                           href={seller.gstCertificate}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+                          className="bg-primary text-primary-foreground inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition hover:opacity-90"
                         >
                           View Certificate
                         </a>
                       ) : (
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                           No certificate uploaded
                         </p>
                       )}

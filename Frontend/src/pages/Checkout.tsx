@@ -13,7 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { api } from "@/utils/Axios";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import {
@@ -41,7 +41,8 @@ export const Checkout = () => {
   const dispatch = useDispatch();
 
   const { data: cart, isLoading: ItemLoading } = useGetCartItemQuery();
-  const{data: addresses = [], isLoading:loadingAddress} = useGetAddressQuery()
+  const { data: addresses = [], isLoading: loadingAddress } =
+    useGetAddressQuery();
 
   if (cart && cart?.length < 1) {
     navigate("/products");
@@ -57,7 +58,6 @@ export const Checkout = () => {
       document.body.appendChild(script);
     });
   };
-
 
   const handleCOD = async () => {
     if (!addressId) {
@@ -193,13 +193,13 @@ export const Checkout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-muted/20 pb-20">
+    <div className="bg-muted/20 min-h-screen pb-20">
       {/* Page Header */}
-      <div className="bg-background border-b border-border/50 px-6 py-10 mb-10">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <div className="bg-background border-border/50 mb-10 border-b px-6 py-10">
+        <div className="mx-auto flex max-w-6xl items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground mb-1 flex items-center gap-2">
-              Secure Checkout <ShieldCheck className="h-6 w-6 text-primary" />
+            <h1 className="text-foreground mb-1 flex items-center gap-2 text-3xl font-bold tracking-tight">
+              Secure Checkout <ShieldCheck className="text-primary h-6 w-6" />
             </h1>
             <p className="text-muted-foreground">
               Complete your purchase securely.
@@ -213,10 +213,10 @@ export const Checkout = () => {
           {/* Left Section */}
           <div className="space-y-8">
             {/* Step 1: Delivery Address */}
-            <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm overflow-hidden">
-              <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
-                <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                  <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
+            <Card className="bg-background/80 overflow-hidden rounded-3xl border-none shadow-sm backdrop-blur-sm">
+              <CardHeader className="border-border/50 bg-muted/20 border-b pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+                  <div className="bg-primary/10 text-primary rounded-lg p-1.5">
                     <MapPin className="h-4 w-4" />
                   </div>
                   Delivery Address
@@ -228,16 +228,16 @@ export const Checkout = () => {
               <CardContent className="p-6">
                 {loadingAddress ? (
                   <div className="flex flex-col gap-3 py-4">
-                    <div className="h-20 w-full bg-muted/50 animate-pulse rounded-2xl"></div>
-                    <div className="h-20 w-full bg-muted/50 animate-pulse rounded-2xl"></div>
+                    <div className="bg-muted/50 h-20 w-full animate-pulse rounded-2xl"></div>
+                    <div className="bg-muted/50 h-20 w-full animate-pulse rounded-2xl"></div>
                   </div>
                 ) : addresses.length === 0 ? (
-                  <div className="rounded-2xl border border-dashed border-border/60 bg-muted/30 p-8 text-center flex flex-col items-center justify-center">
-                    <MapPin className="h-10 w-10 text-muted-foreground opacity-50 mb-3" />
-                    <p className="text-foreground font-medium mb-1">
+                  <div className="border-border/60 bg-muted/30 flex flex-col items-center justify-center rounded-2xl border border-dashed p-8 text-center">
+                    <MapPin className="text-muted-foreground mb-3 h-10 w-10 opacity-50" />
+                    <p className="text-foreground mb-1 font-medium">
                       No saved addresses
                     </p>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <p className="text-muted-foreground mb-4 text-sm">
                       Please add an address to continue checkout
                     </p>
                     <Button
@@ -257,7 +257,7 @@ export const Checkout = () => {
                       <Label
                         key={item.id}
                         htmlFor={item.id}
-                        className={`cursor-pointer rounded-2xl border-2 p-5 transition-all hover:bg-muted/30 ${
+                        className={`hover:bg-muted/30 cursor-pointer rounded-2xl border-2 p-5 transition-all ${
                           addressId === item.id
                             ? "border-primary bg-primary/5 shadow-sm"
                             : "border-border/50 bg-background"
@@ -269,24 +269,24 @@ export const Checkout = () => {
                             id={item.id}
                             className="mt-1"
                           />
-                          <div className="space-y-1.5 flex-1">
+                          <div className="flex-1 space-y-1.5">
                             <div className="flex items-center justify-between gap-2">
-                              <p className="text-sm font-semibold text-foreground line-clamp-1">
+                              <p className="text-foreground line-clamp-1 text-sm font-semibold">
                                 {item.name}
                               </p>
                               {item.isDefault && (
                                 <Badge
                                   variant="secondary"
-                                  className="text-[10px] uppercase font-bold py-0 h-4"
+                                  className="h-4 py-0 text-[10px] font-bold uppercase"
                                 >
                                   Default
                                 </Badge>
                               )}
                             </div>
-                            <p className="text-xs font-medium text-muted-foreground">
+                            <p className="text-muted-foreground text-xs font-medium">
                               {item.recipientName} • {item.phone}
                             </p>
-                            <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                            <p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
                               {item.address}, {item.city}, {item.state}{" "}
                               {item.postalCode}
                             </p>
@@ -300,10 +300,10 @@ export const Checkout = () => {
             </Card>
 
             {/* Step 2: Order Items */}
-            <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm overflow-hidden">
-              <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
-                <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                  <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
+            <Card className="bg-background/80 overflow-hidden rounded-3xl border-none shadow-sm backdrop-blur-sm">
+              <CardHeader className="border-border/50 bg-muted/20 border-b pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+                  <div className="bg-primary/10 text-primary rounded-lg p-1.5">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -323,7 +323,7 @@ export const Checkout = () => {
                   Order Items
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="space-y-4 p-6">
                 {cart?.map((item) => (
                   <CartItem key={item.product.id} item={item} />
                 ))}
@@ -334,10 +334,10 @@ export const Checkout = () => {
           {/* Right Section - Payment & Summary */}
           <div className="relative">
             <div className="sticky top-24 space-y-8">
-              <Card className="rounded-3xl border-none shadow-sm bg-background/80 backdrop-blur-sm overflow-hidden">
-                <CardHeader className="border-b border-border/50 bg-muted/20 pb-4">
-                  <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                    <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
+              <Card className="bg-background/80 overflow-hidden rounded-3xl border-none shadow-sm backdrop-blur-sm">
+                <CardHeader className="border-border/50 bg-muted/20 border-b pb-4">
+                  <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+                    <div className="bg-primary/10 text-primary rounded-lg p-1.5">
                       <CreditCard className="h-4 w-4" />
                     </div>
                     Payment Method
@@ -349,9 +349,9 @@ export const Checkout = () => {
                       variant="outline"
                       onClick={() => handleCOD()}
                       disabled={loadingPayment || !addressId}
-                      className="h-14 justify-start px-4 text-left font-medium border-border/50 hover:bg-muted/50 rounded-xl"
+                      className="border-border/50 hover:bg-muted/50 h-14 justify-start rounded-xl px-4 text-left font-medium"
                     >
-                      <Banknote className="h-5 w-5 mr-3 text-emerald-600" />
+                      <Banknote className="mr-3 h-5 w-5 text-emerald-600" />
                       Cash on Delivery (COD)
                     </Button>
 
@@ -359,9 +359,9 @@ export const Checkout = () => {
                       variant="outline"
                       onClick={() => handleStripe()}
                       disabled={loadingPayment || !addressId}
-                      className="h-14 justify-start px-4 text-left font-medium border-border/50 hover:bg-muted/50 rounded-xl"
+                      className="border-border/50 hover:bg-muted/50 h-14 justify-start rounded-xl px-4 text-left font-medium"
                     >
-                      <Wallet className="h-5 w-5 mr-3 text-indigo-600" />
+                      <Wallet className="mr-3 h-5 w-5 text-indigo-600" />
                       Pay with Stripe
                     </Button>
 
@@ -369,9 +369,9 @@ export const Checkout = () => {
                       variant="outline"
                       onClick={() => handleRazorpay()}
                       disabled={loadingPayment || !addressId}
-                      className="h-14 justify-start px-4 text-left font-medium border-border/50 hover:bg-muted/50 rounded-xl"
+                      className="border-border/50 hover:bg-muted/50 h-14 justify-start rounded-xl px-4 text-left font-medium"
                     >
-                      <CreditCard className="h-5 w-5 mr-3 text-blue-600" />
+                      <CreditCard className="mr-3 h-5 w-5 text-blue-600" />
                       Pay with Razorpay
                     </Button>
                   </div>

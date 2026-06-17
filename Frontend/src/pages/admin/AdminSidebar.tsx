@@ -63,17 +63,17 @@ const AdminSidebar = () => {
   };
 
   return (
-    <aside className="w-64 border-r bg-card hidden md:flex flex-col min-h-screen shadow-sm z-10">
-      <div className="p-6 border-b bg-muted/20">
-        <h2 className="text-xl font-bold tracking-tight text-primary">
+    <aside className="bg-card z-10 hidden min-h-screen w-64 flex-col border-r shadow-sm md:flex">
+      <div className="bg-muted/20 border-b p-6">
+        <h2 className="text-primary text-xl font-bold tracking-tight">
           Admin Center
         </h2>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-muted-foreground mt-1 text-xs">
           Control your business
         </p>
       </div>
 
-      <nav className="flex-1 px-4 space-y-1">
+      <nav className="flex-1 space-y-1 px-4">
         {sidebarLinks.map((item) => {
           // Check active state
           // e.g. if href is /seller, it should strictly match or else /seller/products would make it active
@@ -106,13 +106,13 @@ const AdminSidebar = () => {
         })}
       </nav>
 
-      <div className="p-4 border-t bg-muted/10">
+      <div className="bg-muted/10 border-t p-4">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-3 rounded-lg px-3 py-6 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground w-full justify-start gap-3 rounded-lg px-3 py-6 text-sm font-medium transition-all duration-200"
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div className="bg-primary/10 text-primary flex h-8 w-8 items-center justify-center rounded-lg">
             {theme === "dark" ? (
               <Moon className="h-4 w-4" />
             ) : (
@@ -121,7 +121,7 @@ const AdminSidebar = () => {
           </div>
           <div className="flex flex-col items-start leading-none">
             <span>Theme</span>
-            <span className="mt-1 text-xs font-normal text-muted-foreground capitalize">
+            <span className="text-muted-foreground mt-1 text-xs font-normal capitalize">
               {theme || "system"} mode
             </span>
           </div>
@@ -129,7 +129,7 @@ const AdminSidebar = () => {
 
         <Button
           variant="ghost"
-          className="w-full justify-start text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full justify-start"
           onClick={handleSignOut}
         >
           <LogOut className="mr-2 h-4 w-4" />

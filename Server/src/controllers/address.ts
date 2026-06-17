@@ -25,18 +25,20 @@ export const addNewAddress = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Unauthorized");
   }
 
-  const result = await dbPool.transaction(async(trx)=>{
-    if(req.body.isDefault){
-      await trx.update(addressTable).set({isDefault: false}).where(eq(addressTable.userId, user.id))
+  const result = await dbPool.transaction(async (trx) => {
+    if (req.body.isDefault) {
+      await trx
+        .update(addressTable)
+        .set({ isDefault: false })
+        .where(eq(addressTable.userId, user.id));
     }
-  
+
     const data = await trx
       .insert(addressTable)
       .values({ ...req.body, userId: user.id })
       .returning();
-      return data
-  })
-
+    return data;
+  });
 
   if (!result[0]) throw new ApiError(500, "Failed to save address");
 
@@ -68,7 +70,7 @@ export const defaultAddress = asyncHandler(async (req, res) => {
   }
   const addressId = req.params.id as string;
 
-  const result =await dbPool.transaction(async (trx) => {
+  const result = await dbPool.transaction(async (trx) => {
     await trx
       .update(addressTable)
       .set({ isDefault: false })
@@ -79,9 +81,10 @@ export const defaultAddress = asyncHandler(async (req, res) => {
       .set({ isDefault: true })
       .where(
         and(eq(addressTable.id, addressId), eq(addressTable.userId, user.id)),
-      ).returning()
+      )
+      .returning();
 
-      return data
+    return data;
   });
-  res.json(new ApiResponse(200, result[0], "Address set to default"))
+  res.json(new ApiResponse(200, result[0], "Address set to default"));
 });

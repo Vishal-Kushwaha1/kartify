@@ -5,8 +5,8 @@ export const authClient = createAuthClient({
   baseURL: import.meta.env.VITE_BETTER_AUTH_URL,
   plugins: [emailOTPClient()],
   fetchOptions: {
-    credentials: "include"
-  }
+    credentials: "include",
+  },
 });
 
-export type Session = typeof authClient.$Infer.Session
+export type Session = typeof authClient.$Infer.Session;

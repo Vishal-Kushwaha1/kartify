@@ -25,8 +25,10 @@ export const account = pgTable("account", {
   password: t.text("password"),
   createdAt: t
     .timestamp("created_at", { precision: 6, withTimezone: true })
-    .notNull().defaultNow(),
+    .notNull()
+    .defaultNow(),
   updatedAt: t
     .timestamp("updated_at", { precision: 6, withTimezone: true })
-    .notNull().defaultNow(),
+    .notNull()
+    .defaultNow(),
 });

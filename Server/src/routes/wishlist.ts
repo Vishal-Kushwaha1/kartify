@@ -14,5 +14,4 @@ router.post("/", attachUserSession, addToWishlist);
 router.delete("/:productId", attachUserSession, removeFromWishlist);
 router.post("/move-to-cart", attachUserSession, moveToCart);
 
-
-export default router
+export default router;

@@ -14,9 +14,9 @@ export const getAllReviewOfProduct = asyncHandler(async (req, res) => {
     .select()
     .from(review)
     .leftJoin(userTable, eq(userTable.id, review.userId))
-    .where(eq(review.productId, id))
+    .where(eq(review.productId, id));
 
-    res.json(new ApiResponse(200, reviews, "All reviews"))
+  res.json(new ApiResponse(200, reviews, "All reviews"));
 });
 
 export const createReviewOfProduct = asyncHandler(async (req, res) => {

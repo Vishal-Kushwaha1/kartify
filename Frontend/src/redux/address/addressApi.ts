@@ -12,7 +12,8 @@ export const addressApi = createApi({
   endpoints: (builder) => ({
     getAddress: builder.query<Address[], void>({
       query: () => "/address",
-      transformResponse: (response: { data: Address[] }) => response?.data ?? [],
+      transformResponse: (response: { data: Address[] }) =>
+        response?.data ?? [],
       providesTags: ["Address"],
     }),
     addAddress: builder.mutation({
