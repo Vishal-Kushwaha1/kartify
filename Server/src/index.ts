@@ -23,8 +23,6 @@ app.set("trust proxy", 1);
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow all origins for now to prevent CORS issues with Vercel proxies or custom domains.
-      // BetterAuth handles its own origin verification.
       callback(null, origin || true);
     },
     credentials: true,

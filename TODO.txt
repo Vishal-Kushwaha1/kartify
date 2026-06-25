@@ -12,4 +12,4 @@
 backend url https://kartify-28ia.onrender.com
 
 
-jab product/:id page load ho rha hai to db pr 2 baar call ja rha hai check kro and jab get session fuilfill ho ja rha to fir se 2 baar product call ho rha hai
+jab products page pr move to cart krte hai tab cart cache ko invalidate kaise krenge?

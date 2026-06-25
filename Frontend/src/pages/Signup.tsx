@@ -225,7 +225,7 @@ export const Signup = () => {
                     </Button>
                   </form>
 
-                  <div className="relative">
+                  {/* <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <span className="border-border/50 w-full border-t" />
                     </div>
@@ -261,7 +261,7 @@ export const Signup = () => {
                       />
                     </svg>
                     Google
-                  </Button>
+                  </Button> */}
                 </CardContent>
               </Card>
 
