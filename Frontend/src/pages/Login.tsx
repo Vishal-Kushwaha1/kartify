@@ -52,36 +52,36 @@ export const Login = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await authClient.signIn.social({
-        provider: "google",
-        callbackURL: `${import.meta.env.VITE_FRONTEND_URL}/products`,
-      });
-      if (error)
-        return toast.error("Google login failed", {
-          description: error.message,
-        });
-      toast.success("Login successful");
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const { data, error } = await authClient.signIn.social({
+  //       provider: "google",
+  //       callbackURL: `${import.meta.env.VITE_FRONTEND_URL}/products`,
+  //     });
+  //     if (error)
+  //       return toast.error("Google login failed", {
+  //         description: error.message,
+  //       });
+  //     toast.success("Login successful");
 
-      const role =
-        data && "user" in data
-          ? (data.user as { role?: string })?.role
-          : undefined;
-      if (role === "seller") {
-        navigate("/seller");
-      } else if (role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/products");
-      }
-    } catch {
-      toast.error("Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     const role =
+  //       data && "user" in data
+  //         ? (data.user as { role?: string })?.role
+  //         : undefined;
+  //     if (role === "seller") {
+  //       navigate("/seller");
+  //     } else if (role === "admin") {
+  //       navigate("/admin");
+  //     } else {
+  //       navigate("/products");
+  //     }
+  //   } catch {
+  //     toast.error("Something went wrong.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   if (loading) return <LoadingPage />;
 

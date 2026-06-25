@@ -101,24 +101,24 @@ export const Signup = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      setLoading(true);
-      const { error } = await authClient.signIn.social({
-        provider: "google",
-        callbackURL: `${import.meta.env.VITE_FRONTEND_URL}/user`,
-      });
-      if (error)
-        return toast.error("Google login failed", {
-          description: error.message,
-        });
-      navigate("/products");
-    } catch {
-      toast.error("Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const { error } = await authClient.signIn.social({
+  //       provider: "google",
+  //       callbackURL: `${import.meta.env.VITE_FRONTEND_URL}/user`,
+  //     });
+  //     if (error)
+  //       return toast.error("Google login failed", {
+  //         description: error.message,
+  //       });
+  //     navigate("/products");
+  //   } catch {
+  //     toast.error("Something went wrong.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   if (loading && step === "form") return <LoadingPage />;
 
