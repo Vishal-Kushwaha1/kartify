@@ -23,17 +23,9 @@ app.set("trust proxy", 1);
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow Vercel domains, localhost, and explicit FRONTEND_URL
-      if (
-        !origin ||
-        origin.includes("vercel.app") ||
-        origin.includes("localhost") ||
-        origin === process.env.FRONTEND_URL
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+      // Allow all origins for now to prevent CORS issues with Vercel proxies or custom domains.
+      // BetterAuth handles its own origin verification.
+      callback(null, origin || true);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
