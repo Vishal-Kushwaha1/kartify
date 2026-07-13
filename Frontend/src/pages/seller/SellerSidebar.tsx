@@ -63,7 +63,7 @@ export const SellerSidebar = () => {
   };
 
   return (
-    <aside className="bg-background hidden min-h-screen w-64 flex-col border-r md:flex">
+    <aside className="bg-background flex h-full min-h-screen w-64 flex-col border-r shadow-lg md:shadow-none">
       <div className="p-6">
         <h2 className="text-primary text-xl font-bold tracking-tight">
           Seller Center

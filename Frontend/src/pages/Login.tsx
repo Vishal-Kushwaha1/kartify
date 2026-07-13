@@ -38,6 +38,9 @@ export const Login = () => {
         data && "user" in data
           ? (data.user as { role?: string })?.role
           : undefined;
+
+      sessionStorage.setItem("kartify_role", role || "user");
+
       if (role === "seller") {
         navigate("/seller");
       } else if (role === "admin") {

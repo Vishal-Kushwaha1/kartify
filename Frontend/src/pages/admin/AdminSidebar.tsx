@@ -63,7 +63,7 @@ const AdminSidebar = () => {
   };
 
   return (
-    <aside className="bg-card z-10 hidden min-h-screen w-64 flex-col border-r shadow-sm md:flex">
+    <aside className="bg-card z-10 flex h-full min-h-screen w-64 flex-col border-r shadow-xl md:shadow-sm">
       <div className="bg-muted/20 border-b p-6">
         <h2 className="text-primary text-xl font-bold tracking-tight">
           Admin Center
