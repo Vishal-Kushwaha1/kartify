@@ -15,11 +15,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterProps } from "../types/schema";
 import { Loader2, MailCheck } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { userApi } from "@/redux/user/userApi";
 
 type Step = "form" | "otp";
 
 export const Signup = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<Step>("form");
@@ -78,6 +81,7 @@ export const Signup = () => {
       });
       if (error) return toast.error(error.message || "Invalid OTP");
       toast.success("Email verified!");
+      dispatch(userApi.util.invalidateTags(["User"]));
       navigate("/products");
     } catch {
       toast.error("Something went wrong.");

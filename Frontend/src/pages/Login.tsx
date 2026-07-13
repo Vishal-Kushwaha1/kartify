@@ -10,10 +10,13 @@ import { LoadingPage } from "@/components/LoadingPage";
 import { authClient } from "@/lib/authClient";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { userApi } from "@/redux/user/userApi";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -40,6 +43,7 @@ export const Login = () => {
           : undefined;
 
       sessionStorage.setItem("kartify_role", role || "user");
+      dispatch(userApi.util.invalidateTags(["User"]));
 
       if (role === "seller") {
         navigate("/seller");
